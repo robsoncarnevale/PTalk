@@ -7,6 +7,8 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+use Illuminate\Support\Facades\Storage;
+
 class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
@@ -60,8 +62,76 @@ class User extends Authenticatable implements JWTSubject
 
     ///////////////////////
 
+    /**
+     * privilege_id => privileges_groups.id
+     */
     public function privilege_group()
     {
         return $this->hasOne('App\Models\PrivilegeGroup', 'id', 'privilege_id');
+    }
+
+    ///////////////////////
+
+    /**
+     * {@inheritdoc}
+     * Add field photo_url if has photo
+     *
+     * @author Davi Souto
+     * @since 09/06/2020
+     */
+    public function toArray()
+    {
+        $values = parent::toArray();
+        $values = $this->add_photo_url($values);
+        
+        return $values;
+    }
+
+    /**
+     * {@inheritdoc}
+     * Add field photo_url if has photo
+     *
+     * @author Davi Souto
+     * @since 09/06/2020
+     */
+    public function only($keys)
+    {
+        $original_keys = $keys;
+
+        if (in_array('photo_url', $keys) && ! in_array('photo', $keys))
+            $keys[] = 'photo';
+
+        $values = parent::only($keys);
+
+        if (array_key_exists('photo', $values) && in_array('photo_url', $original_keys))
+            $values = $this->add_photo_url($values);
+
+        if (! in_array('photo', $original_keys) && array_key_exists('photo', $values))
+            unset($values['photo']);
+        
+        return $values;
+    }
+
+    ///////////////////////
+
+    /**
+     * Add field photo_url if has photo
+     *
+     * @param array $values
+     * @return array
+     * @author Davi Souto
+     * @since 09/06/2020
+     */
+    private function add_photo_url($values)
+    {
+        if (! empty($values) && is_array($values) && isset($values['photo']))
+        {
+            $values['photo_url'] = false;
+
+            if (! empty($values['photo']))
+                $values['photo_url'] = Storage::disk('images')->url($values['photo']);
+        }
+
+        return $values;
     }
 }

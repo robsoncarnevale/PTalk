@@ -29,7 +29,7 @@ class AuthController extends Controller
         if ($token = $this->guard()->attempt($credentials))
         {
             // AuthTokens::createToken($token);
-            $session = $this->guard()->user()->only(['name', 'email']);
+            $session = $this->guard()->user()->only(['id', 'name', 'email', 'photo_url']);
             $session['first_name'] = explode(" ", $session['name'])[0];
 
             return response()->json([
