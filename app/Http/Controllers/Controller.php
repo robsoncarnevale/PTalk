@@ -19,9 +19,10 @@ class Controller extends BaseController
      * @author Davi Souto
      * @since 08/06/2020
      */
-    protected function validate(Request $request, $rules)
+    // protected function validate(Request $request, $rules)
+    public static function validate(Request $request, $rules)
     {
-        $validator = \Validator::make($request->all(),$rules);
+    $validator = \Validator::make($request->all(),$rules);
 
         if ($validator->fails())
         {

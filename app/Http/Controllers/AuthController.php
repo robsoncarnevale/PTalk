@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
 use App\Models\AuthTokens;
+use App\Models\HasPrivilege;
 
 /**
  * Authentication Controller
@@ -29,8 +30,15 @@ class AuthController extends Controller
         if ($token = $this->guard()->attempt($credentials))
         {
             // AuthTokens::createToken($token);
-            $session = $this->guard()->user()->only(['id', 'name', 'email', 'photo_url']);
+            $session = $this->guard()
+                ->user()
+                ->only(['id', 'name', 'email', 'type', 'photo_url', 'privilege_id']);
+
             $session['first_name'] = explode(" ", $session['name'])[0];
+            $session['privileges'] = HasPrivilege::select('privilege_action')
+                ->where('privilege_group_id', $session['privilege_id'])
+                ->get()
+                ->pluck('privilege_action');
 
             return response()->json([
                 'data' => [

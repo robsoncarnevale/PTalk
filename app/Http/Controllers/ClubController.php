@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\Vehicle;
+use App\Models\User;
+
 /**
  * Club Controller
  *
@@ -21,10 +24,19 @@ class ClubController extends Controller
     public function GetStatus(Request $request)
     {
         $status = [
-            'vehicles'  =>  100,
-            'members'   =>  65,
-            'next_events'   =>  3,
+            'vehicles'  =>  Vehicle::count(),
+            'members'   =>  User::count(),
+            'next_events'   =>  0,
         ];
+
+        if ($status['vehicles'] < 1)
+            $status['vehicles'] = '-';
+
+        if ($status['members'] < 1)
+            $status['members'] = '-';
+
+        if ($status['next_events'] < 1)
+            $status['next_events'] = '-';
 
         return response()->json([ 'status' => 'success', 'data' => $status ]);
     }

@@ -14,63 +14,63 @@ use DB;
 use Exception;
 
 /**
- * Admin Users Controller
+ * Member Users Controller
  *
  * @author Davi Souto
- * @since 23/05/2020
+ * @since 15/06/2020
  */
-class AdminUsersController extends Controller
+class MemberUsersController extends Controller
 {    
     /**
-     * List Administrator
+     * List Members
      *
      * @author Davi Souto
      */
     public function List(Request $request)
     {
-        return UsersController::List($request, 'admin');
+        return UsersController::List($request, 'member');
     }
 
     /**
-     * Create Administrator
+     * Create Members
      *
      * @author Davi Souto
-     * @since 08/06/2020
+     * @since 15/06/2020
      */
     public function Create(Request $request)
     {
-        return UsersController::Create($request, 'admin');
+        return UsersController::Create($request, 'member');
     }
 
     /**
-     * Update Administrator
+     * Update Members
      *
      * @author Davi Souto
-     * @since 07/06/2020
+     * @since 15/06/2020
      */
     public function Update(Request $request, $user_id)
     {
-        return UsersController::Update($request, $user_id, 'admin');
+        return UsersController::Update($request, $user_id, 'member');
     }
 
     /**
-     * Delete Administrator
+     * Delete Members
      *
      * @author Davi Souto
      */
     public function Delete(Request $request, $user_id)
     {
-        return UsersController::Delete($request, $user_id, 'admin');
+        return UsersController::Delete($request, $user_id, 'member');
     }
 
     /**
-     * Get Administrator
+     * Get Members
      * 
      * @author Davi Souto
-     * @since 07/06/2020
+     * @since 15/06/2020
      */
     public function Get(Request $request, $user_id)
     {
-        return UsersController::Get($request, $user_id, 'admin');
+        return UsersController::Get($request, $user_id, 'member');
     }
 }
