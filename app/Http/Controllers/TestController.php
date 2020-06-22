@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\Auth;
  */
 class TestController extends Controller
 {
+    protected $only_admin = false;
+    protected $ignore_privileges = true;
+
     /**
      * Returns user logged data
      *

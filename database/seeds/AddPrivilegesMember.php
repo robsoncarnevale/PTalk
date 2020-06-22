@@ -55,7 +55,7 @@ class AddPrivilegesMember extends Seeder
             {
                 foreach($privilege as $add_privilege )
                 {
-                    $add_privilege['action'] = $key_privilege . "." . $add_privilege['action'];
+                    // $add_privilege['action'] = $key_privilege . "." . $add_privilege['action'];
 
                     if (! HasPrivilege::select('privilege_action')->where('privilege_action', $add_privilege['action'])->where('privilege_group_id', $this->privilege_group->id)->first())
                     {
@@ -66,7 +66,7 @@ class AddPrivilegesMember extends Seeder
 
                         $has_privilege->save();
 
-                        echo "Add admin privilege \033[35m" . $has_privilege->privilege_action . "\033[0m " . PHP_EOL;
+                        echo "Add member privilege \033[35m" . $has_privilege->privilege_action . "\033[0m " . PHP_EOL;
                     }
                     
                 }

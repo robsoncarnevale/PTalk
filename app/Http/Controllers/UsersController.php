@@ -21,6 +21,8 @@ use Exception;
  */
 class UsersController extends Controller
 {
+    protected $only_admin = false;
+
     /**
      * @var string
      */
@@ -59,11 +61,29 @@ class UsersController extends Controller
         $users = User::select('id', 'name', 'email', 'photo', 'privilege_id', 'created_at', 'updated_at', 'active')
             // ->with('privilege_group')
             ->with('privilege_group:id,name')
+            ->withCount('vehicles')
             ->where('club_code', getClubCode())
             ->where('deleted', false)
+            ->where('approval_status', 'approved')
             ->where('type', $type)
             ->orderBy('name')
             ->jsonPaginate($per_page, 3);
+
+        return response()->json([ 'status' => 'success', 'data' => $users ]);
+    }
+
+    public function ListAll(Request $request)
+    {
+        $users = User::select('id', 'name', 'photo', 'privilege_id', 'company', 'company_activities', 'created_at', 'updated_at')
+            // ->with('privilege_group')
+            ->with('privilege_group:id,name')
+            ->where('club_code', getClubCode())
+            ->where('deleted', false)
+            ->where('active', true)
+            ->where('approval_status', 'approved')
+            ->where('id', '<>', Auth::guard()->user()->id)
+            ->orderBy('name')
+            ->jsonPaginate(25, 3);
 
         return response()->json([ 'status' => 'success', 'data' => $users ]);
     }
@@ -97,6 +117,9 @@ class UsersController extends Controller
             $user->cell_phone = preg_replace("#[^0-9]*#is", "", $request->get('cell_phone'));
             $user->email = $request->get('email');
             $user->type = $type;
+
+            $user->approval_status = 'approved';
+            $user->approval_status_date = date('Y-m-d H:i:s');
 
             $user->password = Hash::make('123456');
             $user->privilege_id = $request->get('privilege_id');
@@ -198,6 +221,13 @@ class UsersController extends Controller
             return response()->json([ 'status' => 'error', 'message' => __(self::$type_name . '.error-update', [ 'error' => $e->getMessage() ]) ]);
         }
 
+        $vehicles = Vehicle::select()
+            ->with('car_model:id,name,car_brand_id', 'car_model.car_brand:id,name', 'car_color:id,name')
+            ->where('user_id', $user->id)
+            ->get();
+
+        $user->vehicles = $vehicles;
+
         return response()->json([ 'status' => 'success', 'data' => $user, 'message' => __(self::$type_name . '.success-update') ]);
     }
 
@@ -205,6 +235,7 @@ class UsersController extends Controller
      * Delete
      *
      * @author Davi Souto
+     * @since 07/06/2020
      */
     private static function Delete(Request $request, $user_id, $type = 'member')
     {
@@ -232,6 +263,7 @@ class UsersController extends Controller
     private static function Get(Request $request, $user_id, $type = 'members')
     {
         $user = User::select('id', 'name', 'email', 'privilege_id', 'photo', 'document_cpf', 'document_rg', 'cell_phone', 'phone', 'home_address', 'comercial_address', 'company', 'company_activities', 'created_at', 'updated_at', 'active')
+            ->with('vehicles', 'vehicles.car_model:id,name,car_brand_id', 'vehicles.car_model.car_brand:id,name', 'vehicles.car_color:id,name')
             ->where('id', $user_id)
             ->where('club_code', getClubCode())
             ->where('deleted', false)
@@ -255,5 +287,27 @@ class UsersController extends Controller
         $user = Auth::guard()->user();
 
         return response()->json([ 'status' => 'success', 'data' => $user  ]);
+    }
+    
+    /**
+     * Returns users profile data
+     *
+     * @author Davi Souto
+     * @since 17/06/2020
+     */
+    public function ViewProfile(Request $request, $user_id)
+    {
+        $user = User::select('id', 'name', 'privilege_id', 'photo', 'company', 'company_activities', 'created_at', 'updated_at', 'active', 'type')
+            ->where('id', $user_id)
+            ->where('club_code', getClubCode())
+            ->where('deleted', false)
+            ->where('active', true)
+            ->where('approval_status', 'approved')
+            ->first();
+
+        if (! $user)
+            return response()->json([ 'status' => 'error', 'message' => __('members.not-found') ]);
+
+        return response()->json([ 'status' => 'success', 'data' => $user ]);
     }
 }

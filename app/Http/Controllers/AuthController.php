@@ -17,6 +17,9 @@ use App\Models\HasPrivilege;
  */
 class AuthController extends Controller
 {
+    protected $ignore_privileges = true;
+    protected $only_admin = false;
+
     /**
      * Login in application
      * 

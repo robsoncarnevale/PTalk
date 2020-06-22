@@ -45,7 +45,7 @@ class AddPrivilegesAdmin extends Seeder
             {
                 foreach($privilege as $add_privilege )
                 {
-                    $add_privilege['action'] = $key_privilege . "." . $add_privilege['action'];
+                    // $add_privilege['action'] = $key_privilege . "." . $add_privilege['action'];
 
                     if (! HasPrivilege::select('privilege_action')->where('privilege_action', $add_privilege['action'])->where('privilege_group_id', $this->privilege_group->id)->first())
                     {

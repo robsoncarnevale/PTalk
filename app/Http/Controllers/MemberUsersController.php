@@ -20,7 +20,9 @@ use Exception;
  * @since 15/06/2020
  */
 class MemberUsersController extends Controller
-{    
+{
+    protected $only_admin = false;
+
     /**
      * List Members
      *
@@ -72,5 +74,28 @@ class MemberUsersController extends Controller
     public function Get(Request $request, $user_id)
     {
         return UsersController::Get($request, $user_id, 'member');
+    }
+
+    ////////////////////////
+
+    /**
+     * Returns members waiting approval
+     * 
+     * @author Davi Souto
+     * @since 18/06/2020
+     */
+    public function WaitingApproval(Request $request)
+    {
+        $users = User::select('id', 'name', 'email', 'privilege_id', 'document_cpf', 'document_rg', 'cell_phone', 'company', 'created_at', 'updated_at')
+            // ->with('privilege_group')
+            ->with('privilege_group:id,name')
+            ->where('club_code', getClubCode())
+            ->where('deleted', false)
+            ->where('approval_status', 'waiting')
+            ->where('type', 'member')
+            ->orderBy('created_at')
+            ->jsonPaginate(25, 3);
+
+        return response()->json([ 'status' => 'success', 'data' => $users ]);
     }
 }

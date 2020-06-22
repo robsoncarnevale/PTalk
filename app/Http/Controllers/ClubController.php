@@ -15,6 +15,8 @@ use App\Models\User;
  */
 class ClubController extends Controller
 {
+    protected $only_admin = false;
+
     /**
      * Returns club status for dashboard
      *
@@ -23,9 +25,24 @@ class ClubController extends Controller
      */
     public function GetStatus(Request $request)
     {
+        $members_count = User::where('club_code', getClubCode())
+            ->where('deleted', false)
+            ->where('active', true)
+            ->where('approval_status', 'approved')
+            ->count();
+
+        $vehicles_count = Vehicle::where('club_code', getClubCode())
+            ->whereHas('user', function($q){
+                $q->where('deleted', false)
+                  ->where('active', true)
+                  ->where('approval_status', 'approved')
+                  ->where('club_code', getClubCode());
+            })
+            ->count();
+
         $status = [
-            'vehicles'  =>  Vehicle::count(),
-            'members'   =>  User::count(),
+            'vehicles'  =>  $vehicles_count,
+            'members'   =>  $members_count,
             'next_events'   =>  0,
         ];
 

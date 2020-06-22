@@ -14,6 +14,8 @@ use App\Models\PrivilegeGroup;
  */
 class PrivilegesController extends Controller
 {
+    protected $only_admin = true;
+
     /**
      * List Privileges Groups
      *

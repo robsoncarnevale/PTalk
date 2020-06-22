@@ -45,6 +45,7 @@ class CreateAdminUser extends Seeder
         $user->email =  $this->email;
         $user->password = Hash::make('123456');
         $user->type = 'admin';
+        $user->approval_status = 'approved';
 
         $user->privilege_id = PrivilegeGroup::select('id')->where('type', 'admin')->first()->id;
         $user->document_cpf = "12345678900";

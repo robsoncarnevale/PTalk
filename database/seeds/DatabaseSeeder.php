@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
         // Create default users
         $this->createAdminUser();
         $this->createMemberUser();
+        $this->createMemberUserWaitingApproval();
 
         // Create default vehicle data
         $this->createCarBrand();
@@ -161,7 +162,7 @@ class DatabaseSeeder extends Seeder
      */
     private function createAdminUser()
     {
-        if (App\Models\User::select('id')->where('club_code', self::$club_code)->where('type', 'admin')->count() < 1)
+        if (App\Models\User::select('id')->where('club_code', self::$club_code)->where('type', 'admin')->where('approval_status', 'approved')->count() < 1)
             return $this->call(CreateAdminUser::class);
     }
 
@@ -173,8 +174,20 @@ class DatabaseSeeder extends Seeder
      */
     private function createMemberUser()
     {
-        if (App\Models\User::select('id')->where('club_code', self::$club_code)->where('type', 'member')->count() < 1)
+        if (App\Models\User::select('id')->where('club_code', self::$club_code)->where('type', 'member')->where('approval_status', 'approved')->count() < 1)
             return $this->call(CreateMemberUser::class);
+    }
+
+/**
+     * Create member user waiting approval
+     *
+     * @author Davi Souto
+     * @since 18/06/2020
+     */
+    private function createMemberUserWaitingApproval()
+    {
+        if (App\Models\User::select('id')->where('club_code', self::$club_code)->where('type', 'member')->where('approval_status', 'waiting')->count() < 1)
+            return $this->call(CreateMemberUserWaitingApproval::class);
     }
 
     ////////////////////////////////////////

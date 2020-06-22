@@ -70,6 +70,14 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasOne('App\Models\PrivilegeGroup', 'id', 'privilege_id');
     }
 
+    /**
+     * vehicles.user_id => user.id
+     */
+    public function vehicles()
+    {
+        return $this->hasMany('App\Models\Vehicle');
+    }
+
     ///////////////////////
 
     /**

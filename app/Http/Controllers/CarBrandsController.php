@@ -14,6 +14,12 @@ use App\Models\CarBrand;
  */
 class CarBrandsController extends Controller
 {
+    protected $only_admin = false;
+    protected $ignore_routes = [
+        'car.brands.list',
+        'car.brands.get',
+    ];
+
     /**
      * List
      *

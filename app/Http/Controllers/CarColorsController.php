@@ -14,6 +14,12 @@ use App\Models\CarColor;
  */
 class CarColorsController extends Controller
 {
+    protected $only_admin = false;
+    protected $ignore_routes = [
+        'car.colors.list',
+        'car.colors.get',
+    ];
+
     /**
      * List
      *

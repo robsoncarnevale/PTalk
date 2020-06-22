@@ -20,7 +20,9 @@ use Exception;
  * @since 23/05/2020
  */
 class AdminUsersController extends Controller
-{    
+{
+    protected $only_admin = true;
+
     /**
      * List Administrator
      *
