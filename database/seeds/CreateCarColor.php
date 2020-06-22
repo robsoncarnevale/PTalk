@@ -40,7 +40,7 @@ class CreateCarColor extends Seeder
 
             $car_color->name = $name;
             $car_color->value = $value;
-            $car_color->club_code = $club_code;
+            $car_color->club_code = $this->club_code;
 
             $car_color->save();
         }
