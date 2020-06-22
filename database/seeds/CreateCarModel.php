@@ -81,16 +81,19 @@ class CreateCarModel extends Seeder
      */
     private function addCarModels()
     {
-        foreach($this->models as $car_brand_name => $model)
+        foreach($this->models as $car_brand_name => $car_models)
         {
-            $car_brand = $this->brands[$car_brand_name];
-            $car_model = new CarModel();
+            foreach($car_models as $model)
+            {
+                $car_brand = $this->brands[$car_brand_name];
+                $car_model = new CarModel();
 
-            $car_model->name = $model;
-            $car_model->club_code = $this->club_code;
-            $car_model->car_brand_id = $car_brand['id'];
+                $car_model->name = $model;
+                $car_model->club_code = $this->club_code;
+                $car_model->car_brand_id = $car_brand['id'];
 
-            $car_model->save();
+                $car_model->save();
+            }
         }
     }
 
@@ -102,51 +105,53 @@ class CreateCarModel extends Seeder
     public function PorscheTalk()
     {
         $this->models = [
-            'Porsche' => '718 Cayman',
-            'Porsche' => '718 Cayman S',
-            'Porsche' => '718 Boxter',
-            'Porsche' => '718 Boxter S',
-            'Porsche' => '718 Cayman GTS',
-            'Porsche' => '718 Boxter GTS',
-            'Porsche' => '718 Cayman GT4',
-            'Porsche' => '718 Spider',
-            'Porsche' => '911 Carrera',
-            'Porsche' => '911 Carrera S',
-            'Porsche' => '911 Carrera S Cabriolet',
-            'Porsche' => '911 Carrera 4S',
-            'Porsche' => '911 Carrera 4S Cabriolet',
-            'Porsche' => '911 Turbo S',
-            'Porsche' => '911 Speedster',
-            'Porsche' => '911 GT3',
-            'Porsche' => '911 GT3 RS',
-            'Porsche' => 'Taycan 4S',
-            'Porsche' => 'Taycan Turbo',
-            'Porsche' => 'Taycan Turbo S',
-            'Porsche' => 'Panamera',
-            'Porsche' => 'Panamera 10 Years Edition',
-            'Porsche' => 'Panamera 4',
-            'Porsche' => 'Panamera 4 Sport Turismo', 
-            'Porsche' => 'Panamera 4 Executive',
-            'Porsche' => 'Panamera GTS',
-            'Porsche' => 'Panamera GTS Sport Turismo',
-            'Porsche' => 'Panamera Turbo',
-            'Porsche' => 'Panamera Turbo Sport Turismo',
-            'Porsche' => 'Panamera Turbo Executive',
-            'Porsche' => 'Panamera 4 E-Hybrid',
-            'Porsche' => 'Panamera 4 E-Hybrid 10 Years Edition',
-            'Porsche' => 'Panamera 4 E-Hybrid Sport Turismo',
-            'Porsche' => 'Panamera 4 E-Hybrid Executive',
-            'Porsche' => 'Panamera Turbo S E-Hybrid',
-            'Porsche' => 'Macan',
-            'Porsche' => 'Macan S',
-            'Porsche' => 'Macan GTS',
-            'Porsche' => 'Cayenne',
-            'Porsche' => 'Cayenne E-Hybrid',
-            'Porsche' => 'Cayenne S',
-            'Porsche' => 'Cayenne Turbo',
-            'Porsche' => 'Cayenne Turbo S E-Hybrid',
-            'Porsche' => 'Cayenne Coupé',
-            'Porsche' => 'Cayenne Turbo S E-Hybrid Coupé',
+            'Porsche'    =>  [
+                '718 Cayman',
+                '718 Cayman S',
+                '718 Boxter',
+                '718 Boxter S',
+                '718 Cayman GTS',
+                '718 Boxter GTS',
+                '718 Cayman GT4',
+                '718 Spider',
+                '911 Carrera',
+                '911 Carrera S',
+                '911 Carrera S Cabriolet',
+                '911 Carrera 4S',
+                '911 Carrera 4S Cabriolet',
+                '911 Turbo S',
+                '911 Speedster',
+                '911 GT3',
+                '911 GT3 RS',
+                'Taycan 4S',
+                'Taycan Turbo',
+                'Taycan Turbo S',
+                'Panamera',
+                'Panamera 10 Years Edition',
+                'Panamera 4',
+                'Panamera 4 Sport Turismo', 
+                'Panamera 4 Executive',
+                'Panamera GTS',
+                'Panamera GTS Sport Turismo',
+                'Panamera Turbo',
+                'Panamera Turbo Sport Turismo',
+                'Panamera Turbo Executive',
+                'Panamera 4 E-Hybrid',
+                'Panamera 4 E-Hybrid 10 Years Edition',
+                'Panamera 4 E-Hybrid Sport Turismo',
+                'Panamera 4 E-Hybrid Executive',
+                'Panamera Turbo S E-Hybrid',
+                'Macan',
+                'Macan S',
+                'Macan GTS',
+                'Cayenne',
+                'Cayenne E-Hybrid',
+                'Cayenne S',
+                'Cayenne Turbo',
+                'Cayenne Turbo S E-Hybrid',
+                'Cayenne Coupé',
+                'Cayenne Turbo S E-Hybrid Coupé',
+            ],
         ];
     }
 }
