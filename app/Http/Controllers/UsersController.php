@@ -147,6 +147,7 @@ class UsersController extends Controller
             if ($request->has('vehicle'))
             {
                 $vehicle = new Vehicle($request->get('vehicle'));
+                $vehicle->carplate = strtoupper($vehicle->carplate);
                 $vehicle->user_id = $user->id;
                 $vehicle->club_code = $user->club_code;
                 $vehicle->save();
@@ -222,7 +223,7 @@ class UsersController extends Controller
         }
 
         $vehicles = Vehicle::select()
-            ->with('car_model:id,name,car_brand_id', 'car_model.car_brand:id,name', 'car_color:id,name')
+            ->with('car_model:id,name,car_brand_id,picture', 'car_model.car_brand:id,name', 'car_color:id,name')
             ->where('user_id', $user->id)
             ->get();
 
@@ -263,7 +264,7 @@ class UsersController extends Controller
     private static function Get(Request $request, $user_id, $type = 'members')
     {
         $user = User::select('id', 'name', 'email', 'privilege_id', 'photo', 'document_cpf', 'document_rg', 'cell_phone', 'phone', 'home_address', 'comercial_address', 'company', 'company_activities', 'created_at', 'updated_at', 'active')
-            ->with('vehicles', 'vehicles.car_model:id,name,car_brand_id', 'vehicles.car_model.car_brand:id,name', 'vehicles.car_color:id,name')
+            ->with('vehicles', 'vehicles.car_model:id,name,car_brand_id,picture', 'vehicles.car_model.car_brand:id,name', 'vehicles.car_color:id,name')
             ->where('id', $user_id)
             ->where('club_code', getClubCode())
             ->where('deleted', false)

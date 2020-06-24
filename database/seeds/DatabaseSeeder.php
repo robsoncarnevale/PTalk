@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
         $this->createCarBrand();
         $this->createCarColor();
         $this->createCarModel();
+        $this->readCarModelPictureFiles();
 
         // Create privileges
         $this->createPrivileges();
@@ -150,6 +151,17 @@ class DatabaseSeeder extends Seeder
     {
         if (App\Models\CarModel::select('id')->where('club_code', self::$club_code)->count() < 1)
             return $this->call(CreateCarModel::class);
+    }
+
+    /**
+     * Read car model pictures from disk and saves on database
+     *
+     * @author Davi Souto
+     * @since 24/06/2020
+     */
+    private function readCarModelPictureFiles()
+    {
+        return $this->call(AddCarModelPicture::class);
     }
 
     ////////////////////////////////////////
