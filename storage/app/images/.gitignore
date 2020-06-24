@@ -1,0 +1,6 @@
+*
+!car_model/
+!car_model/*.jpg
+!car_model/*.png
+!car_model/*.jpeg
+!.gitignore
