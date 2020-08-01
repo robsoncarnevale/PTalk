@@ -28,7 +28,7 @@ class VehiclesController extends Controller
     public function List(Request $request, $page = 1)
     {
         $vehicles = Vehicle::select()
-            ->with('user:id,name,photo,type', 'car_model:id,name,car_brand_id', 'car_model.car_brand:id,name', 'car_color:id,name')
+            ->with('user:id,name,photo,type', 'car_model:id,name,car_brand_id,picture', 'car_model.car_brand:id,name', 'car_color:id,name')
             ->whereHas('user', function($q){
                 $q->where('deleted', false)
                   ->where('active', true)
@@ -50,7 +50,7 @@ class VehiclesController extends Controller
     public function Get(Request $request, $vehicle_id)
     {
         $vehicle = Vehicle::select()
-            ->with('user:id,name,photo,type', 'car_model:id,name,car_brand_id', 'car_color:id,name')
+            ->with('user:id,name,photo,type', 'car_model:id,name,car_brand_id,picture', 'car_color:id,name')
             ->whereHas('user', function($q){
                 $q->where('deleted', false)
                   ->where('active', true)

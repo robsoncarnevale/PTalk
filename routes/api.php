@@ -76,3 +76,14 @@ Route::group([ 'middleware' => 'authorized' ], function(){
     // Status
     Route::get('/club/status', [ 'uses' => 'ClubController@GetStatus', 'as' => 'club.status' ]);
 });
+
+
+// Mobile routes
+Route::prefix('mobile')->group(function(){
+    Route::post('/access/get-code', [ 'uses' => 'Mobile\AuthController@RequestAccessCode', 'as' => 'mobile.access.code.get' ]);
+    Route::post('/access/authorize/{code}', [ 'uses' => 'Mobile\AuthController@AccessWithCode', 'as' => 'mobile.access.code.authorize' ]);
+
+    Route::group([ 'middleware' => 'authorized.mobile' ], function(){
+        Route::get('/me', [ 'uses' => 'Mobile\MembersController@Me', 'as' => 'mobile.users.me' ]);
+    });
+});

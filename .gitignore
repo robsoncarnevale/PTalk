@@ -12,5 +12,9 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 .DS_Store
+*/.DS_Store
+
+# Docker db
+/docker/dbdata
 
 !/storage/app/images/car_model/*

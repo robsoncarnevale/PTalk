@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -39,6 +40,20 @@ class User extends Authenticatable implements JWTSubject
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Clean access code to retrive outside class after generation
+     * 
+     * @var string
+     */
+    private $access_code_clean = false;
+
+    /**
+     * Saved mobile session if is authenticated
+     * 
+     * @var array
+     */
+    private static $mobile_auth = false;
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
@@ -79,6 +94,53 @@ class User extends Authenticatable implements JWTSubject
     }
 
     ///////////////////////
+
+    /**
+     * Generate user access code
+     * 
+     * @author Davi Souto
+     * @since 01/08/2020
+     */
+    public function generateNewAccessCode($valid_hours = 1, $len = 6)
+    {
+        $access_code = substr(mt_rand(), 0, $len);
+
+        $this->access_code = Hash::make($access_code);
+        $this->access_code_clean = $access_code;
+        $this->access_code_valid_until = date('Y-m-d H:i:s', time() + ($valid_hours * 60 * 60));
+
+        return $this;
+    }
+
+    /**
+     * Returns clean access code if previously generated
+     * 
+     * @return string
+     * @author Davi Souto
+     * @since 01/08/2020
+     */
+    public function getAccessCode()
+    {
+        if ($this->access_code_clean)
+            return $this->access_code_clean;
+
+        return $this->access_code;
+    }
+
+    /**
+     * Test if access code is valid
+     * 
+     * @return bool
+     * @author Davi Souto
+     * @since 01/08/2020
+     */
+    public function testAccessCode($code)
+    {
+        if(time() > strtotime($this->access_code_valid_until))
+            return false;
+
+        return Hash::check($code, $this->access_code);
+    }
 
     /**
      * {@inheritdoc}
@@ -141,5 +203,27 @@ class User extends Authenticatable implements JWTSubject
         }
 
         return $values;
+    }
+
+    /**
+     * Get mobile auth
+     *
+     * @author Davi Souto
+     * @since 01/08/2020
+     */
+    public static function getMobileSession()
+    {
+        return self::$mobile_auth;
+    }
+
+    /**
+     * Set mobile auth
+     *
+     * @author Davi Souto
+     * @since 01/08/2020
+     */
+    public static function setMobileSession($mobile_auth)
+    {
+        return self::$mobile_auth = $mobile_auth;
     }
 }
