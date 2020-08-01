@@ -87,8 +87,8 @@ class AuthController extends Controller
         if (! $user)
             return response()->json(['message' => 'User not found', 'status' => 'error' ], 404);
 
-        // if (! $user->testAccessCode($code))
-        //     return response()->json(['message' => 'Invalid or expired code', 'status' => 'error' ], 401);
+        if (! $user->testAccessCode($code))
+            return response()->json(['message' => 'Invalid or expired code', 'status' => 'error' ], 401);
 
         $session = $user->only(['id', 'name', 'email', 'type', 'photo_url', 'privilege_id']);
         $session['first_name'] = explode(" ", $session['name'])[0];
@@ -106,8 +106,8 @@ class AuthController extends Controller
         $token = $header . '.' . $payload . '.' . $sign;
 
         // Delete last access code
-        // $user->access_code = null;
-        // $user->save();
+        $user->access_code = null;
+        $user->save();
 
         unset($session['club_code']);
 
