@@ -58,7 +58,7 @@ class AuthController extends Controller
         // ]);
 
         $client->publish([
-            'Message' => 'Seu código de acesso ao Porsche Talk é ' . $user->getAccessCode(),
+            'Message' => 'Seu código de acesso ao Porsche Talk: ' . $user->getAccessCode(),
             'PhoneNumber' => '+55' . $phone,
         ]);
 
