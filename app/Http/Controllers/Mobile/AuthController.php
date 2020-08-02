@@ -91,17 +91,16 @@ class AuthController extends Controller
             return response()->json(['message' => 'Invalid or expired code', 'status' => 'error' ], 401);
 
         $session = $user->only(['id', 'name', 'email', 'type', 'photo_url', 'privilege_id']);
-        $session['first_name'] = explode(" ", $session['name'])[0];
-        // $session['last_name'] = end(explode(" ", $session['name']));
 
-        // if ($session['first_name'] == $session['last_name'])
-        //     $session['last_name'] = '';
+        $explode_name = explode(" ", $session['name']);
+        $session['first_name'] = $explode_name[0];
+        $session['last_name'] =  (count($explode_name) > 1) ? end($explode_name) : '';
 
         $session['club_code'] = $request->get('club_code');
 
-        $header = base64_encode(json_encode([ 'alg' => 'HS256', 'typ' => 'JWT' ]));
-        $payload = substr(base64_encode(json_encode($session)), 0, -1);
-        $sign = substr(base64_encode(hash_hmac('sha256', $header . $payload, env('JWT_SECRET'), true)), 0, -1);
+        $header = base64url_encode(json_encode([ 'alg' => 'HS256', 'typ' => 'JWT' ]));
+        $payload = base64url_encode(json_encode($session));
+        $sign = base64url_encode(hash_hmac('sha256', $header . $payload, env('JWT_SECRET'), true));
 
         $token = $header . '.' . $payload . '.' . $sign;
 

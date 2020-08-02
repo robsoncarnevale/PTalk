@@ -32,12 +32,12 @@ class AuthorizedMobile extends Middleware
           $payload = $explode_token[1];
           $signature = $explode_token[2];
           
-          $valid = substr(base64_encode(hash_hmac('sha256', $header . $payload, env('JWT_SECRET'), true)), 0, -1);
+          $valid = base64url_encode(hash_hmac('sha256', $header . $payload, env('JWT_SECRET'), true));
 
           if ($valid !== $signature)
             throw new Exception('Invalid signature');
 
-          User::setMobileSession(json_decode(base64_decode($payload)));
+          User::setMobileSession(json_decode(base64url_decode($payload)));
         } catch (Exception $e) {
             return response()->json([ 'status' => 'error', 'message' => "Unauthorized", 'code' => 401 ], 401);
         }
