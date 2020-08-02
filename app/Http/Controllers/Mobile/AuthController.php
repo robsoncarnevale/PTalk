@@ -73,6 +73,7 @@ class AuthController extends Controller
      */
     public function AccessWithCode(Request $request, $code){
         $phone = preg_replace('#[^0-9]#is', '', $request->get('phone'));
+        $debug = (in_array(env('APP_ENV'), ['local', 'homolog', 'staging']) && $request->get('debug'));
 
         if (empty($phone))
             return response()->json(['message' => 'Invalid phone', 'status' => 'error' ], 404);
@@ -87,15 +88,17 @@ class AuthController extends Controller
         if (! $user)
             return response()->json(['message' => 'User not found', 'status' => 'error' ], 404);
 
-        if (! $user->testAccessCode($code))
+        if (! $user->testAccessCode($code) && ! $debug)
             return response()->json(['message' => 'Invalid or expired code', 'status' => 'error' ], 401);
 
-        $session = $user->only(['id', 'name', 'email', 'type', 'photo_url', 'privilege_id']);
+        $session = $user->only(['id', 'name', 'email', 'type', 'photo_url', 'privilege_id', 'company']);
 
         $explode_name = explode(" ", $session['name']);
+
         $session['first_name'] = $explode_name[0];
         $session['last_name'] =  (count($explode_name) > 1) ? end($explode_name) : '';
-
+        $session['vehicle_qtd'] = \App\Models\Vehicle::where('user_id', $session['id'])->count();
+        $session['events_qtd'] = 0;
         $session['club_code'] = $request->get('club_code');
 
         $header = base64url_encode(json_encode([ 'alg' => 'HS256', 'typ' => 'JWT' ]));
