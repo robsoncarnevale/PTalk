@@ -21,7 +21,11 @@ class MembersController extends Controller
 {
     public function Me(Request $request)
     {
-        $user = User::getMobileSession();
+        $session = User::getMobileSession();
+
+        $user = User::select()
+            ->where('id', $session->id)
+            ->first();
 
         return response()->json([ 'status' => 'success', 'data' => $user  ]);
     }
