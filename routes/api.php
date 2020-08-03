@@ -85,5 +85,6 @@ Route::prefix('mobile')->group(function(){
 
     Route::group([ 'middleware' => 'authorized.mobile' ], function(){
         Route::get('/me', [ 'uses' => 'Mobile\MembersController@Me', 'as' => 'mobile.users.me' ]);
+        Route::post('/profile/update', [ 'uses' => 'Mobile\MembersController@UpdateProfile', 'as' => 'mobile.profile.update' ]);
     });
 });
