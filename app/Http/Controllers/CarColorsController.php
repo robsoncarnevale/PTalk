@@ -49,7 +49,7 @@ class CarColorsController extends Controller
             ->where('id', $car_color_id)
             ->first();
         
-        if (! $user)
+        if (! $car_color)
             return response()->json([ 'status' => 'error', 'message' => __('car_color.not-found') ]);
 
         return response()->json([ 'status' => 'success', 'data' => $car_color ]);

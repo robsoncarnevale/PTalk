@@ -51,7 +51,7 @@ class CarModelsController extends Controller
             ->where('id', $car_model_id)
             ->first();
         
-        if (! $user)
+        if (! $car_model)
             return response()->json([ 'status' => 'error', 'message' => __('car_models.not-found') ]);
 
         return response()->json([ 'status' => 'success', 'data' => $car_model ]);
