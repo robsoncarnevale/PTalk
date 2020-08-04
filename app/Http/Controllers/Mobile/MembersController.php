@@ -75,7 +75,7 @@ class MembersController extends Controller
             return response()->json([ 'status' => 'error', 'message' => __('members.error-phone-already-registered') ]);
 
         // Check if email is already registered
-        if ($request->has('email') && User::select('id')->where('email', $request->get('email'))->first())
+        if ($request->has('email') && ! empty($request->get('email')) && User::select('id')->where('email', $request->get('email'))->first())
             return response()->json([ 'status' => 'error', 'message' => __('members.error-email-already-registered') ]);
         
         $user = new User();
