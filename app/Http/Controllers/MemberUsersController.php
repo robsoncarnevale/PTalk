@@ -98,4 +98,23 @@ class MemberUsersController extends Controller
 
         return response()->json([ 'status' => 'success', 'data' => $users ]);
     }
+
+    public function SetApprovalStatus(Request $request, $user_id, $status)
+    {
+        if (! in_array($status, [ User::APPROVED_STATUS_APPROVAL, User::WAITING_STATUS_APPROVAL, User::REFUSED_STATUS_APPROVAL ]))
+            return response()->json([ 'status' => 'error', 'message' => __('members.error.status-unavailable') ]);
+
+        $user = User::select()
+            ->where('id', $user_id)
+            ->where('club_code', getClubCode())
+            ->where('deleted', false)
+            ->where('type', 'member')
+            ->first();
+
+        $user->approval_status = $status;
+        $user->approval_status_date = date('Y-m-d H:i:s');
+        $user->save();
+
+        return response()->json([ 'status' => 'success', 'data' => $user ]);
+    }
 }

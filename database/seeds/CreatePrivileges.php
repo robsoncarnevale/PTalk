@@ -55,6 +55,7 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'users.members.delete',               'name' => 'Delete Member', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.members.view-all',             'name' => 'List all members and administrators', 'description' => '', 'add_member' => true ], 
             [ 'action' => 'users.members.waiting-approval',     'name' => 'List Members Waiting Approval', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'users.members.approval-status.set',  'name' => 'Set Member Approval Status', 'description' => '', 'add_member' => false ],
 
             [ 'action' => 'privileges.groups.list',             'name' => 'List Privileges', 'description' => '', 'add_member' => false ],
             [ 'action' => 'privileges.groups.get',              'name' => 'Read Privilege', 'description' => '', 'add_member' => false ],

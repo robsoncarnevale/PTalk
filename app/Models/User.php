@@ -19,6 +19,7 @@ class User extends Authenticatable implements JWTSubject
 
     const APPROVED_STATUS_APPROVAL = 'approved';
     const WAITING_STATUS_APPROVAL = 'waiting';
+    const REFUSED_STATUS_APPROVAL = 'refused';
 
     /**
      * The attributes that are mass assignable.

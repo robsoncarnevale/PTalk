@@ -45,6 +45,7 @@ Route::group([ 'middleware' => 'authorized' ], function(){
     Route::post('users/members/{user_id}', [ 'uses' => 'MemberUsersController@Update', 'as' => 'users.members.update' ])->where(['user_id' => '[0-9]+']);
     Route::delete('/users/members/{user_id}', [ 'uses' => 'MemberUsersController@Delete', 'as' => 'users.members.delete' ])->where(['user_id' => '[0-9]+']);
     Route::get('/users/members/waiting-approval', [ 'uses' => 'MemberUsersController@WaitingApproval', 'as' => 'users.members.waiting-approval' ]);
+    Route::post('/users/members/{user_id}/approval-status/{status}', [ 'uses' => 'MemberUsersController@SetApprovalStatus', 'as' => 'users.members.approval-status.set' ])->where(['user_id' => '[0-9]+']);
 
 
     // Privileges Groups
