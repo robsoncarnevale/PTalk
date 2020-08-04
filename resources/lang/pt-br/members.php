@@ -8,4 +8,6 @@ return [
 
     'error-create'  =>  'Erro ao criar membro - :error',
     'error-update'  =>  "Erro ao atualizar membro - :error",
+
+    'error-phone-already-registered' => "Telefone já registrado",
 ];

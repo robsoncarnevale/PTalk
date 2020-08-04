@@ -14,6 +14,9 @@ class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
 
+    const TYPE_ADMIN = 'admin';
+    const TYPE_MEMBER = 'member';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -119,6 +122,34 @@ class User extends Authenticatable implements JWTSubject
         $this->access_code = Hash::make($access_code);
         $this->access_code_clean = $access_code;
         $this->access_code_valid_until = date('Y-m-d H:i:s', time() + ($valid_hours * 60 * 60));
+
+        return $this;
+    }
+
+    /**
+     * Generate user password
+     * 
+     * @author Davi Souto
+     * @since 04/08/2020
+     */
+    public function generatePassword()
+    {
+        $this->password = Hash::make('123456');
+
+        return $this;
+    }
+
+    /**
+     * 
+     */
+    public function getMobilePrivilege()
+    {
+        $privilege = PrivilegeGroup::select('id')
+            ->where('type', User::TYPE_MEMBER)
+            ->where('name', 'Membro')
+            ->first();
+
+        $this->privilege_id = $privilege['id'];
 
         return $this;
     }
