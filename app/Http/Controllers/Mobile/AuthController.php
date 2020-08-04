@@ -33,6 +33,7 @@ class AuthController extends Controller
             ->where('active', true)
             ->where('deleted', false)
             ->where('phone', $phone)
+            ->where('approval_status', User::APPROVED_STATUS_APPROVAL)
             ->where('club_code', $request->get('club_code'))
             ->first();
 

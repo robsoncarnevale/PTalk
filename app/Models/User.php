@@ -17,6 +17,9 @@ class User extends Authenticatable implements JWTSubject
     const TYPE_ADMIN = 'admin';
     const TYPE_MEMBER = 'member';
 
+    const APPROVED_STATUS_APPROVAL = 'approved';
+    const WAITING_STATUS_APPROVAL = 'waiting';
+
     /**
      * The attributes that are mass assignable.
      *
