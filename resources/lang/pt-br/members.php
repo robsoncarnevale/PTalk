@@ -10,4 +10,5 @@ return [
     'error-update'  =>  "Erro ao atualizar membro - :error",
 
     'error-phone-already-registered' => "Telefone já registrado",
+    'error-email-already-registered' => "E-mail já registrado",
 ];

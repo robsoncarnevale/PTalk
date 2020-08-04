@@ -70,9 +70,13 @@ class MembersController extends Controller
         
         $phone = preg_replace("#[^0-9]*#is", "", $request->get('phone'));
 
-        // Check if your phone is already registered
+        // Check if phone is already registered
         if (User::select('id')->where('phone', $phone)->first())
             return response()->json([ 'status' => 'error', 'message' => __('members.error-phone-already-registered') ]);
+
+        // Check if email is already registered
+        if ($request->has('email') && User::select('id')->where('email', $request->get('email'))->first())
+            return response()->json([ 'status' => 'error', 'message' => __('members.error-email-already-registered') ]);
         
         $user = new User();
 

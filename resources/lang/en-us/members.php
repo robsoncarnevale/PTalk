@@ -10,4 +10,5 @@ return [
     'error-update'  =>  "Error updating member - :error",
 
     'error-phone-already-registered' => "Phone already registered",
+    'error-email-already-registered' => "E-mail already registered",
 ];
