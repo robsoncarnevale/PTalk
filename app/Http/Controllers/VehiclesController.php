@@ -9,6 +9,9 @@ use App\Models\User;
 use App\Http\Requests\VehicleRequest;
 use App\Http\Requests\MyVehicleRequest;
 
+use App\Http\Resources\Vehicle as VehicleResource;
+use App\Http\Resources\VehicleCollection;
+
 use DB;
 use Exception;
 
@@ -41,7 +44,7 @@ class VehiclesController extends Controller
             })
             ->jsonPaginate(25, 3);
 
-        return response()->json([ 'status' => 'success', 'data' => $vehicles ]);
+        return response()->json([ 'status' => 'success', 'data' => (new VehicleCollection($vehicles)) ]);
     }
 
     /**
@@ -67,7 +70,7 @@ class VehiclesController extends Controller
             return response()->json([ 'status' => 'error', 'message' => __('vehicles.not-found') ]);
 
 
-        return response()->json([ 'status' => 'success', 'data' => $vehicle ]);
+        return response()->json([ 'status' => 'success', 'data' => (new VehicleResource($vehicle)) ]);
     }
 
     /**
@@ -84,7 +87,7 @@ class VehiclesController extends Controller
         $vehicle->club_code = getClubCode();
         $vehicle->save();
 
-        return response()->json([ 'status' => 'success', 'data' => $vehicle ]);
+        return response()->json([ 'status' => 'success', 'data' => (new VehicleResource($vehicle)) ]);
     }
 
     /**
@@ -100,7 +103,7 @@ class VehiclesController extends Controller
         $vehicle->fill($request->all());
         $vehicle->save();
 
-        return response()->json([ 'status' => 'success', 'data' => $vehicle ]);
+        return response()->json([ 'status' => 'success', 'data' => (new VehicleResource($vehicle)) ]);
     }
 
     /**
@@ -116,7 +119,7 @@ class VehiclesController extends Controller
         $vehicle->deleted = true;
         $vehicle->save();
 
-        return response()->json([ 'status' => 'success', 'data' => $vehicle ]);
+        return response()->json([ 'status' => 'success', 'data' => (new VehicleResource($vehicle)) ]);
     }
 
     /**
@@ -132,7 +135,7 @@ class VehiclesController extends Controller
             ->where('user_id', User::getAuthenticatedUserId())
             ->jsonPaginate(25, 3);
 
-        return response()->json([ 'status' => 'success', 'data' => $vehicles ]);
+        return response()->json([ 'status' => 'success', 'data' => (new VehicleCollection($vehicles)) ]);
     }
 
     /**
@@ -153,7 +156,7 @@ class VehiclesController extends Controller
             return response()->json([ 'status' => 'error', 'message' => __('vehicles.not-found') ]);
 
 
-        return response()->json([ 'status' => 'success', 'data' => $vehicle ]);
+        return response()->json([ 'status' => 'success', 'data' => (new VehicleResource($vehicle)) ]);
     }
 
     /**
@@ -171,7 +174,7 @@ class VehiclesController extends Controller
         $vehicle->club_code = getClubCode();
         $vehicle->save();
 
-        return response()->json([ 'status' => 'success', 'data' => $vehicle ]);
+        return response()->json([ 'status' => 'success', 'data' => (new VehicleResource($vehicle)) ]);
     }
 
     /**
@@ -191,7 +194,7 @@ class VehiclesController extends Controller
         $vehicle->user_id = User::getAuthenticatedUserId();
         $vehicle->save();
 
-        return response()->json([ 'status' => 'success', 'data' => $vehicle ]);
+        return response()->json([ 'status' => 'success', 'data' => (new VehicleResource($vehicle)) ]);
     }
 
     /**
@@ -210,6 +213,6 @@ class VehiclesController extends Controller
         $vehicle->deleted = true;
         $vehicle->save();
 
-        return response()->json([ 'status' => 'success', 'data' => $vehicle ]);
+        return response()->json([ 'status' => 'success', 'data' => (new VehicleResource($vehicle)) ]);
     }
 }
