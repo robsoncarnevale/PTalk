@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\AuthTokens;
 use App\Models\HasPrivilege;
+use App\Http\Resources\User as UserResource;
 
 /**
  * Authentication Controller
@@ -45,7 +46,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'data' => [
-                    'session' => $session,
+                    'session' => (new UserResource($session)),
                     'access_token' => $token,
                     'token_type' => 'bearer',
                     'expires_in' => $this->guard()->factory()->getTTL() * 60

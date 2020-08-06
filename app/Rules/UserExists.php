@@ -1,0 +1,49 @@
+<?php
+
+namespace App\Rules;
+
+use Illuminate\Contracts\Validation\Rule;
+
+/**
+ * Verify if user exists
+ * 
+ * @author Davi Souto
+ * @since 05/08/2020
+ */
+class UserExists implements Rule
+{
+    /**
+     * Create a new rule instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        //
+    }
+
+    /**
+     * Determine if the validation rule passes.
+     *
+     * @param  string  $attribute
+     * @param  mixed  $value
+     * @return bool
+     */
+    public function passes($attribute, $value)
+    {
+        return \App\Models\User::select('id')
+            ->where('id', $value)
+            ->where('club_code', getClubCode())
+            ->first();
+    }
+
+    /**
+     * Get the validation error message.
+     *
+     * @return string
+     */
+    public function message()
+    {
+        return __('rules.not-found');
+    }
+}

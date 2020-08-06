@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
+use App\Http\Resources\User as UserResource;
 // use App\Models\AuthTokens;
 // use App\Models\HasPrivilege;
 
@@ -121,7 +122,7 @@ class AuthController extends Controller
 
         return response()->json([
             'data' => [
-                'session' => $session,
+                'session' => (new UserResource($session)),
                 'access_token' => $token,
                 'token_type' => 'bearer',
                 // 'expires_in' => $expires_in,

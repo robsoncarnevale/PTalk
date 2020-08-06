@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Storage;
 
 use App\Models\User;
 use App\Models\Vehicle;
+use App\Http\Resources\User as UserResource;
+use App\Http\Resources\UserCollection;;
 
 use DB;
 use Exception;
@@ -33,7 +35,7 @@ class MembersController extends Controller
             ->where('id', $session->id)
             ->first();
 
-        return response()->json([ 'status' => 'success', 'data' => $user  ]);
+        return response()->json([ 'status' => 'success', 'data' => (new UserResource($user))  ]);
     }
 
     /**
@@ -50,9 +52,16 @@ class MembersController extends Controller
             ->where('id', $session->id)
             ->first();
 
-        $user->update($request->all());
+        $user->fill($request->all());
+        $user->document_cpf = preg_replace("#[^0-9]*#is", "", $user->document_cpf);
+        $user->cell_phone = preg_replace("#[^0-9]*#is", "", $user->phone);
+        
+        if ($request->has('photo'))
+            $user->upload($request->file('photo'));
 
-        return response()->json([ 'status' => 'success', 'data' => $user ]);
+        $user->update();
+
+        return response()->json([ 'status' => 'success', 'data' => (new UserResource($user)) ]);
     }
 
      /**
@@ -104,15 +113,6 @@ class MembersController extends Controller
             $user->generatePassword();
             $user->getMobilePrivilege();
 
-            // Photo upload
-            if ($request->has('photo'))
-            {
-                $upload_photo = Storage::disk('images')->putFile('photos', $request->file('photo'));
-
-                if ($upload_photo)
-                    $user->photo = $upload_photo;
-            }
-
             $user->save();
 
             // Create Vehicle
@@ -130,7 +130,7 @@ class MembersController extends Controller
 
             DB::commit();
 
-            return response()->json([ 'status' => 'success', 'data' => $user, 'message' => __('members.success-create') ]);
+            return response()->json([ 'status' => 'success', 'data' => (new UserResource($user)), 'message' => __('members.success-create') ]);
         } catch (Exception $e) {
             DB::rollback();
 

@@ -50,6 +50,9 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        if ($exception instanceof \Illuminate\Validation\ValidationException)
+            return $this->handleValidationError($request, $exception);
+        // dd($exception);
         return response()->json([
             'status'    => 'error', 
             'message'   => $exception->getMessage(), 
@@ -58,5 +61,22 @@ class Handler extends ExceptionHandler
             'trace'     => $exception->getTraceAsString(), 'code' => 500,
         ], 500);
         // return parent::render($request, $exception);
+    }
+
+    /**
+     * Handle validation exception
+     * 
+     * @author Davi Souto
+     * @since 05/08/2020
+     */
+    public function handleValidationError($request, \Illuminate\Validation\ValidationException $exception)
+    {
+        $errors = $exception->validator->errors();
+        $status = $exception->status;
+
+        return response()->json([
+            'status'    => 'error', 
+            'message'   => $errors->first(), 
+        ], 200);
     }
 }

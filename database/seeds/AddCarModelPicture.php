@@ -53,7 +53,7 @@ class AddCarModelPicture extends Seeder
         {
             $car_brand_name = strtolower(preg_replace("#[^0-9A-Z]#is", "_", $car_model['car_brand']['name']));
             $car_model_name = strtolower(preg_replace("#[^0-9A-Z]#is", "_", $car_model['name']));
-            $car_picture_filename = 'car_model/' . $car_brand_name . "_" . $car_model_name;
+            $car_picture_filename = 'car_models/' . $car_brand_name . "_" . $car_model_name;
             $exists = false;
 
             // echo $car_picture_filename . PHP_EOL;
@@ -70,11 +70,11 @@ class AddCarModelPicture extends Seeder
                 $car_model->picture = $car_picture_filename . ".jpg";
             }
 
-            if (Storage::disk('images')->exists($car_picture_filename . ".jpeg"))
-            {
-                $exists = "jpeg";
-                $car_model->picture = $car_picture_filename . ".jpeg";
-            }
+            // if (Storage::disk('images')->exists($car_picture_filename . ".jpeg"))
+            // {
+            //     $exists = "jpeg";
+            //     $car_model->picture = $car_picture_filename . ".jpeg";
+            // }
 
             if ($exists)
             {

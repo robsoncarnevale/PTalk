@@ -52,20 +52,12 @@ class Controller extends BaseController
         return false;
     }
 
-    /**
-     * Format validation
-     *
-     * {@inheritdoc}
-     * @author Davi Souto
-     * @since  08/06/2020
-     */
-    // protected function formatValidationErrors(Validator $validator)
-    // {
-    //     $errors = $validator->errors()->all();
-    //     $first_error = $errors[0];
-
-    //     return [ 'status' => 'error', 'message' => $first_error, 'data' => $errors, 'code' => '900' ];
-    // }
+    protected function validateClub($club_code, $attr_name)
+    {
+        \Illuminate\Support\Facades\Validator::make([ 'club_code' => $club_code ], [
+            'club_code' => new \App\Rules\ClubCodeValid($attr_name),
+        ])->validate();
+    }
 
     /**
      * Check if only users controller or ignore privileges and automatically check if

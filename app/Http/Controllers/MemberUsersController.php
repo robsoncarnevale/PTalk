@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Storage;
 
 use App\Models\User;
 use App\Models\Vehicle;
+use App\Http\Resources\User as UserResource;
+use App\Http\Resources\UserCollection;
 
 use DB;
 use Exception;
@@ -96,9 +98,17 @@ class MemberUsersController extends Controller
             ->orderBy('created_at')
             ->jsonPaginate(25, 3);
 
-        return response()->json([ 'status' => 'success', 'data' => $users ]);
+        return response()->json([ 'status' => 'success', 'data' => UserResource::collection($users) ]);
     }
 
+    /**
+     * Set member approval status
+     * 
+     * @author Davi Souto
+     * @since 04/08/2020
+     * @param int $user_id
+     * @param string $status
+     */
     public function SetApprovalStatus(Request $request, $user_id, $status)
     {
         if (! in_array($status, [ User::APPROVED_STATUS_APPROVAL, User::WAITING_STATUS_APPROVAL, User::REFUSED_STATUS_APPROVAL ]))
@@ -115,6 +125,6 @@ class MemberUsersController extends Controller
         $user->approval_status_date = date('Y-m-d H:i:s');
         $user->save();
 
-        return response()->json([ 'status' => 'success', 'data' => $user ]);
+        return response()->json([ 'status' => 'success', 'data' => UserResource::collection($user) ]);
     }
 }

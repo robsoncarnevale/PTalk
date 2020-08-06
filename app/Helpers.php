@@ -22,8 +22,11 @@
             if ($club_code = \App\Models\User::getMobileSession())
                 return $club_code->club_code;
 
-            if ($club_code = Auth::guard()->user()->only(['club_code']))
-                return $club_code['club_code'];
+            if (Auth::guard()->user())
+            {
+                if ($club_code = Auth::guard()->user()->only(['club_code']))
+                    return $club_code['club_code'];
+            }
 
             return false;
         }

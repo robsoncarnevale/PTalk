@@ -189,18 +189,24 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
-     * {@inheritdoc}
-     * Add field photo_url if has photo
-     *
+     * Upload user photo
+     * 
      * @author Davi Souto
-     * @since 09/06/2020
+     * @since 05/08/2020
      */
-    public function toArray()
+    public function upload($file)
     {
-        $values = parent::toArray();
-        $values = $this->add_photo_url($values);
-        
-        return $values;
+        $upload_photo = Storage::disk('images')->putFile(getClubCode().'/users', $file);
+
+        if ($upload_photo)
+        {
+            if (! empty($this->photo) && Storage::disk('images')->exists($this->photo))
+                Storage::disk('images')->delete($this->photo);
+            
+            $this->photo = $upload_photo;
+        }
+
+        return $this;
     }
 
     /**
@@ -209,24 +215,41 @@ class User extends Authenticatable implements JWTSubject
      *
      * @author Davi Souto
      * @since 09/06/2020
+     * @deprecated 05/08/2020
      */
-    public function only($keys)
-    {
-        $original_keys = $keys;
-
-        if (in_array('photo_url', $keys) && ! in_array('photo', $keys))
-            $keys[] = 'photo';
-
-        $values = parent::only($keys);
-
-        if (array_key_exists('photo', $values) && in_array('photo_url', $original_keys))
-            $values = $this->add_photo_url($values);
-
-        if (! in_array('photo', $original_keys) && array_key_exists('photo', $values))
-            unset($values['photo']);
+    // public function toArray()
+    // {
+    //     $values = parent::toArray();
+    //     $values = $this->add_photo_url($values);
         
-        return $values;
-    }
+    //     return $values;
+    // }
+
+    /**
+     * {@inheritdoc}
+     * Add field photo_url if has photo
+     *
+     * @author Davi Souto
+     * @since 09/06/2020
+     * @deprecated 05/08/2020
+     */
+    // public function only($keys)
+    // {
+    //     $original_keys = $keys;
+
+    //     if (in_array('photo_url', $keys) && ! in_array('photo', $keys))
+    //         $keys[] = 'photo';
+
+    //     $values = parent::only($keys);
+
+    //     if (array_key_exists('photo', $values) && in_array('photo_url', $original_keys))
+    //         $values = $this->add_photo_url($values);
+
+    //     if (! in_array('photo', $original_keys) && array_key_exists('photo', $values))
+    //         unset($values['photo']);
+        
+    //     return $values;
+    // }
 
     ///////////////////////
 
@@ -237,19 +260,25 @@ class User extends Authenticatable implements JWTSubject
      * @return array
      * @author Davi Souto
      * @since 09/06/2020
+     * @deprecated 05/08/2020
      */
-    private function add_photo_url($values)
-    {
-        if (! empty($values) && is_array($values) && isset($values['photo']))
-        {
-            $values['photo_url'] = false;
+    // private function add_photo_url($values)
+    // {
+    //     if (! empty($values) && is_array($values) && isset($values['photo']))
+    //     {
+    //         $values['photo_url'] = false;
 
-            if (! empty($values['photo']))
-                $values['photo_url'] = Storage::disk('images')->url($values['photo']);
-        }
+    //         if (! empty($values['photo']))
+    //         {
+    //             $values['photo_url'] = Storage::disk('images')->url($values['photo']);
+    //         } else 
+    //         {
+    //             $values['photo_url'] = Storage::disk('images')->url(getClubCode().'/teste.png');
+    //         }
+    //     }
 
-        return $values;
-    }
+    //     return $values;
+    // }
 
     /**
      * Get mobile auth
@@ -260,6 +289,17 @@ class User extends Authenticatable implements JWTSubject
     public static function getMobileSession()
     {
         return self::$mobile_auth;
+    }
+
+    public static function getAuthenticatedUserId()
+    {
+        if (self::$mobile_auth)
+            return self::$mobile_auth->id;
+
+        if (auth()->guard()->user())
+            return auth()->guard()->user()->id;
+
+        return false;
     }
 
     /**

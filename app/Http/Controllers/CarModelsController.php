@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 use App\Models\CarModel;
 use App\Models\CarBrand;
+use App\Http\Resources\CarModel as CarModelResource;
+use App\Http\Resources\CarModelCollection;
 
 /**
  * Car Models Controller
@@ -35,7 +37,7 @@ class CarModelsController extends Controller
             ->orderBy('name')
             ->get();
 
-        return response()->json([ 'status' => 'success', 'data' => $car_models ]);
+        return response()->json([ 'status' => 'success', 'data' => (new CarModelCollection($car_models)) ]);
     }
 
     /**
@@ -54,7 +56,7 @@ class CarModelsController extends Controller
         if (! $car_model)
             return response()->json([ 'status' => 'error', 'message' => __('car_models.not-found') ]);
 
-        return response()->json([ 'status' => 'success', 'data' => $car_model ]);
+        return response()->json([ 'status' => 'success', 'data' => (new CarModelResource($car_model)) ]);
     }
 
     /**
@@ -80,7 +82,7 @@ class CarModelsController extends Controller
             // $car_models[$i_car_brands]['car_models'] = collect($car_brands['car_models'])->sortBy('name');
         }
 
-        return response()->json([ 'status' => 'success', 'data' => $car_models ]);
+        return response()->json([ 'status' => 'success', 'data' => (new CarModelCollection($car_models)) ]);
     }
 
 }

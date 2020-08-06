@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 use App\Models\Vehicle;
 
+use App\Http\Resources\User as UserResource;
+use App\Http\Resources\UserCollection;
+
 use DB;
 use Exception;
 
@@ -69,7 +72,7 @@ class UsersController extends Controller
             ->orderBy('name')
             ->jsonPaginate($per_page, 3);
 
-        return response()->json([ 'status' => 'success', 'data' => $users ]);
+        return response()->json([ 'status' => 'success', 'data' => (new UserCollection($users)) ]);
     }
 
     public function ListAll(Request $request)
@@ -85,7 +88,7 @@ class UsersController extends Controller
             ->orderBy('name')
             ->jsonPaginate(25, 3);
 
-        return response()->json([ 'status' => 'success', 'data' => $users ]);
+        return response()->json([ 'status' => 'success', 'data' => (new UserCollection($users)) ]);
     }
 
     /**
@@ -134,30 +137,25 @@ class UsersController extends Controller
 
             // Photo upload
             if ($request->has('photo'))
-            {
-                $upload_photo = Storage::disk('images')->putFile('photos', $request->file('photo'));
-
-                if ($upload_photo)
-                    $user->photo = $upload_photo;
-            }
+                $user->upload($request->file('photo'));
 
             $user->save();
 
             // Create Vehicle
-            if ($request->has('vehicle'))
-            {
-                $vehicle = new Vehicle($request->get('vehicle'));
-                $vehicle->carplate = strtoupper($vehicle->carplate);
-                $vehicle->user_id = $user->id;
-                $vehicle->club_code = $user->club_code;
-                $vehicle->save();
+            // if ($request->has('vehicle'))
+            // {
+            //     $vehicle = new Vehicle($request->get('vehicle'));
+            //     $vehicle->carplate = strtoupper($vehicle->carplate);
+            //     $vehicle->user_id = $user->id;
+            //     $vehicle->club_code = $user->club_code;
+            //     $vehicle->save();
 
-                $user['vehicle'] = $vehicle;
-            }
+            //     $user['vehicle'] = $vehicle;
+            // }
 
             DB::commit();
 
-            return response()->json([ 'status' => 'success', 'data' => $user, 'message' => __(self::$type_name . '.success-create') ]);
+            return response()->json([ 'status' => 'success', 'data' => (new UserResource($user)), 'message' => __(self::$type_name . '.success-create') ]);
         } catch (Exception $e) {
             DB::rollback();
 
@@ -206,15 +204,8 @@ class UsersController extends Controller
                 $user->photo = null;
             } else if ($request->has('photo'))
             {
-                $upload_photo = Storage::disk('images')->putFile('photos', $request->file('photo'));
-
-                if ($upload_photo)
-                {
-                    if (! empty($user->photo) && Storage::disk('images')->exists($user->photo))
-                        Storage::disk('images')->delete($user->photo);
-
-                    $user->photo = $upload_photo;
-                }
+                if ($request->has('photo'))
+                    $user->upload($request->file('photo'));
             }
 
             $user->save();
@@ -229,7 +220,7 @@ class UsersController extends Controller
 
         $user->vehicles = $vehicles;
 
-        return response()->json([ 'status' => 'success', 'data' => $user, 'message' => __(self::$type_name . '.success-update') ]);
+        return response()->json([ 'status' => 'success', 'data' => (new UserResource($user)), 'message' => __(self::$type_name . '.success-update') ]);
     }
 
     /**
@@ -252,7 +243,7 @@ class UsersController extends Controller
         $user->deleted = true;
         $user->save();
 
-        return response()->json([ 'status' => 'success', 'data' => $user ]);
+        return response()->json([ 'status' => 'success', 'data' => (new UserResource($user)) ]);
     }
 
     /**
@@ -274,7 +265,7 @@ class UsersController extends Controller
         if (! $user)
             return response()->json([ 'status' => 'error', 'message' => __(self::$type_name . '.not-found') ]);
 
-        return response()->json([ 'status' => 'success', 'data' => $user ]);
+        return response()->json([ 'status' => 'success', 'data' => (new UserResource($user)) ]);
     }
 
     /**
@@ -309,6 +300,6 @@ class UsersController extends Controller
         if (! $user)
             return response()->json([ 'status' => 'error', 'message' => __('members.not-found') ]);
 
-        return response()->json([ 'status' => 'success', 'data' => $user ]);
+        return response()->json([ 'status' => 'success', 'data' => (new UserResource($user)) ]);
     }
 }

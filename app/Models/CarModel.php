@@ -32,14 +32,15 @@ class CarModel extends Model
      *
      * @author Davi Souto
      * @since 09/06/2020
+     * @deprecated 06/08/2020
      */
-    public function toArray()
-    {
-        $values = parent::toArray();
-        $values = $this->addPictureUrl($values);
+    // public function toArray()
+    // {
+    //     $values = parent::toArray();
+    //     $values = $this->addPictureUrl($values);
 
-        return $values;
-    }
+    //     return $values;
+    // }
 
     /**
      * Add field picture_url
@@ -48,17 +49,18 @@ class CarModel extends Model
      * @return array
      * @author Davi Souto
      * @since 23/06/2020
+     * @deprecated 06/08/2020
      */
-    private function addPictureUrl($values)
-    {
-        if (is_array($values) && array_key_exists('picture', $values))
-        {
-            $values['picture_url'] = false;
+    // private function addPictureUrl($values)
+    // {
+    //     if (is_array($values) && array_key_exists('picture', $values))
+    //     {
+    //         $values['picture_url'] = false;
 
-            if (! empty($values['picture']))
-                $values['picture_url'] = Storage::disk('images')->url($values['picture']);
-        }
+    //         if (! empty($values['picture']))
+    //             $values['picture_url'] = Storage::disk('images')->url($values['picture']);
+    //     }
 
-        return $values;
-    }
+    //     return $values;
+    // }
 }

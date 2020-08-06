@@ -68,10 +68,15 @@ Route::group([ 'middleware' => 'authorized' ], function(){
     // Vehicles
     Route::get('/vehicles', [ 'uses' => 'VehiclesController@List', 'as' => 'vehicles.list' ]);
     Route::get('/vehicles/{vehicle_id}', [ 'uses' => 'VehiclesController@Get', 'as' => 'vehicles.get' ])->where(['vehicle_id' => '[0-9]+']);
+    Route::put('/vehicles', [ 'uses' => 'VehiclesController@Create', 'as' => 'vehicles.create' ]);
+    Route::post('/vehicles/{vehicle}', [ 'uses' => 'VehiclesController@Update', 'as' => 'vehicles.update' ])->where(['vehicle_id' => '[0-9]+']);
+    Route::delete('/vehicles/{vehicle}', [ 'uses' => 'VehiclesController@Delete', 'as' => 'vehicles.delete' ])->where(['vehicle_id' => '[0-9]+']);
+    // My vehicles
     Route::get('/vehicles/my', [ 'uses' => 'VehiclesController@ListMyVehicles', 'as' => 'vehicles.my-vehicles.list' ]);
     Route::get('/vehicles/my/{vehicle_id}', [ 'uses' => 'VehiclesController@GetMyVehicle', 'as' => 'vehicles.my-vehicles.get' ])->where(['vehicle_id' => '[0-9]+']);
-    Route::get('/vehicles/my/create', [ 'uses' => 'VehiclesController@CreateMyVehicle', 'as' => 'vehicles.my-vehicles.create' ]);
-    Route::get('/vehicles/my/update/{vehicle_id}', [ 'uses' => 'VehiclesController@UpdateMyVehicle', 'as' => 'vehicles.my-vehicles.update' ])->where(['vehicle_id' => '[0-9]+']);
+    Route::put('/vehicles/my', [ 'uses' => 'VehiclesController@CreateMyVehicle', 'as' => 'vehicles.my-vehicles.create' ]);
+    Route::post('/vehicles/my/{vehicle}', [ 'uses' => 'VehiclesController@UpdateMyVehicle', 'as' => 'vehicles.my-vehicles.update' ])->where(['vehicle_id' => '[0-9]+']);
+    Route::delete('/vehicles/my/{vehicle}', [ 'uses' => 'VehiclesController@Delete', 'as' => 'vehicles.my-vehicles.delete' ])->where(['vehicle_id' => '[0-9]+']);
 
 
     // Status
@@ -98,6 +103,16 @@ Route::prefix('mobile')->group(function(){
         // Car Colors
         Route::get('/cars/colors', [ 'uses' => 'Mobile\CarColorsController@List', 'as' => 'mobile.car.colors.list' ]);
         Route::get('/cars/colors/{car_color_id}', [ 'uses' => 'Mobile\CarColorsController@Get', 'as' => 'mobile.car.colors.get' ])->where(['car_color_id' => '[0-9]+']);
+
+        // Vehicles
+        Route::get('/vehicles', [ 'uses' => 'Mobile\VehiclesController@List', 'as' => 'mobile.vehicles.list' ]);
+        Route::get('/vehicles/{vehicle_id}', [ 'uses' => 'Mobile\VehiclesController@Get', 'as' => 'mobile.vehicles.get' ])->where(['vehicle_id' => '[0-9]+']);
+        // My vehicles
+        Route::get('/vehicles/my', [ 'uses' => 'Mobile\VehiclesController@ListMyVehicles', 'as' => 'mobile.vehicles.my-vehicles.list' ]);
+        Route::get('/vehicles/my/{vehicle_id}', [ 'uses' => 'Mobile\VehiclesController@GetMyVehicle', 'as' => 'mobile.vehicles.my-vehicles.get' ])->where(['vehicle_id' => '[0-9]+']);
+        Route::put('/vehicles/my', [ 'uses' => 'Mobile\VehiclesController@CreateMyVehicle', 'as' => 'mobile.vehicles.my-vehicles.create' ]);
+        Route::post('/vehicles/my/{vehicle}', [ 'uses' => 'Mobile\VehiclesController@UpdateMyVehicle', 'as' => 'mobile.vehicles.my-vehicles.update' ])->where(['vehicle_id' => '[0-9]+']);
+        Route::delete('/vehicles/my/{vehicle}', [ 'uses' => 'Mobile\VehiclesController@Delete', 'as' => 'mobile.vehicles.my-vehicles.delete' ])->where(['vehicle_id' => '[0-9]+']);
 
         Route::post('/members/refer', [ 'uses' => 'Mobile\MembersController@CreateFromReference', 'as' => 'mobile.members.refer' ]);
     });

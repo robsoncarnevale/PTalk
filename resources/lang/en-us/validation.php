@@ -146,6 +146,15 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'user' => 'user',
+        'user_id' => 'user',
+        'vehicle_id' => 'vehicle',
+        'vehicle' => 'vehicle',
+        'car_model_id' => 'model',
+        'car_model' => 'model',
+        'privilege' => 'privilege',
+        'privilege_id' => 'privilege',
+    ],
 
 ];

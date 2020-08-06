@@ -72,11 +72,14 @@ class CreatePrivileges extends Seeder
 
             [ 'action' => 'vehicles.list',                      'name' => 'List Vehicles', 'description' => '', 'add_member' => true ], 
             [ 'action' => 'vehicles.get',                       'name' => 'Get Vehicle', 'description' => '', 'add_member' => true ], 
+            [ 'action' => 'vehicles.create',                    'name' => 'Create Vehicle', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'vehicles.update',                    'name' => 'Update Vehicle', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'vehicles.delete',                    'name' => 'Delete Vehicle', 'description' => '', 'add_member' => false ],
             [ 'action' => 'vehicles.my-vehicles.list',          'name' => 'List My Vehicles', 'description' => '', 'add_member' => true ], 
             [ 'action' => 'vehicles.my-vehicles.get',           'name' => 'Get My Vehicle', 'description' => '', 'add_member' => true ], 
             [ 'action' => 'vehicles.my-vehicles.create',        'name' => 'Create My Vehicle', 'description' => '', 'add_member' => true ], 
             [ 'action' => 'vehicles.my-vehicles.update',        'name' => 'Update My Vehicle', 'description' => '', 'add_member' => true ], 
-
+            [ 'action' => 'vehicles.my-vehicles.delete',        'name' => 'Delete My Vehicle', 'description' => '', 'add_member' => false ],
 
 
             [ 'action' => 'club.status',                        'name' => 'Read club status', 'description' => '', 'add_member' => true ],
