@@ -93,7 +93,7 @@ class AuthController extends Controller
         if (! $user->testAccessCode($code) && ! $debug)
             return response()->json(['message' => 'Invalid or expired code', 'status' => 'error' ], 401);
 
-        $session = $user->only(['id', 'name', 'email', 'type', 'photo_url', 'privilege_id', 'company']);
+        $session = $user->only(['id', 'name', 'email', 'type', 'photo', 'photo_url', 'privilege_id', 'company']);
 
         $explode_name = explode(" ", $session['name']);
 

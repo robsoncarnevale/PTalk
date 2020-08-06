@@ -36,7 +36,7 @@ class AuthController extends Controller
             // AuthTokens::createToken($token);
             $session = $this->guard()
                 ->user()
-                ->only(['id', 'name', 'email', 'type', 'photo_url', 'privilege_id']);
+                ->only(['id', 'name', 'email', 'type', 'photo', 'photo_url', 'privilege_id']);
 
             $session['first_name'] = explode(" ", $session['name'])[0];
             $session['privileges'] = HasPrivilege::select('privilege_action')
