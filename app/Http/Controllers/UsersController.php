@@ -102,7 +102,7 @@ class UsersController extends Controller
         if ($validator = self::validate($request, [
             'document_cpf'  =>  'required|size:11',
             'name'  =>  'required',
-            'cell_phone'  =>  'required|min:8|max:11',
+            'phone'  =>  'required|min:8|max:11',
             'email'  =>  'required|email',
             'privilege_id'  =>  'required|integer',
         ])) return $validator;
@@ -117,7 +117,7 @@ class UsersController extends Controller
 
             $user->document_cpf = preg_replace("#[^0-9]*#is", "", $request->get('document_cpf'));
             $user->name = $request->get('name');
-            $user->cell_phone = preg_replace("#[^0-9]*#is", "", $request->get('cell_phone'));
+            $user->phone = preg_replace("#[^0-9]*#is", "", $request->get('phone'));
             $user->email = $request->get('email');
             $user->type = $type;
 
@@ -186,10 +186,9 @@ class UsersController extends Controller
             if ($request->has('privilege_id')) $user->privilege_id = $request->get('privilege_id');
             if ($request->has('document_cpf')) $user->document_cpf = preg_replace("#[^0-9]*#is", "", $request->get('document_cpf'));
             if ($request->has('name')) $user->name = $request->get('name');
-            if ($request->has('cell_phone')) $user->cell_phone = preg_replace("#[^0-9]*#is", "", $request->get('cell_phone'));
+            if ($request->has('phone')) $user->phone = preg_replace("#[^0-9]*#is", "", $request->get('phone'));
             if ($request->has('email')) $user->email = $request->get('email');
             if ($request->has('document_rg')) $user->document_rg = $request->get('document_rg');
-            if ($request->has('phone')) $user->phone = preg_replace("#[^0-9]*#is", "", $request->get('phone'));
             if ($request->has('home_address')) $user->home_address = $request->get('home_address');
             if ($request->has('comercial_address')) $user->comercial_address = $request->get('comercial_address');
             if ($request->has('company')) $user->company = $request->get('company');
@@ -254,7 +253,7 @@ class UsersController extends Controller
      */
     private static function Get(Request $request, $user_id, $type = 'members')
     {
-        $user = User::select('id', 'name', 'email', 'privilege_id', 'photo', 'document_cpf', 'document_rg', 'cell_phone', 'phone', 'home_address', 'comercial_address', 'company', 'company_activities', 'created_at', 'updated_at', 'active')
+        $user = User::select('id', 'name', 'email', 'privilege_id', 'photo', 'document_cpf', 'document_rg', 'phone', 'home_address', 'comercial_address', 'company', 'company_activities', 'created_at', 'updated_at', 'active')
             ->with('vehicles', 'vehicles.car_model:id,name,car_brand_id,picture', 'vehicles.car_model.car_brand:id,name', 'vehicles.car_color:id,name')
             ->where('id', $user_id)
             ->where('club_code', getClubCode())

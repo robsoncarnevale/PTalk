@@ -54,7 +54,7 @@ class MembersController extends Controller
 
         $user->fill($request->all());
         $user->document_cpf = preg_replace("#[^0-9]*#is", "", $user->document_cpf);
-        $user->cell_phone = preg_replace("#[^0-9]*#is", "", $user->phone);
+        $user->phone = preg_replace("#[^0-9]*#is", "", $user->phone);
         
         if ($request->has('photo'))
             $user->upload($request->file('photo'));
@@ -98,7 +98,6 @@ class MembersController extends Controller
             $user->document_cpf = preg_replace("#[^0-9]*#is", "", $request->get('document_cpf'));
             $user->name = $request->get('name');
             $user->phone = $phone;
-            $user->cell_phone = preg_replace("#[^0-9]*#is", "", $request->get('cell_phone'));
             $user->email = $request->has('email') ? $request->get('email') : null;
             $user->type = User::TYPE_MEMBER;
             $user->active = true;

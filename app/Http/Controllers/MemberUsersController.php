@@ -88,7 +88,7 @@ class MemberUsersController extends Controller
      */
     public function WaitingApproval(Request $request)
     {
-        $users = User::select('id', 'name', 'email', 'privilege_id', 'document_cpf', 'document_rg', 'cell_phone', 'company', 'created_at', 'updated_at')
+        $users = User::select('id', 'name', 'email', 'privilege_id', 'document_cpf', 'document_rg', 'phone', 'company', 'created_at', 'updated_at')
             // ->with('privilege_group')
             ->with('privilege_group:id,name')
             ->where('club_code', getClubCode())
