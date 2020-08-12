@@ -29,8 +29,8 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'users.members.view-all',             'name' => 'List all members and administrators', 'description' => '', 'add_member' => true ], 
             [ 'action' => 'users.members.waiting-approval',     'name' => 'List Members Waiting Approval', 'description' => '', 'add_member' => false ],
             
-            [ 'action' => 'vehicles.list',                      'name' => 'List Vehicles', 'description' => '', 'add_member' => true ], 
-            [ 'action' => 'vehicles.get',                       'name' => 'Get Vehicle', 'description' => '', 'add_member' => true ], 
+            [ 'action' => 'vehicles.list',                      'name' => 'List Vehicles', 'description' => '', 'add_member' => false ], 
+            [ 'action' => 'vehicles.get',                       'name' => 'Get Vehicle', 'description' => '', 'add_member' => false ], 
         ],
         'api'   =>  [
             // Tests
@@ -49,7 +49,7 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'users.administrators.update',        'name' => 'Update Administrator', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.administrators.delete',        'name' => 'Delete Administrator', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.members.list',                 'name' => 'List Members', 'description' => '', 'add_member' => false ],
-            [ 'action' => 'users.members.get',                  'name' => 'Read Member', 'description' => '', 'add_member' => true ],
+            [ 'action' => 'users.members.get',                  'name' => 'Read Member', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.members.create',               'name' => 'Create Member', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.members.update',               'name' => 'Update Member', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.members.delete',               'name' => 'Delete Member', 'description' => '', 'add_member' => false ],
