@@ -17,7 +17,7 @@ class CreatePrivileges extends Seeder
             // 'auth.login', 
             // 'auth.login.post', 
             // 'dashboard.home', 
-            [ 'action' => 'users.profile.view',                 'name' => 'View My User Profile', 'description' => '', 'add_member' => true ],
+            [ 'action' => 'users.profile.view',                 'name' => 'View My User Profile', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.administrators.list',          'name' => 'List Administrators', 'description' => '', 'add_member' => false ], 
             [ 'action' => 'users.administrators.create',        'name' => 'Create Administrator', 'description' => '', 'add_member' => false ], 
             [ 'action' => 'users.administrators.update',        'name' => 'Update Administrator', 'description' => '', 'add_member' => false ], 
@@ -26,7 +26,7 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'users.members.create',               'name' => 'Create Member', 'description' => '', 'add_member' => false ], 
             [ 'action' => 'users.members.update',               'name' => 'Update Member', 'description' => '', 'add_member' => false ], 
             [ 'action' => 'users.members.delete',               'name' => 'Delete Member', 'description' => '', 'add_member' => false ], 
-            [ 'action' => 'users.members.view-all',             'name' => 'List all members and administrators', 'description' => '', 'add_member' => true ], 
+            [ 'action' => 'users.members.view-all',             'name' => 'List all members and administrators', 'description' => '', 'add_member' => false ], 
             [ 'action' => 'users.members.waiting-approval',     'name' => 'List Members Waiting Approval', 'description' => '', 'add_member' => false ],
             
             [ 'action' => 'vehicles.list',                      'name' => 'List Vehicles', 'description' => '', 'add_member' => false ], 
@@ -42,7 +42,7 @@ class CreatePrivileges extends Seeder
             // 'auth.logout',
 
             [ 'action' => 'users.me',                           'name' => 'View My User Profile', 'description' => '', 'add_member' => true ],
-            [ 'action' => 'users.profile.view',                 'name' => 'View User Profile', 'description' => '', 'add_member' => true ],
+            [ 'action' => 'users.profile.view',                 'name' => 'View User Profile', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.administrators.list',          'name' => 'List Administrators', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.administrators.get',           'name' => 'Read Administrator', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.administrators.create',        'name' => 'Create Administrator', 'description' => '', 'add_member' => false ],
@@ -53,7 +53,7 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'users.members.create',               'name' => 'Create Member', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.members.update',               'name' => 'Update Member', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.members.delete',               'name' => 'Delete Member', 'description' => '', 'add_member' => false ],
-            [ 'action' => 'users.members.view-all',             'name' => 'List all members and administrators', 'description' => '', 'add_member' => true ], 
+            [ 'action' => 'users.members.view-all',             'name' => 'List all members and administrators', 'description' => '', 'add_member' => false ], 
             [ 'action' => 'users.members.waiting-approval',     'name' => 'List Members Waiting Approval', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.members.approval-status.set',  'name' => 'Set Member Approval Status', 'description' => '', 'add_member' => false ],
 
