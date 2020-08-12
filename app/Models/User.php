@@ -111,6 +111,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany('App\Models\Vehicle');
     }
 
+    public function club()
+    {
+        return $this->belongsTo(Club::class, 'club_code', 'code');
+    }
+
     ///////////////////////
 
     /**

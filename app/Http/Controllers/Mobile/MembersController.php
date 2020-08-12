@@ -129,6 +129,9 @@ class MembersController extends Controller
 
             DB::commit();
 
+            $sms = new \App\Http\Services\SmsService('aws_sns');
+            $sms->send(55, $phone, 'Você foi indicado para fazer parte do ' . $user->club->name . '! Complete sua solicitação baixando o app [link-do-app]');
+
             return response()->json([ 'status' => 'success', 'data' => (new UserResource($user)), 'message' => __('members.success-create') ]);
         } catch (Exception $e) {
             DB::rollback();

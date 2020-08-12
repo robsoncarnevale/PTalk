@@ -31,6 +31,7 @@ class AuthController extends Controller
             return response()->json(['message' => 'Invalid phone', 'status' => 'error' ], 404);
 
         $user = User::select()
+            ->with('club:code,name')
             ->where('active', true)
             ->where('deleted', false)
             ->where('phone', $phone)
@@ -44,25 +45,8 @@ class AuthController extends Controller
         $user = $user->generateNewAccessCode();
         $user->save();
 
-        $client = new \Aws\Sns\SnsClient([
-            'version' => '2010-03-31',
-            'region' => 'us-east-1',
-            'credentials' => new \Aws\Credentials\Credentials(
-                env('AWS_ACCESS_KEY_ID'),
-                env('AWS_SECRET_ACCESS_KEY')
-            )
-        ]);
-
-        // $client->SetSMSAttributes([
-        //     'attributes' => [
-        //         'DefaultSMSType' => 'Transactional',
-        //     ],
-        // ]);
-
-        $client->publish([
-            'Message' => 'Seu código de acesso ao Porsche Talk: ' . $user->getAccessCode(),
-            'PhoneNumber' => '+55' . $phone,
-        ]);
+        $sms = new \App\Http\Services\SmsService('aws_sns');
+        $sms->send(55, $phone, 'Seu código de acesso ao ' . $user->club->name . ': ' . $user->getAccessCode());
 
         return response()->json(['message' => 'Your code has been sent', 'status' => 'success'], 200);
     }
