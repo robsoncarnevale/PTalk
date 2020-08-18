@@ -29,7 +29,7 @@ class AuthController extends Controller
         $phone = preg_replace('#[^0-9]#is', '', $request->get('phone'));
 
         if (empty($phone))
-            return response()->json(['message' => 'Invalid phone', 'status' => 'error' ], 404);
+            return response()->json(['message' => __('auth.phone-invalid'), 'status' => 'error', 'code' => 'phone.invalid' ], 404);
 
         $user = User::select()
             ->with('club:code,name,primary_color,contact_mail')
@@ -41,7 +41,7 @@ class AuthController extends Controller
             ->first();
 
         if (! $user)
-            return response()->json(['message' => 'User not found', 'status' => 'error' ], 404);
+            return response()->json(['message' => __('auth.user-not-found'), 'status' => 'error', 'code' => 'user.not-found' ], 404);
 
         $user = $user->generateNewAccessCode();
         $user->save();
@@ -49,7 +49,7 @@ class AuthController extends Controller
         $sms = new \App\Http\Services\SmsService('aws_sns');
         $sms->send(55, $phone, 'Seu código de acesso ao ' . $user->club->name . ': ' . $user->getAccessCode());
 
-        return response()->json(['message' => 'Your code has been sent', 'status' => 'success'], 200);
+        return response()->json(['message' => __('auth.code-sent'), 'status' => 'success'], 200);
     }
 
     /**
@@ -63,7 +63,7 @@ class AuthController extends Controller
         $debug = (in_array(env('APP_ENV'), ['local', 'homolog', 'staging']) && $request->get('debug'));
 
         if (empty($phone))
-            return response()->json(['message' => 'Invalid phone', 'status' => 'error' ], 404);
+            return response()->json(['message' => __('auth.phone-invalid'), 'status' => 'error', 'code' => 'phone.invalid' ], 404);
 
         $user = User::select()
             ->where('active', true)
@@ -73,10 +73,10 @@ class AuthController extends Controller
             ->first();
 
         if (! $user)
-            return response()->json(['message' => 'User not found', 'status' => 'error' ], 404);
+            return response()->json(['message' => __('auth.user-not-found'), 'status' => 'error', 'code' => 'user.not-found' ], 404);
 
         if (! $user->testAccessCode($code) && ! $debug)
-            return response()->json(['message' => 'Invalid or expired code', 'status' => 'error' ], 401);
+            return response()->json(['message' => __('auth.code-invalid'), 'status' => 'error', 'code' => 'code.invalid' ], 401);
 
         $session = $user->only(['id', 'name', 'email', 'type', 'photo', 'photo_url', 'privilege_id', 'company']);
 
