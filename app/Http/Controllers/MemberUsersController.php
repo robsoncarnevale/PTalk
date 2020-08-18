@@ -115,6 +115,7 @@ class MemberUsersController extends Controller
             return response()->json([ 'status' => 'error', 'message' => __('members.error.status-unavailable') ]);
 
         $user = User::select()
+            ->with('club:code,name,primary_color,contact_mail')
             ->where('id', $user_id)
             ->where('club_code', getClubCode())
             ->where('deleted', false)
@@ -124,6 +125,17 @@ class MemberUsersController extends Controller
         $user->approval_status = $status;
         $user->approval_status_date = date('Y-m-d H:i:s');
         $user->save();
+
+        // Send register mail
+        if ($user->approval_status == User::APPROVED_STATUS_APPROVAL && ! empty($user->email))
+        {
+            try
+            {
+                Mail::to($user->email)
+                    ->send(new \App\Mail\RegisterMail($user));
+            } catch(\Exception $e) {
+            }
+        }
 
         return response()->json([ 'status' => 'success', 'data' => UserResource::collection($user) ]);
     }

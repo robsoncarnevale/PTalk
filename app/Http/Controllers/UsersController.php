@@ -155,6 +155,14 @@ class UsersController extends Controller
 
             DB::commit();
 
+            try
+            {
+                Mail::to($user->email)
+                    ->send(new \App\Mail\RegisterMail($user));
+            } catch(\Exception $e) {
+
+            }
+
             return response()->json([ 'status' => 'success', 'data' => (new UserResource($user)), 'message' => __(self::$type_name . '.success-create') ]);
         } catch (Exception $e) {
             DB::rollback();

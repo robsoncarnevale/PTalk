@@ -23,6 +23,8 @@ class CreateClub extends Seeder
 
         $club->name = 'Porsche Talk';
         $club->code = 'porsche_talk';
+        $club->primary_color = '#E63D39';
+        $club->contact_mail = 'contact@porschetalk.com.br';
 
         $club->save();
     }

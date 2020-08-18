@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Mobile;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 use App\Models\User;
 use App\Http\Resources\User as UserResource;
@@ -31,7 +32,7 @@ class AuthController extends Controller
             return response()->json(['message' => 'Invalid phone', 'status' => 'error' ], 404);
 
         $user = User::select()
-            ->with('club:code,name')
+            ->with('club:code,name,primary_color,contact_mail')
             ->where('active', true)
             ->where('deleted', false)
             ->where('phone', $phone)
