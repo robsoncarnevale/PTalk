@@ -29,6 +29,7 @@ class CarModel extends JsonResource
         // return $resource;
 
         return [
+            'id' => $this->id,
             'name' => $this->name,
             'picture' => $this->picture,
             'picture_url' => CarModelPicture::get($this->picture),
