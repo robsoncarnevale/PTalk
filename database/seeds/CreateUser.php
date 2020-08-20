@@ -21,7 +21,7 @@ class CreateUser extends Seeder
      *
      * @return void
      */
-    public function run($type = )
+    public function run()
     {
         $user = new User();
 

@@ -42,6 +42,9 @@ class DatabaseSeeder extends Seeder
         $this->createPrivileges();
         $this->addPrivilegesAdmin();
         $this->addPrivilegesMember();
+
+        // Create members classes
+        $this->createMembersClases();
     }
 
     ////////////////////////////////////////
@@ -235,5 +238,18 @@ class DatabaseSeeder extends Seeder
     private function addPrivilegesMember()
     {
         return $this->call(AddPrivilegesMember::class);
+    }
+
+    /////////////////////////
+
+     /**
+     * Create default car brand
+     *
+     * @author Davi Souto
+     * @since 15/06/2020
+     */
+    private function createMembersClases()
+    {
+        return $this->call(MembersClassesSeeder::class);
     }
 }
