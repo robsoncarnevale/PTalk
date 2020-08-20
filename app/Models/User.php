@@ -21,6 +21,12 @@ class User extends Authenticatable implements JWTSubject
     const WAITING_STATUS_APPROVAL = 'waiting';
     const REFUSED_STATUS_APPROVAL = 'refused';
 
+    const ACTIVE_STATUS = 'active'; // User is active
+    const INACTIVE_STATUS = 'inactive'; // User is inactive and not appears on lists
+    const SUSPENDED_STATUS = 'suspended'; // User is suspended for a defined time
+    const BLOCKED_STATUS = 'blocked'; // User is blocked for undefined time
+    const BANNED_STATUS = 'banned'; // User is permanently banned
+
     /**
      * The attributes that are mass assignable.
      *
@@ -212,6 +218,44 @@ class User extends Authenticatable implements JWTSubject
         }
 
         return $this;
+    }
+
+    /**
+     * Save the actual status to history
+     * 
+     * @author Davi Souto
+     * @since 19/08/2020
+     */
+    public function saveStatusHistory()
+    {
+        $last_status = \App\Models\UserStatusHistory::select()
+            ->where('user_id', $this->id)
+            ->orderBy('created_at', 'DESC')
+            ->first();
+
+        // Verify if status has changed
+        if ($last_status && $last_status->status == $this->status)
+        {
+            $last_status->suspended_time = $this->suspended_time;
+            $last_status->reason = $this->status_reason;
+            
+            $last_status->save();
+
+            return $last_status;
+        }
+        
+        $status_history = new \App\Models\UserStatusHistory();
+        $status_history->club_code = $this->club_code;
+        $status_history->user_id = $this->id;
+        $status_history->status = $this->status;
+        $status_history->reason = $this->status_reason;
+
+        if ($this->status == User::SUSPENDED_STATUS)
+            $status_history->suspended_time = $this->suspended_time;
+
+        $status_history->save();
+
+        return $status_history;
     }
 
     /**

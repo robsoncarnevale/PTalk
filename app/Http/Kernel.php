@@ -56,6 +56,8 @@ class Kernel extends HttpKernel
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'authorized' => \App\Http\Middleware\Authorized::class,
         'authorized.mobile' => \App\Http\Middleware\AuthorizedMobile::class,
+        'check.user-status' => \App\Http\Middleware\CheckUserStatus::class,
+        'check.user-status.mobile' => \App\Http\Middleware\CheckUserStatusMobile::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,

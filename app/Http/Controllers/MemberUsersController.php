@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
 
 use App\Models\User;
 use App\Models\Vehicle;
@@ -88,7 +89,7 @@ class MemberUsersController extends Controller
      */
     public function WaitingApproval(Request $request)
     {
-        $users = User::select('id', 'name', 'email', 'privilege_id', 'document_cpf', 'document_rg', 'phone', 'company', 'created_at', 'updated_at')
+        $users = User::select()
             // ->with('privilege_group')
             ->with('privilege_group:id,name')
             ->where('club_code', getClubCode())
@@ -137,6 +138,6 @@ class MemberUsersController extends Controller
             }
         }
 
-        return response()->json([ 'status' => 'success', 'data' => UserResource::collection($user) ]);
+        return response()->json([ 'status' => 'success', 'data' => (new UserResource($user)) ]);
     }
 }

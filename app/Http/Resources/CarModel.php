@@ -15,17 +15,26 @@ class CarModel extends JsonResource
      */
     public function toArray($request)
     {
-        $resource = parent::toArray($request);
+        // $resource = parent::toArray($request);
         
 
-        if (array_key_exists('picture', $resource))
-        {
-            $resource['picture_url'] = null;
+        // if (array_key_exists('picture', $resource))
+        // {
+        //     $resource['picture_url'] = null;
 
-            if (! empty($resource['picture']))
-                $resource['picture_url'] = Storage::disk('images')->url($resource['picture']);
-        }
+        //     if (! empty($resource['picture']))
+        //         $resource['picture_url'] = Storage::disk('images')->url($resource['picture']);
+        // }
 
-        return $resource;
+        // return $resource;
+
+        return [
+            'name' => $this->name,
+            'picture' => $this->picture,
+            'picture_url' => CarModelPicture::get($this->picture),
+            'car_brand' => new CarBrand($this->car_brand),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+        ];
     }
 }

@@ -82,7 +82,7 @@ class CarModelsController extends Controller
             // $car_models[$i_car_brands]['car_models'] = collect($car_brands['car_models'])->sortBy('name');
         }
 
-        return response()->json([ 'status' => 'success', 'data' => (new CarModelCollection($car_models)) ]);
+        return response()->json([ 'status' => 'success', 'data' => $car_models ]);
     }
 
 }

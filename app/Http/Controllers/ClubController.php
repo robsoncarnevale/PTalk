@@ -27,15 +27,17 @@ class ClubController extends Controller
     {
         $members_count = User::where('club_code', getClubCode())
             ->where('deleted', false)
-            ->where('active', true)
-            ->where('approval_status', 'approved')
+            ->where('status', '<>', User::INACTIVE_STATUS)
+            ->where('status', '<>', User::BANNED_STATUS)
+            ->where('approval_status', User::APPROVED_STATUS_APPROVAL)
             ->count();
 
         $vehicles_count = Vehicle::where('club_code', getClubCode())
             ->whereHas('user', function($q){
                 $q->where('deleted', false)
-                  ->where('active', true)
-                  ->where('approval_status', 'approved')
+                  ->where('status', '<>', User::INACTIVE_STATUS)
+                  ->where('status', '<>', User::BANNED_STATUS)
+                  ->where('approval_status', User::APPROVED_STATUS_APPROVAL)
                   ->where('club_code', getClubCode());
             })
             ->count();

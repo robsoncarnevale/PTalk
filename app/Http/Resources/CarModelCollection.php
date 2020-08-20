@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
+// use Illuminate\Http\Resources\Json\JsonResource;
 
 class CarModelCollection extends ResourceCollection
 {
@@ -14,13 +15,10 @@ class CarModelCollection extends ResourceCollection
      */
     public function toArray($request)
     {
-        $resource = parent::toArray($this->collection);
-
-        if (array_key_exists('data', $resource))
-        {
-            $resource['data'] = CarModel::collection($resource['data']);
-        } else return CarModel::collection($resource);
-
-        return $resource;
+        return $this->collection;
+        // return [
+        //     'data' => CarModel::collection($this['data']),
+        //     'paginator' => $this['paginator'],
+        // ];
     }
 }

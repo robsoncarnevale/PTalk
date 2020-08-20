@@ -23,4 +23,13 @@ return [
     'phone-invalid' => 'Invalid phone',
     'code-invalid' => 'Invalid or expired code',
     'user-not-found' => 'User not found',
+
+    'incorrect' => 'Email or password incorrect',
+
+    'suspended' => 'You are suspended until :until. Reason: :reason. Contact the team for more information.',
+    'blocked' => 'You are blocked for time indefinitely. Reason: :reason. Contact the team for more information.',
+    'banned' => 'Unfortunately you were banned from joining the club. Contact the team for more information.',
+
+    'waiting-approval'  =>  'Your request to join the club is in progress.',
+    'refused-approval'  =>  'Unfortunately you were not approved to participate in the club. Contact the team for more information.',
 ];

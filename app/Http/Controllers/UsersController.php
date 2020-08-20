@@ -6,10 +6,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
 
 use App\Models\User;
 use App\Models\Vehicle;
 
+use App\Http\Resources\Profile as ProfileResource;
 use App\Http\Resources\User as UserResource;
 use App\Http\Resources\UserCollection;
 
@@ -61,7 +63,7 @@ class UsersController extends Controller
      */
     private static function List(Request $request, $type = 'member', $per_page = 25)
     {
-        $users = User::select('id', 'name', 'email', 'photo', 'privilege_id', 'created_at', 'updated_at', 'active')
+        $users = User::select()
             // ->with('privilege_group')
             ->with('privilege_group:id,name')
             ->withCount('vehicles')
@@ -77,12 +79,13 @@ class UsersController extends Controller
 
     public function ListAll(Request $request)
     {
-        $users = User::select('id', 'name', 'photo', 'privilege_id', 'company', 'company_activities', 'created_at', 'updated_at')
+        $users = User::select()
             // ->with('privilege_group')
             ->with('privilege_group:id,name')
             ->where('club_code', getClubCode())
             ->where('deleted', false)
-            ->where('active', true)
+            ->where('status', '<>', User::INACTIVE_STATUS)
+            ->where('status', '<>', User::BANNED_STATUS)
             ->where('approval_status', 'approved')
             ->where('id', '<>', Auth::guard()->user()->id)
             ->orderBy('name')
@@ -126,7 +129,7 @@ class UsersController extends Controller
 
             $user->password = Hash::make('123456');
             $user->privilege_id = $request->get('privilege_id');
-            $user->active = true;
+            $user->status = User::ACTIVE_STATUS;
             
             if ($request->has('document_rg')) $user->document_rg = $request->get('document_rg');
             if ($request->has('phone')) $user->phone = preg_replace("#[^0-9]*#is", "", $request->get('phone'));
@@ -140,6 +143,7 @@ class UsersController extends Controller
                 $user->upload($request->file('photo'));
 
             $user->save();
+            $user->saveStatusHistory();
 
             // Create Vehicle
             // if ($request->has('vehicle'))
@@ -188,6 +192,8 @@ class UsersController extends Controller
 
         try
         {
+            DB::beginTransaction();
+
             if (! $user)
                 return response()->json([ 'status' => 'error', 'message' => 'User not found' ]);
 
@@ -201,6 +207,24 @@ class UsersController extends Controller
             if ($request->has('comercial_address')) $user->comercial_address = $request->get('comercial_address');
             if ($request->has('company')) $user->company = $request->get('company');
             if ($request->has('company_activities')) $user->company_activities = $request->get('company_activities');
+
+            if ($request->has('status'))
+            {
+                $user->status = $request->get('status');
+
+                if ($request->has('status_reason'))
+                    $user->status_reason = $request->get('status_reason');
+
+                if ($user->status == User::SUSPENDED_STATUS && $request->has('suspended_time'))
+                {
+                    $user->suspended_time = $request->get('suspended_time');
+                } else {
+                    $user->suspended_time = null;
+                }
+
+                if ($user->status == User::ACTIVE_STATUS)
+                    $user->status_reason = null;
+            }
 
             // Photo remove and upload
             if ($request->has('remove_photo') && $request->get('remove_photo') == 'true')
@@ -216,7 +240,12 @@ class UsersController extends Controller
             }
 
             $user->save();
+            $user->saveStatusHistory();
+
+            DB::commit();
         } catch(\Exception $e) {
+            DB::rollback();
+
             return response()->json([ 'status' => 'error', 'message' => __(self::$type_name . '.error-update', [ 'error' => $e->getMessage() ]) ]);
         }
 
@@ -261,7 +290,7 @@ class UsersController extends Controller
      */
     private static function Get(Request $request, $user_id, $type = 'members')
     {
-        $user = User::select('id', 'name', 'email', 'privilege_id', 'photo', 'document_cpf', 'document_rg', 'phone', 'home_address', 'comercial_address', 'company', 'company_activities', 'created_at', 'updated_at', 'active')
+        $user = User::select()
             ->with('vehicles', 'vehicles.car_model:id,name,car_brand_id,picture', 'vehicles.car_model.car_brand:id,name', 'vehicles.car_color:id,name')
             ->where('id', $user_id)
             ->where('club_code', getClubCode())
@@ -281,11 +310,14 @@ class UsersController extends Controller
      * @author Davi Souto
      * @since 23/05/2020
      */
-    private static function Me(Request $request)
+    public static function Me(Request $request)
     {
-        $user = Auth::guard()->user();
+        $user = User::select()
+            ->where('club_code', getClubCode())
+            ->where('id', Auth::guard()->user()->id)
+            ->first();
 
-        return response()->json([ 'status' => 'success', 'data' => $user  ]);
+        return response()->json([ 'status' => 'success', 'data' => (new UserResource($user))  ]);
     }
     
     /**
@@ -296,17 +328,19 @@ class UsersController extends Controller
      */
     public function ViewProfile(Request $request, $user_id)
     {
-        $user = User::select('id', 'name', 'privilege_id', 'photo', 'company', 'company_activities', 'created_at', 'updated_at', 'active', 'type')
+        $user = User::select()
+            ->with('vehicles')
             ->where('id', $user_id)
             ->where('club_code', getClubCode())
             ->where('deleted', false)
-            ->where('active', true)
-            ->where('approval_status', 'approved')
+            ->where('status', '<>', User::INACTIVE_STATUS)
+            ->where('status', '<>', User::BANNED_STATUS)
+            ->where('approval_status', User::APPROVED_STATUS_APPROVAL)
             ->first();
 
         if (! $user)
             return response()->json([ 'status' => 'error', 'message' => __('members.not-found') ]);
 
-        return response()->json([ 'status' => 'success', 'data' => (new UserResource($user)) ]);
+        return response()->json([ 'status' => 'success', 'data' => (new ProfileResource($user)) ]);
     }
 }

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 use App\Models\User;
-use App\Http\Resources\User as UserResource;
+use App\Http\Resources\SessionMobile as SessionMobileResource;
 // use App\Models\AuthTokens;
 // use App\Models\HasPrivilege;
 
@@ -33,7 +33,7 @@ class AuthController extends Controller
 
         $user = User::select()
             ->with('club:code,name,primary_color,contact_mail')
-            ->where('active', true)
+            ->where('status', '<>', User::INACTIVE_STATUS)
             ->where('deleted', false)
             ->where('phone', $phone)
             ->where('approval_status', User::APPROVED_STATUS_APPROVAL)
@@ -42,6 +42,40 @@ class AuthController extends Controller
 
         if (! $user)
             return response()->json(['message' => __('auth.user-not-found'), 'status' => 'error', 'code' => 'user.not-found' ], 404);
+
+        // User waiting approvation
+        if ($user->approval_status == User::WAITING_STATUS_APPROVAL)
+            return response()->json(['message' => __('auth.waiting-approval'), 'status' => 'error', 'code' => 'auth.waiting-approval' ]);
+
+        // Uses refused approvation
+        if ($user->approval_status == User::REFUSED_STATUS_APPROVAL)
+            return response()->json(['message' => __('auth.refused-approval'), 'status' => 'error', 'code' => 'auth.refused-approval' ]);
+
+        // Verify status
+        switch($user->status)
+        {
+            case User::SUSPENDED_STATUS:
+                if (strtotime(date('Y-m-d')) < strtotime($user->suspended_time))
+                {
+                    return response()->json([ 'status' => 'error', 'message' => __('auth.suspended', [ 'until' => date('d/m/Y', strtotime($user->suspended_time)), 'reason' => $user->status_reason ]), 'code' => 'auth.suspended' ]);
+                } else
+                {
+                    $user->status = User::ACTIVE_STATUS;
+                    $user->suspended_time = null;
+                    $user->status_reason = null;
+
+                    $user->save();
+                    $user->saveStatusHistory();
+                }
+            break;
+            
+            case User::BLOCKED_STATUS:
+                return response()->json([ 'status' => 'error', 'message' => __('auth.blocked', [ 'reason' => $user->status_reason ]), 'code' => 'auth.blocked' ]);
+
+            case User::BANNED_STATUS:
+                return response()->json([ 'status' => 'error', 'message' => __('auth.banned', [ 'reason' => $user->status_reason ]), 'code' => 'auth.banned' ]);
+        }
+
 
         $user = $user->generateNewAccessCode();
         $user->save();
@@ -66,7 +100,8 @@ class AuthController extends Controller
             return response()->json(['message' => __('auth.phone-invalid'), 'status' => 'error', 'code' => 'phone.invalid' ], 404);
 
         $user = User::select()
-            ->where('active', true)
+            ->where('status', '<>', User::INACTIVE_STATUS)
+            ->where('approval_status', User::APPROVED_STATUS_APPROVAL)
             ->where('deleted', false)
             ->where('phone', $phone)
             ->where('club_code', $request->get('club_code'))
@@ -78,16 +113,8 @@ class AuthController extends Controller
         if (! $user->testAccessCode($code) && ! $debug)
             return response()->json(['message' => __('auth.code-invalid'), 'status' => 'error', 'code' => 'code.invalid' ], 401);
 
-        $session = $user->only(['id', 'name', 'email', 'type', 'photo', 'photo_url', 'privilege_id', 'company']);
-
-        $explode_name = explode(" ", $session['name']);
-
-        $session['first_name'] = $explode_name[0];
-        $session['last_name'] =  (count($explode_name) > 1) ? end($explode_name) : '';
-        $session['vehicles_count'] = \App\Models\Vehicle::where('user_id', $session['id'])->count();
-        $session['events_count'] = 0;
-        $session['club_code'] = $request->get('club_code');
-
+        $session = new SessionMobileResource($user);
+        // dd($session->toArray);
         $header = base64url_encode(json_encode([ 'alg' => 'HS256', 'typ' => 'JWT' ]));
         $payload = base64url_encode(json_encode($session));
         $sign = base64url_encode(hash_hmac('sha256', $header . $payload, env('JWT_SECRET'), true));
@@ -107,7 +134,7 @@ class AuthController extends Controller
 
         return response()->json([
             'data' => [
-                'session' => (new UserResource($session)),
+                'session' => $session,
                 'access_token' => $token,
                 'token_type' => 'bearer',
                 // 'expires_in' => $expires_in,

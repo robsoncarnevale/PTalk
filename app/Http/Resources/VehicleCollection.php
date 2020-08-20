@@ -2,9 +2,10 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\ResourceCollection;
+// use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class VehicleCollection extends ResourceCollection
+class VehicleCollection extends JsonResource
 {
     /**
      * Transform the resource collection into an array.
@@ -13,14 +14,10 @@ class VehicleCollection extends ResourceCollection
      * @return array
      */
     public function toArray($request)
-    {
-        $resource = parent::toArray($this->collection);
-
-        if (array_key_exists('data', $resource))
-        {
-            $resource['data'] = Vehicle::collection($resource['data']);
-        } else return Vehicle::collection($resource);
-
-        return $resource;
+    {;
+        return [
+            'data' => Vehicle::collection($this['data']),
+            'paginator' => $this['paginator'],
+        ];
     }
 }

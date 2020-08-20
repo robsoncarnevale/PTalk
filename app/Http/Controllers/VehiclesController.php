@@ -34,10 +34,11 @@ class VehiclesController extends Controller
     public function List(Request $request, $page = 1)
     {
         $vehicles = Vehicle::select()
-            ->with('user:id,name,photo,type', 'car_model:id,name,car_brand_id,picture', 'car_model.car_brand:id,name', 'car_color:id,name')
+            ->with('user')
             ->whereHas('user', function($q){
                 $q->where('deleted', false)
-                  ->where('active', true)
+                  ->where('status', '<>', User::INACTIVE_STATUS)
+                  ->where('status', '<>', User::BANNED_STATUS)
                   ->where('approval_status', 'approved')
                   ->where('club_code', getClubCode())
                   ->where('id', '<>', User::getAuthenticatedUserId());
@@ -59,7 +60,8 @@ class VehiclesController extends Controller
             ->with('user:id,name,photo,type', 'car_model:id,name,car_brand_id,picture', 'car_color:id,name')
             ->whereHas('user', function($q){
                 $q->where('deleted', false)
-                  ->where('active', true)
+                  ->where('status', '<>', User::INACTIVE_STATUS)
+                  ->where('status', '<>', User::BANNED_STATUS)
                   ->where('approval_status', 'approved')
                   ->where('club_code', getClubCode());
             })
