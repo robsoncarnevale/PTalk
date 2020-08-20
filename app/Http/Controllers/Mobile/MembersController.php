@@ -100,7 +100,8 @@ class MembersController extends Controller
             $user->phone = $phone;
             $user->email = $request->has('email') ? $request->get('email') : null;
             $user->type = User::TYPE_MEMBER;
-            $user->active = true;
+            $user->status = User::ACTIVE_STATUS;
+            $user->approval_status = User::APPROVED_STATUS_APPROVAL;
             
             if ($request->has('document_rg')) $user->document_rg = $request->get('document_rg');
             if ($request->has('phone')) $user->phone = preg_replace("#[^0-9]*#is", "", $request->get('phone'));
