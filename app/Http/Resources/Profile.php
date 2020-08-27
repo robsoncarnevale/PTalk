@@ -14,12 +14,21 @@ class Profile extends JsonResource
      */
     public function toArray($request)
     {
+        $resource = parent::toArray($request);
+
+        $explode_name = explode(" ", $resource['name']);
+
+        $resource['first_name'] = $explode_name[0];
+        $resource['last_name'] =  (count($explode_name) > 1) ? end($explode_name) : '';
+
         return [
             'id' => $this->id,
             'name' => $this->name,
             'privilege_id' => $this->privilege_id,
             'photo' => $this->photo,
             'photo_url' => UserPhoto::get($this->photo),
+            'first_name' => $resource['first_name'],
+            'last_name' => $resource['last_name'],
             'company' => $this->company,
             'company_activities' => $this->company_activities,
             'created_at' => $this->created_at,

@@ -16,4 +16,30 @@ class Event extends Model
 
     const ACTIVE_STATUS = 'active';
     const INACTIVE_STATUS = 'inactive';
+
+    protected $fillable = [
+        'name',
+        'description',
+        'address',
+        'meeting_point',
+        'date',
+        'start_time',
+        'end_time',
+        'max_vehicles',
+        'max_participants',
+        'max_companions',
+        'status',
+    ];
+
+    protected $hidden = [
+        'club_code',
+    ];
+
+    /**
+     * Get the user
+     */
+    public function user()
+    {
+        return $this->hasOne('App\Models\User', 'id', 'created_by');
+    }
 }

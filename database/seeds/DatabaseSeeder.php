@@ -213,7 +213,7 @@ class DatabaseSeeder extends Seeder
      * @author Davi Souto
      * @since 15/06/2020
      */
-    private function createPrivileges()
+    public function createPrivileges()
     {
         return $this->call(CreatePrivileges::class);
     }
@@ -224,7 +224,7 @@ class DatabaseSeeder extends Seeder
      * @author Davi Souto
      * @since 16/06/2020
      */
-    private function addPrivilegesAdmin()
+    public function addPrivilegesAdmin()
     {
         return $this->call(AddPrivilegesAdmin::class);
     }
@@ -235,7 +235,7 @@ class DatabaseSeeder extends Seeder
      * @author Davi Souto
      * @since 16/06/2020
      */
-    private function addPrivilegesMember()
+    public function addPrivilegesMember()
     {
         return $this->call(AddPrivilegesMember::class);
     }
