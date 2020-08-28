@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Storage;
 
 class Event extends JsonResource
 {
-    private static $default_cover_picture = '/defaults/default-cover-picture.png';
+    private static $default_cover_picture = '/defaults/default-event-picture.png';
 
     /**
      * Transform the resource into an array.

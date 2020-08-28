@@ -10,6 +10,9 @@ use App\Models\User;
 use App\Http\Resources\Event as EventResource;
 use App\Http\Resources\EventCollection;
 
+use DB;
+use Exception;
+
 class EventsController extends Controller
 {
     protected $only_admin = false;
@@ -48,15 +51,25 @@ class EventsController extends Controller
      */
     public function Create(EventRequest $request)
     {
-        $event = new Event();
+        DB::beginTransaction();
 
-        $event->fill($request->all());
-        $event->club_code = getClubCode();
-        $event->created_by = User::getAuthenticatedUserId();
-        $event->status = Event::ACTIVE_STATUS;
-        $event->save();
+        try {
+            $event = new Event();
+    
+            $event->fill($request->all());
+            $event->club_code = getClubCode();
+            $event->created_by = User::getAuthenticatedUserId();
+            $event->status = Event::ACTIVE_STATUS;
+            $event->save();
 
-        return response()->json([ 'status' => 'success', 'data' => (new EventResource($event)) ]);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollback();
+
+            return response()->json([ 'status' => 'error', 'message' => __('events.error-create', [ 'error' => $e->getMessage() ]) ]);
+        }
+
+        return response()->json([ 'status' => 'success', 'data' => (new EventResource($event)), 'message' => __('events.success-create') ]);
     }
 
     /**
@@ -66,10 +79,20 @@ class EventsController extends Controller
      */
     public function Update(Event $event, EventRequest $request)
     {
-        $event->fill($request->all());
-        $event->save();
+        DB::beginTransaction();
 
-        return response()->json([ 'status' => 'success', 'data' => (new EventResource($event)) ]);
+        try {
+            $event->fill($request->all());
+            $event->save();
+
+            DB::commit();
+        } catch(Exception $e) {
+            DB::rollback();
+
+            return response()->json([ 'status' => 'error', 'message' => __('events.error-update', [ 'error' => $e->getMessage() ]) ]);
+        }
+
+        return response()->json([ 'status' => 'success', 'data' => (new EventResource($event)), 'message' => __('events.success-update') ]);
     }
 
     /**
