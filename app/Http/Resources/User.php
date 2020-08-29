@@ -32,7 +32,10 @@ class User extends JsonResource
 
         $resource['first_name'] = $explode_name[0];
         $resource['last_name'] =  (count($explode_name) > 1) ? end($explode_name) : '';
-        $resource['photo_url'] = UserPhoto::get($resource['photo']);
+
+        if (array_key_exists('photo', $resource)) {
+            $resource['photo_url'] = UserPhoto::get($resource['photo']);
+        }
 
         return $resource;
 
