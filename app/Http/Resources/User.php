@@ -28,10 +28,12 @@ class User extends JsonResource
 
         $resource = parent::toArray($request);
 
-        $explode_name = explode(" ", $resource['name']);
-
-        $resource['first_name'] = $explode_name[0];
-        $resource['last_name'] =  (count($explode_name) > 1) ? end($explode_name) : '';
+        if (array_key_exists('name', $resource)) {
+            $explode_name = explode(" ", $resource['name']);
+    
+            $resource['first_name'] = $explode_name[0];
+            $resource['last_name'] =  (count($explode_name) > 1) ? end($explode_name) : '';
+        }
 
         if (array_key_exists('photo', $resource)) {
             $resource['photo_url'] = UserPhoto::get($resource['photo']);
