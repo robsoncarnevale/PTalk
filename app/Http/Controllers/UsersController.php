@@ -267,7 +267,7 @@ class UsersController extends Controller
      */
     private static function Delete(Request $request, $user_id, $type = 'member')
     {
-        $user = User::select('id', 'deleted')
+        $user = User::select()
             ->where('id', $user_id)
             ->where('club_code', getClubCode())
             ->where('type', $type)
