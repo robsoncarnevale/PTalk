@@ -28,8 +28,14 @@ class CarBrandsController extends Controller
      */
     function List(Request $request)
     {
+        $club_code = getClubCode();
+
+        if ($request->get('club_code')) {
+            $club_code = $request->get('club_code');
+        }
+
         $car_brands = CarBrand::select()
-            ->where('club_code', getClubCode())
+            ->where('club_code', $club_code)
             ->orderBy('name')
             ->get();
 
@@ -44,8 +50,14 @@ class CarBrandsController extends Controller
      */
     function Get(Request $request, $car_brand_id)
     {
+        $club_code = getClubCode();
+
+        if ($request->get('club_code')) {
+            $club_code = $request->get('club_code');
+        }
+
         $car_brand = CarBrand::select()
-            ->where('club_code', getClubCode())
+            ->where('club_code', $club_code)
             ->where('id', $car_brand_id)
             ->first();
         

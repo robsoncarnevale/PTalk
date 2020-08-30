@@ -32,8 +32,14 @@ class CarModelsController extends Controller
      */
     function List(Request $request)
     {
+        $club_code = getClubCode();
+
+        if ($request->get('club_code')) {
+            $club_code = $request->get('club_code');
+        }
+
         $car_models = CarModel::select()
-            ->where('club_code', getClubCode())
+            ->where('club_code', $club_code)
             ->orderBy('name')
             ->get();
 
@@ -48,8 +54,14 @@ class CarModelsController extends Controller
      */
     function Get(Request $request, $car_model_id)
     {
+        $club_code = getClubCode();
+
+        if ($request->get('club_code')) {
+            $club_code = $request->get('club_code');
+        }
+
         $car_model = CarModel::select()
-            ->where('club_code', getClubCode())
+            ->where('club_code', $club_code)
             ->where('id', $car_model_id)
             ->first();
         
@@ -67,8 +79,14 @@ class CarModelsController extends Controller
      */
     function ListAllModelsWithCarBrands(Request $request)
     {
+        $club_code = getClubCode();
+
+        if ($request->get('club_code')) {
+            $club_code = $request->get('club_code');
+        }
+
         $car_models = CarBrand::select('id', 'name')
-            ->where('club_code', getClubCode())
+            ->where('club_code', $club_code)
             ->with('car_models:id,name,car_brand_id')
             ->orderBy('name')
             ->get()

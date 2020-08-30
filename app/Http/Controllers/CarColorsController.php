@@ -28,8 +28,14 @@ class CarColorsController extends Controller
      */
     function List(Request $request)
     {
+        $club_code = getClubCode();
+
+        if ($request->get('club_code')) {
+            $club_code = $request->get('club_code');
+        }
+
         $car_colors = CarColor::select('id', 'name', 'value')
-            ->where('club_code', getClubCode())
+            ->where('club_code', $club_code)
             ->orderBy('name')
             ->get();
 
@@ -44,8 +50,14 @@ class CarColorsController extends Controller
      */
     function Get(Request $request, $car_color_id)
     {
+        $club_code = getClubCode();
+
+        if ($request->get('club_code')) {
+            $club_code = $request->get('club_code');
+        }
+
         $car_color = CarColor::select('id', 'name', 'value')
-            ->where('club_code', getClubCode())
+            ->where('club_code', $club_code)
             ->where('id', $car_color_id)
             ->first();
         
