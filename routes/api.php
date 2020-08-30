@@ -92,23 +92,24 @@ Route::group([ 'middleware' => 'authorized' ], function(){
 
 // Mobile routes
 Route::prefix('mobile')->group(function(){
+    // Access
     Route::post('/access/get-code', [ 'uses' => 'Mobile\AuthController@RequestAccessCode', 'as' => 'mobile.access.code.get' ]);
     Route::post('/access/authorize/{code}', [ 'uses' => 'Mobile\AuthController@AccessWithCode', 'as' => 'mobile.access.code.authorize' ]);
+
+    // Car Brands
+    Route::get('/cars/brands', [ 'uses' => 'Mobile\CarBrandsController@List', 'as' => 'mobile.car.brands.list' ]);
+    Route::get('/cars/brands/{car_brand_id}', [ 'uses' => 'Mobile\CarBrandsController@Get', 'as' => 'mobile.car.brands.get' ])->where(['car_brand_id' => '[0-9]+']);
+    // Car Models
+    Route::get('/cars/models', [ 'uses' => 'Mobile\CarModelsController@List', 'as' => 'mobile.car.models.list' ]);
+    Route::get('/cars/models/{car_model_id}', [ 'uses' => 'Mobile\CarModelsController@Get', 'as' => 'mobile.car.models.get' ])->where(['car_model_id' => '[0-9]+']);
+    Route::get('/cars/models/all', [ 'uses' => 'Mobile\CarModelsController@ListAllModelsWithCarBrands', 'as' => 'mobile.car.models.all' ])->where(['car_model_id' => '[0-9]+']);
+    // Car Colors
+    Route::get('/cars/colors', [ 'uses' => 'Mobile\CarColorsController@List', 'as' => 'mobile.car.colors.list' ]);
+    Route::get('/cars/colors/{car_color_id}', [ 'uses' => 'Mobile\CarColorsController@Get', 'as' => 'mobile.car.colors.get' ])->where(['car_color_id' => '[0-9]+']);
 
     Route::group([ 'middleware' => ['authorized.mobile', 'check.user-status.mobile'] ], function(){
         Route::get('/me', [ 'uses' => 'Mobile\MembersController@Me', 'as' => 'mobile.users.me' ]);
         Route::post('/profile/update', [ 'uses' => 'Mobile\MembersController@UpdateProfile', 'as' => 'mobile.profile.update' ]);
-
-        // Car Brands
-        Route::get('/cars/brands', [ 'uses' => 'Mobile\CarBrandsController@List', 'as' => 'mobile.car.brands.list' ]);
-        Route::get('/cars/brands/{car_brand_id}', [ 'uses' => 'Mobile\CarBrandsController@Get', 'as' => 'mobile.car.brands.get' ])->where(['car_brand_id' => '[0-9]+']);
-        // Car Models
-        Route::get('/cars/models', [ 'uses' => 'Mobile\CarModelsController@List', 'as' => 'mobile.car.models.list' ]);
-        Route::get('/cars/models/{car_model_id}', [ 'uses' => 'Mobile\CarModelsController@Get', 'as' => 'mobile.car.models.get' ])->where(['car_model_id' => '[0-9]+']);
-        Route::get('/cars/models/all', [ 'uses' => 'Mobile\CarModelsController@ListAllModelsWithCarBrands', 'as' => 'mobile.car.models.all' ])->where(['car_model_id' => '[0-9]+']);
-        // Car Colors
-        Route::get('/cars/colors', [ 'uses' => 'Mobile\CarColorsController@List', 'as' => 'mobile.car.colors.list' ]);
-        Route::get('/cars/colors/{car_color_id}', [ 'uses' => 'Mobile\CarColorsController@Get', 'as' => 'mobile.car.colors.get' ])->where(['car_color_id' => '[0-9]+']);
 
         // Vehicles
         Route::get('/vehicles', [ 'uses' => 'Mobile\VehiclesController@List', 'as' => 'mobile.vehicles.list' ]);
