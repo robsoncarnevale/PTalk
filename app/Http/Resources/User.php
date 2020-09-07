@@ -39,6 +39,12 @@ class User extends JsonResource
             $resource['photo_url'] = UserPhoto::get($resource['photo']);
         }
 
+        if (array_key_exists('indicator', $resource)) {
+            if (array_key_exists('photo', $resource['indicator'])) {
+                $resource['indicator']['photo'] = UserPhoto::get($resource['indicator']['photo']);
+            }
+        }
+
         return $resource;
 
         // return [

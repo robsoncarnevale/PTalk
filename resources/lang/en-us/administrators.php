@@ -8,4 +8,8 @@ return [
 
     'error-create'  =>  "Error creating administrator - :error",
     'error-update'  =>  "Error updating administrator - :error",
+
+    'error-phone-already-registered' => "Phone already registered",
+    'error-email-already-registered' => "E-mail already registered",
+    'error-indicator-not-found' => 'Indicator not found'
 ];

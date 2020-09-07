@@ -22,8 +22,8 @@ class CreateEventsSubscriptionsTable extends Migration
             $table->timestamps();
 
             $table->foreign('club_code')->references('code')->on('clubs');
-            $table->foreign('event_id')->references('id')->on('users');
-            $table->foreign('user_id')->references('id')->on('events');
+            $table->foreign('event_id')->references('id')->on('events');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

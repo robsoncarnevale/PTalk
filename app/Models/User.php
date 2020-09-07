@@ -18,6 +18,7 @@ class User extends Authenticatable implements JWTSubject
     const TYPE_MEMBER = 'member';
 
     const APPROVED_STATUS_APPROVAL = 'approved';
+    const MEMBER_STEP_STATUS_APPROVAL = 'member_step';
     const WAITING_STATUS_APPROVAL = 'waiting';
     const REFUSED_STATUS_APPROVAL = 'refused';
 
@@ -53,7 +54,14 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'access_code', 'access_code_valid_until'
+        'password', 
+        'remember_token', 
+        'access_code', 
+        'access_code_valid_until',
+        'new_password_token',
+        'new_password_token_duration',
+        'forget_password_token',
+        'forget_password_token_duration'
     ];
 
     /**
@@ -122,6 +130,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsTo(Club::class, 'club_code', 'code');
     }
 
+    public function indicator()
+    {
+        return $this->belongsTo(User::class, 'indicated_by', 'id');
+    }
+
     ///////////////////////
 
     /**
@@ -147,9 +160,9 @@ class User extends Authenticatable implements JWTSubject
      * @author Davi Souto
      * @since 04/08/2020
      */
-    public function generatePassword()
+    public function generatePassword($password)
     {
-        $this->password = Hash::make('123456');
+        $this->password = Hash::make($password);
 
         return $this;
     }

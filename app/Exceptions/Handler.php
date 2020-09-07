@@ -50,15 +50,20 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        if ($exception instanceof \Illuminate\Validation\ValidationException)
+        if ($exception instanceof \Illuminate\Validation\ValidationException) {
             return $this->handleValidationError($request, $exception);
-        // dd($exception);
+        }
+        
+        if ($exception instanceof \Symfony\Component\ErrorHandler\Error\FatalError ) { 
+        }
+
         return response()->json([
             'status'    => 'error', 
             'message'   => $exception->getMessage(), 
             'line'      => $exception->getLine(),
             'file'      => $exception->getFile(),
-            'trace'     => $exception->getTraceAsString(), 'code' => 500,
+            'trace'     => $exception->getTraceAsString(), 
+            'code' => 500,
         ], 500);
         // return parent::render($request, $exception);
     }

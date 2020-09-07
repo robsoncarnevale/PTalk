@@ -75,17 +75,47 @@ class MembersController extends Controller
         if ($validator = self::validate($request, [
             'name'  =>  'required',
             'phone'  =>  'required|min:8|max:11',
+            'indicated_by' => 'required',
         ])) return $validator;
         
         $phone = preg_replace("#[^0-9]*#is", "", $request->get('phone'));
 
         // Check if phone is already registered
-        if (User::select('id')->where('phone', $phone)->first())
+        $check_phone = User::select('id')
+            ->where('phone', $phone)
+            ->where('deleted', false)
+            ->where('club_code', getClubCode())
+            ->first();
+
+        if ($check_phone) {
             return response()->json([ 'status' => 'error', 'message' => __('members.error-phone-already-registered') ]);
+        }
 
         // Check if email is already registered
-        if ($request->has('email') && ! empty($request->get('email')) && User::select('id')->where('email', $request->get('email'))->first())
-            return response()->json([ 'status' => 'error', 'message' => __('members.error-email-already-registered') ]);
+        if ($request->has('email') && ! empty($request->get('email'))) {
+            $check_email = User::select('id')
+                ->where('email', $request->get('email'))
+                ->where('deleted', false)
+                ->where('club_code', getClubCode())
+                ->first();
+        
+            if ($check_email) {
+                return response()->json([ 'status' => 'error', 'message' => __('members.error-email-already-registered') ]);
+            }
+        }
+            
+        // Get the indicator
+        $indicator = User::select()
+            ->where('id', $request->get('indicated_by'))
+            ->where('status', '<>', User::INACTIVE_STATUS)
+            ->where('approval_status', User::APPROVED_STATUS_APPROVAL)
+            ->where('deleted', false)
+            ->where('club_code', getClubCode())
+            ->first();
+
+        if (! $indicator) {
+            return response()->json([ 'status' => 'error', 'message' => __('members.error-indicator-not-found') ]);
+        }
         
         $user = new User();
 
@@ -101,7 +131,8 @@ class MembersController extends Controller
             $user->email = $request->has('email') ? $request->get('email') : null;
             $user->type = User::TYPE_MEMBER;
             $user->status = User::ACTIVE_STATUS;
-            $user->approval_status = User::WAITING_STATUS_APPROVAL;
+            $user->approval_status = User::MEMBER_STEP_STATUS_APPROVAL;
+            $user->indicated_by = $indicator->id;
             
             if ($request->has('document_rg')) $user->document_rg = $request->get('document_rg');
             if ($request->has('phone')) $user->phone = preg_replace("#[^0-9]*#is", "", $request->get('phone'));
@@ -110,7 +141,6 @@ class MembersController extends Controller
             if ($request->has('company')) $user->company = $request->get('company');
             if ($request->has('company_activities')) $user->company_activities = $request->get('company_activities');
 
-            $user->generatePassword();
             $user->getMobilePrivilege();
 
             $user->save();
@@ -138,6 +168,98 @@ class MembersController extends Controller
             DB::rollback();
 
             return response()->json([ 'status' => 'error', 'message' => __('members.error-create', [ 'error' => $e->getMessage() ]) ]);
+        }
+    }
+
+    /**
+     * @since 30/08/2020
+     */
+    public function GetCodeToContinueRequest(Request $request) {
+        $validator = self::validate($request, [
+            'phone'  =>  'required|min:8|max:11',
+            'club_code' => 'required',
+        ]);
+
+        if ($validator) {
+            return $validator;
+        }
+
+        $phone = preg_replace("#[^0-9]*#is", "", $request->get('phone'));
+
+        $user = User::select()
+            ->with('indicator:id,name,photo')
+            ->where('club_code', $request->get('club_code'))
+            ->where('phone', $phone)
+            ->where('approval_status', User::MEMBER_STEP_STATUS_APPROVAL)
+            ->first();
+
+        // Check if refer exists
+        if (! $user) {
+            return response()->json([ 'status' => 'error', 'message' => __('members.not-found') ], 404);
+        }
+
+        $user = $user->generateNewAccessCode();
+        $user->save();
+
+        $sms = new \App\Http\Services\SmsService('aws_sns');
+        $sms->send(55, $phone, 'Seu código para continuar a solicitação para participar do ' . $user->club->name . ': ' . $user->getAccessCode());
+
+        return response()->json([ 'status' => 'success', 'data' => (new UserResource($user)), 'message' => __('members.success-get-code') ]);
+    }
+
+    /**
+     * @since 30/08/2020
+     */
+    public function ContinueReference(Request $request){
+        $validator = self::validate($request, [
+            'phone'  =>  'required|min:8|max:11',
+            'club_code' => 'required',
+            'code' => 'required|size:6',
+
+            'name'  =>  'required',
+            'email' => 'required',
+            'cpf' => 'required',
+            'home_address' => 'required',
+        ]);
+
+        if ($validator) {
+            return $validator;
+        }
+
+        $phone = preg_replace('#[^0-9]#is', '', $request->get('phone'));
+
+        if (empty($phone)) {
+            return response()->json(['message' => __('auth.phone-invalid'), 'status' => 'error', 'code' => 'phone.invalid' ], 404);
+        }
+
+        $user = User::select()
+            ->with('indicator:id,name,photo')
+            ->where('club_code', $request->get('club_code'))
+            ->where('phone', $phone)
+            ->where('approval_status', User::MEMBER_STEP_STATUS_APPROVAL)
+            ->first();
+
+        if (! $user) {
+            return response()->json([ 'status' => 'error', 'message' => __('members.not-found') ], 404);
+        }
+
+        if (! $user->testAccessCode($request->get('code'))) {
+            return response()->json(['message' => __('auth.code-invalid'), 'status' => 'error', 'code' => 'code.invalid' ], 401);
+        }
+
+        try {
+            $user->fill($request->all());
+            $user->approval_status = User::WAITING_STATUS_APPROVAL;
+            $user->access_code = null; // Delete last access code
+            $user->save();
+
+            DB::commit();
+
+            return response()->json([ 'status' => 'success', 'data' => (new UserResource($user)), 'message' => __('members.success-continue') ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            return response()->json([ 'status' => 'error', 'message' => __('members.error-continue', [ 'error' => $e->getMessage() ]) ]);
         }
     }
 }

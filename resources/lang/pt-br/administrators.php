@@ -8,4 +8,8 @@ return [
 
     'error-create'  =>  'Erro ao criar administrador - :error',
     'error-update'  =>  "Erro ao atualizar administrador - :error",
+
+    'error-phone-already-registered' => "Telefone já registrado",
+    'error-email-already-registered' => "E-mail já registrado",
+    'error-indicator-not-found' => 'Indicador não encontrado',
 ];

@@ -110,6 +110,30 @@ class UsersController extends Controller
             'privilege_id'  =>  'required|integer',
         ])) return $validator;
 
+        $phone = preg_replace("#[^0-9]*#is", "", $request->get('phone'));
+
+        // Check if phone is already registered
+        $check_phone = User::select('id')
+            ->where('phone', $phone)
+            ->where('deleted', false)
+            ->where('club_code', getClubCode())
+            ->first();
+
+        if ($check_phone) {
+            return response()->json([ 'status' => 'error', 'message' => __('members.error-phone-already-registered') ]);
+        }
+
+        // Check if email is already registered
+        $check_email = User::select('id')
+            ->where('email', $request->get('email'))
+            ->where('deleted', false)
+            ->where('club_code', getClubCode())
+            ->first();
+    
+        if ($check_email) {
+            return response()->json([ 'status' => 'error', 'message' => __('members.error-email-already-registered') ]);
+        }
+
         $user = new User();
 
         try
@@ -120,7 +144,7 @@ class UsersController extends Controller
 
             $user->document_cpf = preg_replace("#[^0-9]*#is", "", $request->get('document_cpf'));
             $user->name = $request->get('name');
-            $user->phone = preg_replace("#[^0-9]*#is", "", $request->get('phone'));
+            $user->phone = $phone;
             $user->email = $request->get('email');
             $user->type = $type;
 
@@ -130,6 +154,9 @@ class UsersController extends Controller
             $user->password = Hash::make('123456');
             $user->privilege_id = $request->get('privilege_id');
             $user->status = User::ACTIVE_STATUS;
+
+            $user->new_password_token = md5(uniqid(rand(), true));
+            $user->new_password_token_duration = date('Y-m-d H:i:s', strtotime("+1 day"));
             
             if ($request->has('document_rg')) $user->document_rg = $request->get('document_rg');
             if ($request->has('phone')) $user->phone = preg_replace("#[^0-9]*#is", "", $request->get('phone'));
@@ -189,6 +216,34 @@ class UsersController extends Controller
             ->where('club_code', getClubCode())
             ->where('type', $type)
             ->first();
+
+        // Check if phone is already registered
+        if ($request->has('phone')) {
+            $check_phone = User::select('id')
+                ->where('phone', preg_replace("#[^0-9]*#is", "", $request->get('phone')))
+                ->where('deleted', false)
+                ->where('club_code', getClubCode())
+                ->where('id', '<>', $user_id)
+                ->first();
+    
+            if ($check_phone) {
+                return response()->json([ 'status' => 'error', 'message' => __('members.error-phone-already-registered') ]);
+            }
+        }
+
+        // Check if email is already registered
+        if ($request->has('email')) {
+            $check_email = User::select('id')
+                ->where('email', $request->get('email'))
+                ->where('deleted', false)
+                ->where('club_code', getClubCode())
+                ->where('id', '<>', $user_id)
+                ->first();
+        
+            if ($check_email) {
+                return response()->json([ 'status' => 'error', 'message' => __('members.error-email-already-registered') ]);
+            }
+        }
 
         try
         {
@@ -277,6 +332,8 @@ class UsersController extends Controller
             return response()->json([ 'status' => 'error', 'message' => __(self::$type_name . '.not-found') ]);
 
         $user->deleted = true;
+        $user->email = null;
+        $user->phone = null;
         $user->save();
 
         return response()->json([ 'status' => 'success', 'data' => (new UserResource($user)) ]);

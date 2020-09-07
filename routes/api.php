@@ -24,6 +24,15 @@ Route::post('/login', [ 'uses' => 'AuthController@Login', 'as' => 'auth.login' ]
 Route::get('/test', [ 'uses' => 'TestController@MakeTest', 'as' => 'test.maketest.get' ]);
 Route::post('/test', [ 'uses' => 'TestController@MakeTest', 'as' => 'test.maketest.post' ]);
 
+// Password
+Route::get('/password/first-access/{club_code}/{token}', [ 'uses' => 'PasswordController@FirstAccess', 'as' => 'password.first-access' ]);
+Route::post('/password/first-access/{club_code}/{token}', [ 'uses' => 'PasswordController@FirstAccess', 'as' => 'password.first-access.post' ]);
+Route::get('/password/forget/{club_code}/{token}', [ 'uses' => 'PasswordController@Forget', 'as' => 'password.forget' ]);
+Route::post('/password/forget/{club_code}/{token}', [ 'uses' => 'PasswordController@Forget', 'as' => 'password.forget.post' ]);
+// Password tokens
+Route::post('/password/forget/get-token/{club_code}/{email}', [ 'uses' => 'PasswordController@GetForgetToken', 'as' => 'password.forget.get-token' ]);
+Route::post('/password/first-access/get-token/{club_code}/{email}', [ 'uses' => 'PasswordController@GetFirstAccessToken', 'as' => 'password.first-access.post' ]);
+
 Route::group([ 'middleware' => 'authorized' ], function(){
     // Logout
     Route::get('/logout', [ 'uses' => 'AuthController@Logout', 'as' => 'auth.logout' ]);
@@ -106,6 +115,10 @@ Route::prefix('mobile')->group(function(){
     // Car Colors
     Route::get('/cars/colors', [ 'uses' => 'Mobile\CarColorsController@List', 'as' => 'mobile.car.colors.list' ]);
     Route::get('/cars/colors/{car_color_id}', [ 'uses' => 'Mobile\CarColorsController@Get', 'as' => 'mobile.car.colors.get' ])->where(['car_color_id' => '[0-9]+']);
+
+    // Get code to continue refer member
+    Route::get('/members/refer/get-code', [ 'uses' => 'Mobile\MembersController@GetCodeToContinueRequest', 'as' => 'mobile.members.refer.code' ]);
+    Route::post('/members/refer/continue', [ 'uses' => 'Mobile\MembersController@ContinueReference', 'as' => 'mobile.members.refer.continue' ]);
 
     Route::group([ 'middleware' => ['authorized.mobile', 'check.user-status.mobile'] ], function(){
         Route::get('/me', [ 'uses' => 'Mobile\MembersController@Me', 'as' => 'mobile.users.me' ]);
