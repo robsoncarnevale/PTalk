@@ -66,7 +66,7 @@ class CarModelsController extends Controller
             ->first();
         
         if (! $car_model)
-            return response()->json([ 'status' => 'error', 'message' => __('car_models.not-found') ]);
+            return response()->json([ 'status' => 'error', 'message' => __('car_model.not-found') ]);
 
         return response()->json([ 'status' => 'success', 'data' => (new CarModelResource($car_model)) ]);
     }
@@ -101,6 +101,82 @@ class CarModelsController extends Controller
         }
 
         return response()->json([ 'status' => 'success', 'data' => $car_models ]);
+    }
+
+    /**
+     * Create
+     * 
+     * @author Davi Souto
+     * @since 07/09/2020
+     */
+    public function Create(Request $request)
+    {
+        $validator = self::validate($request, [
+            'name'  =>  'required',
+            'car_brand_id' => 'required',
+        ]);
+
+        if ($validator) {
+            return $validator;
+        }
+
+        $car_model = new CarModel();
+        $car_model->fill($request->all());
+        $car_model->club_code = getClubCode();
+
+        $car_model->save();
+
+        return response()->json([ 'status' => 'success', 'data' => (new CarModelResource($car_model)), 'message' => __('car_model.success-create') ]);
+    }
+
+    /**
+     * Update
+     * 
+     * @author Davi Souto
+     * @since 07/09/2020
+     */
+    public function Update(Request $request, $car_model_id)
+    {
+        $car_model = CarModel::select()
+            ->where('club_code', getClubCode())
+            ->where('id', $car_model_id)
+            ->first();
+
+        if (! $car_model) {
+            return response()->json([ 'status' => 'error', 'message' => __('car_model.not-found') ]);
+        }
+
+        $car_model->fill($request->all());
+        $car_model->save();
+
+        return response()->json([ 'status' => 'success', 'data' => (new CarModelResource($car_model)), 'message' => __('car_model.success-update') ]);
+    }
+
+    /**
+     * Delete
+     * 
+     * @author Davi Souto
+     * @since 07/09/2020
+     */
+    public function Delete(Request $request, $car_model_id)
+    {
+        $car_model = CarModel::select()
+            ->withCount('vehicles')
+            ->where('club_code', getClubCode())
+            ->where('id', $car_model_id)
+            ->first();
+
+        if (! $car_model) {
+            return response()->json([ 'status' => 'error', 'message' => __('car_model.not-found') ]);
+        }
+
+        if ($car_model->vehicles_count > 0) {
+            return response()->json([ 'status' => 'error', 'message' => __('car_model.delete-error-count') ]);
+        }
+
+        $car_model->delete();
+
+        return response()->json([ 'status' => 'success', 'data' => true, 'message' => __('car_model.success-delete') ]);
     }
 
 }

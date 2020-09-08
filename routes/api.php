@@ -70,9 +70,15 @@ Route::group([ 'middleware' => 'authorized' ], function(){
     Route::get('/cars/models', [ 'uses' => 'CarModelsController@List', 'as' => 'car.models.list' ]);
     Route::get('/cars/models/{car_model_id}', [ 'uses' => 'CarModelsController@Get', 'as' => 'car.models.get' ])->where(['car_model_id' => '[0-9]+']);
     Route::get('/cars/models/all', [ 'uses' => 'CarModelsController@ListAllModelsWithCarBrands', 'as' => 'car.models.all' ])->where(['car_model_id' => '[0-9]+']);
+    Route::put('/cars/models', [ 'uses' => 'CarModelsController@Create', 'as' => 'car.models.create' ]);
+    Route::post('/cars/models/{car_model_id}', [ 'uses' => 'CarModelsController@Update', 'as' => 'car.models.update' ]);
+    Route::delete('/cars/models/{car_model_id}', [ 'uses' => 'CarModelsController@Delete', 'as' => 'car.models.delete' ]);
     // Car Colors
     Route::get('/cars/colors', [ 'uses' => 'CarColorsController@List', 'as' => 'car.colors.list' ]);
     Route::get('/cars/colors/{car_color_id}', [ 'uses' => 'CarColorsController@Get', 'as' => 'car.colors.get' ])->where(['car_color_id' => '[0-9]+']);
+    Route::put('/cars/colors', [ 'uses' => 'CarColorsController@Create', 'as' => 'car.colors.create' ]);
+    Route::post('/cars/colors/{car_color_id}', [ 'uses' => 'CarColorsController@Update', 'as' => 'car.colors.update' ]);
+    Route::delete('/cars/colors/{car_color_id}', [ 'uses' => 'CarColorsController@Delete', 'as' => 'car.colors.delete' ]);
 
     // Vehicles
     Route::get('/vehicles', [ 'uses' => 'VehiclesController@List', 'as' => 'vehicles.list' ]);

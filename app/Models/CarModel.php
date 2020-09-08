@@ -16,12 +16,22 @@ class CarModel extends Model
 {
     protected $table = 'car_models';
 
+    protected $fillable = [
+        'name',
+        'car_brand_id',
+    ];
+
     /**
      * car_models.id => car_model_id
      */
     public function car_brand()
     {
         return $this->belongsTo('App\Models\CarBrand');
+    }
+
+    public function vehicles()
+    {
+        return $this->hasMany('App\Models\Vehicle');
     }
 
     ///////////////////////

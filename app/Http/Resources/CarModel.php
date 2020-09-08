@@ -16,7 +16,6 @@ class CarModel extends JsonResource
     public function toArray($request)
     {
         // $resource = parent::toArray($request);
-        
 
         // if (array_key_exists('picture', $resource))
         // {

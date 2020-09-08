@@ -67,4 +67,88 @@ class CarColorsController extends Controller
         return response()->json([ 'status' => 'success', 'data' => $car_color ]);
     }
 
+    /**
+     * Create
+     * 
+     * @author Davi Souto
+     * @since 07/09/2020
+     */
+    function Create(Request $request)
+    {
+        $validator = self::validate($request, [
+            'name'  =>  'required',
+            'value' => 'required|min:6',
+        ]);
+
+        if ($validator) {
+            return $validator;
+        }
+
+        $car_color = new CarColor();
+        $car_color->fill($request->all());
+        $car_color->club_code = getClubCode();
+
+        if (strlen($car_color->value) <= 6 && strpos($car_color->value, '#') === false) {
+            $car_color->value = '#' . $car_color->value;
+        }
+
+        $car_color->save();
+
+        return response()->json([ 'status' => 'success', 'data' => $car_color, 'message' => __('car_color.success-create') ]);
+    }
+
+    /**
+     * Update
+     * 
+     * @author Davi Souto
+     * @since 07/09/2020
+     */
+    function Update(Request $request, $car_color_id)
+    {
+        $car_color = CarColor::select()
+            ->where('club_code', getClubCode())
+            ->where('id', $car_color_id)
+            ->first();
+
+        if (! $car_color) {
+            return response()->json([ 'status' => 'error', 'message' => __('car_color.not-found') ]);
+        }
+
+        $car_color->fill($request->all());
+
+        if (strlen($car_color->value) <= 6 && strpos($car_color->value, '#') === false) {
+            $car_color->value = '#' . $car_color->value;
+        }
+
+        $car_color->save();
+
+        return response()->json([ 'status' => 'success', 'data' => $car_color, 'message' => __('car_color.success-update') ]);
+    }
+
+    /**
+     * Delete
+     * 
+     * @author Davi Souto
+     * @since 07/09/2020
+     */
+    public function Delete(Request $request, $car_color_id)
+    {
+        $car_color = CarColor::select()
+            ->withCount('vehicles')
+            ->where('club_code', getClubCode())
+            ->where('id', $car_color_id)
+            ->first();
+
+        if (! $car_color) {
+            return response()->json([ 'status' => 'error', 'message' => __('car_color.not-found') ]);
+        }
+
+        if ($car_color->vehicles_count > 0) {
+            return response()->json([ 'status' => 'error', 'message' => __('car_color.delete-error-count') ]);
+        }
+
+        $car_color->delete();
+
+        return response()->json([ 'status' => 'success', 'data' => true, 'message' => __('car_color.success-delete') ]);
+    }
 }

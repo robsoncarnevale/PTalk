@@ -53,6 +53,13 @@ class CreatePrivileges extends Seeder
             // [ 'action' => 'car.colors.list',                    'name' => 'List car colors', 'description' => '', 'add_member' => false ],
             // [ 'action' => 'car.colors.get',                     'name' => 'Read car colors', 'description' => '', 'add_member' => false ],
 
+            [ 'action' => 'car.models.create',                  'name' => 'Create Car Model', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'car.models.update',                  'name' => 'Update Car Model', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'car.models.delete',                  'name' => 'Delete Car Model', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'car.colors.create',                  'name' => 'Create Car Color', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'car.colors.update',                  'name' => 'Update Car Color', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'car.colors.delete',                  'name' => 'Delete Car Color', 'description' => '', 'add_member' => false ],
+
             [ 'action' => 'vehicles.list',                      'name' => 'List Vehicles', 'description' => '', 'add_member' => false ], 
             [ 'action' => 'vehicles.get',                       'name' => 'Get Vehicle', 'description' => '', 'add_member' => false ], 
             [ 'action' => 'vehicles.create',                    'name' => 'Create Vehicle', 'description' => '', 'add_member' => false ],

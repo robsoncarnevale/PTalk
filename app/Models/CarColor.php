@@ -13,4 +13,14 @@ use Illuminate\Database\Eloquent\Model;
 class CarColor extends Model
 {
     protected $table = 'car_colors';
+
+    protected $fillable = [
+        'name',
+        'value',
+    ];
+
+    public function vehicles()
+    {
+        return $this->hasMany('App\Models\Vehicle');
+    }
 }
