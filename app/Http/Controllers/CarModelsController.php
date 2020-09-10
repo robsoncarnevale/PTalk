@@ -9,6 +9,8 @@ use App\Models\CarBrand;
 use App\Http\Resources\CarModel as CarModelResource;
 use App\Http\Resources\CarModelCollection;
 
+use Storage;
+
 /**
  * Car Models Controller
  *
@@ -87,7 +89,7 @@ class CarModelsController extends Controller
 
         $car_models = CarBrand::select('id', 'name')
             ->where('club_code', $club_code)
-            ->with('car_models:id,name,car_brand_id')
+            ->with('car_models:id,name,car_brand_id,picture')
             ->orderBy('name')
             ->get()
             ->toArray();
@@ -96,6 +98,10 @@ class CarModelsController extends Controller
             usort($car_models[$i_car_brands]['car_models'], function($item1, $item2){
                 return $item1['name'] <=> $item2['name'];
             });
+
+            foreach($car_brands['car_models'] as $i_car_model => $car_model){
+                $car_models[$i_car_brands]['car_models'][$i_car_model]['picture'] = \App\Http\Resources\CarModelPicture::get($car_models[$i_car_brands]['car_models'][$i_car_model]['picture']);
+            }
 
             // $car_models[$i_car_brands]['car_models'] = collect($car_brands['car_models'])->sortBy('name');
         }
@@ -124,6 +130,11 @@ class CarModelsController extends Controller
         $car_model->fill($request->all());
         $car_model->club_code = getClubCode();
 
+        // Picture upload
+        if ($request->has('picture')) {
+            $car_model->upload($request->file('picture'));
+        }
+
         $car_model->save();
 
         return response()->json([ 'status' => 'success', 'data' => (new CarModelResource($car_model)), 'message' => __('car_model.success-create') ]);
@@ -147,6 +158,12 @@ class CarModelsController extends Controller
         }
 
         $car_model->fill($request->all());
+
+        // Picture upload
+        if ($request->has('picture')) {
+            $car_model->upload($request->file('picture'));
+        }
+
         $car_model->save();
 
         return response()->json([ 'status' => 'success', 'data' => (new CarModelResource($car_model)), 'message' => __('car_model.success-update') ]);
@@ -172,6 +189,10 @@ class CarModelsController extends Controller
 
         if ($car_model->vehicles_count > 0) {
             return response()->json([ 'status' => 'error', 'message' => __('car_model.delete-error-count') ]);
+        }
+
+        if (! empty($car_model->picture) && Storage::disk('images')->exists($car_model->picture)) {
+            Storage::disk('images')->delete($car_model->picture);
         }
 
         $car_model->delete();

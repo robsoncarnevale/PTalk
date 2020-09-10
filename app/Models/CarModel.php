@@ -73,4 +73,26 @@ class CarModel extends Model
 
     //     return $values;
     // }
+
+    /**
+     * Upload car model picture
+     * 
+     * @author Davi Souto
+     * @since 08/09/2020
+     */
+    public function upload($file)
+    {
+        $upload_photo = Storage::disk('images')->putFile(getClubCode().'/car_models', $file);
+
+        if ($upload_photo)
+        {
+            if (! empty($this->picture) && Storage::disk('images')->exists($this->picture)) {
+                Storage::disk('images')->delete($this->picture);
+            }
+            
+            $this->picture = $upload_photo;
+        }
+
+        return $this;
+    }
 }
