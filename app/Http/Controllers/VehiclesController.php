@@ -163,11 +163,14 @@ class VehiclesController extends Controller
 
         if (User::isMobile()) {
             $vehicles->get();
+
+            return response()->json([ 'status' => 'success', 'data' => VehicleResource::collection($vehicles) ]);
         } else {
             $vehicles = $vehicles->jsonPaginate(25, 3);
+
+            return response()->json([ 'status' => 'success', 'data' => (new VehicleCollection($vehicles)) ]);
         }
 
-        return response()->json([ 'status' => 'success', 'data' => (new VehicleCollection($vehicles)) ]);
     }
 
     /**
