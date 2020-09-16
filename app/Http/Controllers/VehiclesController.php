@@ -162,7 +162,7 @@ class VehiclesController extends Controller
             ->where('deleted', false);
 
         if (User::isMobile()) {
-            $vehicles->get();
+            $vehicles = $vehicles->get();
 
             return response()->json([ 'status' => 'success', 'data' => VehicleResource::collection($vehicles) ]);
         } else {
