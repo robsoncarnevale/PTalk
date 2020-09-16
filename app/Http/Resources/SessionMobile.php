@@ -27,7 +27,7 @@ class SessionMobile extends JsonResource
             ->get()
             ->pluck('privilege_action');
 
-        $resource['vehicles_count'] = \App\Models\Vehicle::where('user_id', $resource['id'])->count();
+        $resource['vehicles_count'] = \App\Models\Vehicle::where('user_id', $resource['id'])->where('deleted', false)->count();
         $resource['events_count'] = 0;
         $resource['club_code'] = $request->get('club_code');
         

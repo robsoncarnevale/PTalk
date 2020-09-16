@@ -353,6 +353,10 @@ class User extends Authenticatable implements JWTSubject
         return self::$mobile_auth;
     }
 
+    /**
+     * Returns user authenticated id (mobile or web)
+     * @return int
+     */
     public static function getAuthenticatedUserId()
     {
         if (self::$mobile_auth)
@@ -360,6 +364,19 @@ class User extends Authenticatable implements JWTSubject
 
         if (auth()->guard()->user())
             return auth()->guard()->user()->id;
+
+        return false;
+    }
+
+    /**
+     * Returns true if user is authenticated on mobile
+     * @return bool
+     * @since 16/09/2020
+     */
+    public static function isMobile(){
+        if (self::$mobile_auth) {
+            return true;
+        }
 
         return false;
     }

@@ -91,7 +91,7 @@ Route::group([ 'middleware' => 'authorized' ], function(){
     Route::get('/vehicles/my/{vehicle_id}', [ 'uses' => 'VehiclesController@GetMyVehicle', 'as' => 'vehicles.my-vehicles.get' ])->where(['vehicle_id' => '[0-9]+']);
     Route::put('/vehicles/my', [ 'uses' => 'VehiclesController@CreateMyVehicle', 'as' => 'vehicles.my-vehicles.create' ]);
     Route::post('/vehicles/my/{vehicle}', [ 'uses' => 'VehiclesController@UpdateMyVehicle', 'as' => 'vehicles.my-vehicles.update' ])->where(['vehicle_id' => '[0-9]+']);
-    Route::delete('/vehicles/my/{vehicle}', [ 'uses' => 'VehiclesController@Delete', 'as' => 'vehicles.my-vehicles.delete' ])->where(['vehicle_id' => '[0-9]+']);
+    Route::delete('/vehicles/my/{vehicle}', [ 'uses' => 'VehiclesController@DeleteMyVehicle', 'as' => 'vehicles.my-vehicles.delete' ])->where(['vehicle_id' => '[0-9]+']);
 
     // Events
     Route::get('/events', [ 'uses' => 'EventsController@List', 'as' => 'events.list' ]);

@@ -40,6 +40,7 @@ class ClubController extends Controller
                   ->where('approval_status', User::APPROVED_STATUS_APPROVAL)
                   ->where('club_code', getClubCode());
             })
+            ->where('deleted', false)
             ->count();
 
         $status = [

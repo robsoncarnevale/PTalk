@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\UserRequest;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -66,7 +68,10 @@ class UsersController extends Controller
         $users = User::select()
             // ->with('privilege_group')
             ->with('privilege_group:id,name')
-            ->withCount('vehicles')
+            ->withCount(['vehicles' => function($q){
+                $q->where('deleted', false);
+            }])
+            ->with('vehicles')
             ->where('club_code', getClubCode())
             ->where('deleted', false)
             ->where('approval_status', 'approved')
@@ -100,16 +105,8 @@ class UsersController extends Controller
      * @author Davi Souto
      * @since 08/06/2020
      */
-    private static function Create(Request $request, $type = 'member')
+    private static function Create(UserRequest $request, $type = 'member')
     {
-        if ($validator = self::validate($request, [
-            'document_cpf'  =>  'required|size:11',
-            'name'  =>  'required',
-            'phone'  =>  'required|min:8|max:11',
-            'email'  =>  'required|email',
-            'privilege_id'  =>  'required|integer',
-        ])) return $validator;
-
         $phone = preg_replace("#[^0-9]*#is", "", $request->get('phone'));
 
         // Check if phone is already registered
@@ -209,7 +206,7 @@ class UsersController extends Controller
      * @author Davi Souto
      * @since 07/06/2020
      */
-    private static function Update(Request $request, $user_id, $type = 'member')
+    private static function Update(UserRequest $request, $user_id, $type = 'member')
     {
         $user = User::select()
             ->where('id', $user_id)
@@ -348,7 +345,9 @@ class UsersController extends Controller
     private static function Get(Request $request, $user_id, $type = 'members')
     {
         $user = User::select()
-            ->with('vehicles', 'vehicles.car_model:id,name,car_brand_id,picture', 'vehicles.car_model.car_brand:id,name', 'vehicles.car_color:id,name')
+            ->with(['vehicles' => function($q){
+                $q->where('deleted', false);
+            }, 'vehicles.car_model:id,name,car_brand_id,picture', 'vehicles.car_model.car_brand:id,name', 'vehicles.car_color:id,name,value'])
             ->where('id', $user_id)
             ->where('club_code', getClubCode())
             ->where('deleted', false)
@@ -386,7 +385,9 @@ class UsersController extends Controller
     public function ViewProfile(Request $request, $user_id)
     {
         $user = User::select()
-            ->with('vehicles')
+            ->with(['vehicles' => function($q){
+                $q->where('deleted', false);
+            }])
             ->where('id', $user_id)
             ->where('club_code', getClubCode())
             ->where('deleted', false)

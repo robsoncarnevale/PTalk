@@ -54,4 +54,36 @@ class Vehicle extends Model
     {
         return $this->hasOne('App\Models\CarColor', 'id', 'car_color_id');
     }
+
+    public function photos()
+    {
+        return $this->hasMany('App\Models\VehiclePhoto');
+    }
+
+    /**
+     * Returns carplate on uppercase
+     * @since 14/09/2020
+     */
+    public function getCarplateAttribute($carplate)
+    {
+        if ($carplate) {
+            return strtoupper($carplate);
+        }
+    }
+
+    /**
+     * Returns formatted carplate
+     * @since 14/09/2020
+     */
+    public function getCarplateFormattedAttribute()
+    {
+        if (strlen($this->carplate) <= 7) {
+            $formatted_carplate = preg_replace('#[^0-9a-zA-Z]#is', '', $this->carplate);
+            $formatted_carplate = substr($formatted_carplate, 0, 3) . '-' . substr($formatted_carplate, 3);
+
+            return $formatted_carplate;
+        }
+
+        return $this->carplate;
+    }
 }

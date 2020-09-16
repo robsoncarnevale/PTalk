@@ -187,5 +187,6 @@ return [
         'car_model_id' => 'modelo',
         'privilege' => 'privilégio',
         'privilege_id' => 'privilégio',
+        'carplate' => 'placa',
     ],
 ];

@@ -155,6 +155,7 @@ return [
         'car_model' => 'model',
         'privilege' => 'privilege',
         'privilege_id' => 'privilege',
+        'carplate' => 'carplate',
     ],
 
 ];

@@ -43,6 +43,7 @@ class VehiclesController extends Controller
                   ->where('club_code', getClubCode())
                   ->where('id', '<>', User::getAuthenticatedUserId());
             })
+            ->where('deleted', false)
             ->jsonPaginate(25, 3);
 
         return response()->json([ 'status' => 'success', 'data' => (new VehicleCollection($vehicles)) ]);
@@ -65,6 +66,7 @@ class VehiclesController extends Controller
                   ->where('approval_status', 'approved')
                   ->where('club_code', getClubCode());
             })
+            ->where('deleted', false)
             ->where('id', $vehicle_id)
             ->first();
 
@@ -87,9 +89,18 @@ class VehiclesController extends Controller
 
         $vehicle->fill($request->all());
         $vehicle->club_code = getClubCode();
+
+        if ($vehicle->carplate) {
+            $vehicle->carplate = strtoupper(preg_replace("#[^0-9A-Z]#is", '', $vehicle->carplate));
+        }
+
         $vehicle->save();
 
-        return response()->json([ 'status' => 'success', 'data' => (new VehicleResource($vehicle)) ]);
+        if ($request->has('photos')) {
+            $vehicle->uploadPhotos($request->get('photos'));
+        }
+
+        return response()->json([ 'status' => 'success', 'data' => (new VehicleResource($vehicle)), 'message' => __('vehicles.success-create') ]);
     }
 
     /**
@@ -101,11 +112,20 @@ class VehiclesController extends Controller
     public function Update(VehicleRequest $request, Vehicle $vehicle)
     {
         $this->validateClub($vehicle->club_code, 'vehicle');
+
+        if ($vehicle->deleted) {
+            return abort(404);
+        }
         
         $vehicle->fill($request->all());
+
+        if ($vehicle->carplate) {
+            $vehicle->carplate = strtoupper(preg_replace("#[^0-9A-Z]#is", '', $vehicle->carplate));
+        }
+        
         $vehicle->save();
 
-        return response()->json([ 'status' => 'success', 'data' => (new VehicleResource($vehicle)) ]);
+        return response()->json([ 'status' => 'success', 'data' => (new VehicleResource($vehicle)), 'message' => __('vehicles.success-update') ]);
     }
 
     /**
@@ -114,14 +134,18 @@ class VehiclesController extends Controller
      * @author Davi Souto
      * @since 05/08/2020
      */
-    public function Delete(VehicleRequest $request, Vehicle $vehicle)
+    public function Delete(Request $request, Vehicle $vehicle)
     {
         $this->validateClub($vehicle->club_code, 'vehicle');
 
+        if ($vehicle->deleted) {
+            return abort(404);
+        }
+        
         $vehicle->deleted = true;
         $vehicle->save();
 
-        return response()->json([ 'status' => 'success', 'data' => (new VehicleResource($vehicle)) ]);
+        return response()->json([ 'status' => 'success', 'data' => (new VehicleResource($vehicle)), 'message' => __('vehicles.success-delete') ]);
     }
 
     /**
@@ -135,7 +159,13 @@ class VehiclesController extends Controller
         $vehicles = Vehicle::select()
             ->with('car_model:id,name,car_brand_id,picture', 'car_model.car_brand:id,name', 'car_color:id,name')
             ->where('user_id', User::getAuthenticatedUserId())
-            ->jsonPaginate(25, 3);
+            ->where('deleted', false);
+
+        if (User::isMobile()) {
+            $vehicles->get();
+        } else {
+            $vehicles = $vehicles->jsonPaginate(25, 3);
+        }
 
         return response()->json([ 'status' => 'success', 'data' => (new VehicleCollection($vehicles)) ]);
     }
@@ -152,6 +182,7 @@ class VehiclesController extends Controller
             ->with('car_model:id,name,car_brand_id,picture', 'car_color:id,name')
             ->where('user_id', User::getAuthenticatedUserId())
             ->where('id', $vehicle_id)
+            ->where('deleted', false)
             ->first();
 
         if (! $vehicle)
@@ -174,9 +205,14 @@ class VehiclesController extends Controller
         $vehicle->fill($request->all());
         $vehicle->user_id = User::getAuthenticatedUserId();
         $vehicle->club_code = getClubCode();
+
+        if ($vehicle->carplate) {
+            $vehicle->carplate = strtoupper(preg_replace("#[^0-9A-Z]#is", '', $vehicle->carplate));
+        }
+
         $vehicle->save();
 
-        return response()->json([ 'status' => 'success', 'data' => (new VehicleResource($vehicle)) ]);
+        return response()->json([ 'status' => 'success', 'data' => (new VehicleResource($vehicle)), 'message' => __('vehicles.success-create') ]);
     }
 
     /**
@@ -189,14 +225,24 @@ class VehiclesController extends Controller
     {
         $this->validateClub($vehicle->club_code, 'vehicle');
 
-        if ($vehicle->user_id != User::getAuthenticatedUserId())
+        if ($vehicle->user_id != User::getAuthenticatedUserId()) {
             abort(401);
+        }
+
+        if ($vehicle->deleted) {
+            return abort(404);
+        }
         
         $vehicle->fill($request->all());
         $vehicle->user_id = User::getAuthenticatedUserId();
+
+        if ($vehicle->carplate) {
+            $vehicle->carplate = strtoupper(preg_replace("#[^0-9A-Z]#is", '', $vehicle->carplate));
+        }
+
         $vehicle->save();
 
-        return response()->json([ 'status' => 'success', 'data' => (new VehicleResource($vehicle)) ]);
+        return response()->json([ 'status' => 'success', 'data' => (new VehicleResource($vehicle)), 'message' => __('vehicles.success-update') ]);
     }
 
     /**
@@ -205,16 +251,21 @@ class VehiclesController extends Controller
      * @author Davi Souto
      * @since 05/08/2020
      */
-    public function DeleteMyVehicle(MyVehicleRequest $request, Vehicle $vehicle)
+    public function DeleteMyVehicle(Request $request, Vehicle $vehicle)
     {
         $this->validateClub($vehicle->club_code, 'vehicle');
 
-        if ($vehicle->user_id != User::getAuthenticatedUserId())
+        if ($vehicle->user_id != User::getAuthenticatedUserId()) {
             abort(401);
+        }
+
+        if ($vehicle->deleted) {
+            return abort(404);
+        }
 
         $vehicle->deleted = true;
         $vehicle->save();
 
-        return response()->json([ 'status' => 'success', 'data' => (new VehicleResource($vehicle)) ]);
+        return response()->json([ 'status' => 'success', 'data' => (new VehicleResource($vehicle)), 'message' => __('vehicles.success-delete') ]);
     }
 }
