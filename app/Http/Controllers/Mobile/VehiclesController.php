@@ -88,7 +88,7 @@ class VehiclesController extends Controller
      */
     public function DeleteMyVehicle(MyVehicleRequest $request, Vehicle $vehicle)
     {
-        return (new \App\Http\Controllers\DeleteMyVehicle())->GetMyVehicle($request, $vehicle);
+        return (new \App\Http\Controllers\VehiclesController())->DeleteMyVehicle($request, $vehicle);
     }
 
 }
