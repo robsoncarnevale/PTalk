@@ -92,6 +92,8 @@ Route::group([ 'middleware' => 'authorized' ], function(){
     Route::put('/vehicles/my', [ 'uses' => 'VehiclesController@CreateMyVehicle', 'as' => 'vehicles.my-vehicles.create' ]);
     Route::post('/vehicles/my/{vehicle}', [ 'uses' => 'VehiclesController@UpdateMyVehicle', 'as' => 'vehicles.my-vehicles.update' ])->where(['vehicle_id' => '[0-9]+']);
     Route::delete('/vehicles/my/{vehicle}', [ 'uses' => 'VehiclesController@DeleteMyVehicle', 'as' => 'vehicles.my-vehicles.delete' ])->where(['vehicle_id' => '[0-9]+']);
+    Route::put('/vehicles/my/{vehicle}/photo', [ 'uses' => 'VehiclesController@UploadMyVehiclePhoto', 'as' => 'vehicles.my-vehicles.photo.upload' ])->where(['vehicle_id' => '[0-9]+']);
+    Route::delete('/vehicles/my/{vehicle}/photo/{vehicle_photo}', [ 'uses' => 'VehiclesController@DeteleMyVehiclePhoto', 'as' => 'vehicles.my-vehicles.photo.delete' ])->where(['vehicle_id' => '[0-9]+']);
 
     // Events
     Route::get('/events', [ 'uses' => 'EventsController@List', 'as' => 'events.list' ]);
@@ -139,6 +141,8 @@ Route::prefix('mobile')->group(function(){
         Route::put('/vehicles/my', [ 'uses' => 'Mobile\VehiclesController@CreateMyVehicle', 'as' => 'mobile.vehicles.my-vehicles.create' ]);
         Route::post('/vehicles/my/{vehicle}', [ 'uses' => 'Mobile\VehiclesController@UpdateMyVehicle', 'as' => 'mobile.vehicles.my-vehicles.update' ])->where(['vehicle_id' => '[0-9]+']);
         Route::delete('/vehicles/my/{vehicle}', [ 'uses' => 'Mobile\VehiclesController@DeleteMyVehicle', 'as' => 'mobile.vehicles.my-vehicles.delete' ])->where(['vehicle_id' => '[0-9]+']);
+        Route::put('/vehicles/my/{vehicle}/photo', [ 'uses' => 'VehiclesController@UploadMyVehiclePhoto', 'as' => 'mobile.vehicles.my-vehicles.photo.upload' ])->where(['vehicle_id' => '[0-9]+']);
+        Route::delete('/vehicles/my/{vehicle}/photo/{vehicle_photo}', [ 'uses' => 'VehiclesController@DeteleMyVehiclePhoto', 'as' => 'mobile.vehicles.my-vehicles.photo.delete' ])->where(['vehicle_id' => '[0-9]+']);
 
         // Events
         Route::get('/events', [ 'uses' => 'Mobile\EventsController@List', 'as' => 'mobile.events.list' ]);

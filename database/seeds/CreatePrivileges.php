@@ -70,6 +70,8 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'vehicles.my-vehicles.create',        'name' => 'Create My Vehicle', 'description' => '', 'add_member' => true ], 
             [ 'action' => 'vehicles.my-vehicles.update',        'name' => 'Update My Vehicle', 'description' => '', 'add_member' => true ], 
             [ 'action' => 'vehicles.my-vehicles.delete',        'name' => 'Delete My Vehicle', 'description' => '', 'add_member' => true ],
+            [ 'action' => 'vehicles.my-vehicles.photo.upload',  'name' => 'Upload Photo to My Vehicle', 'description' => '', 'add_member' => true ],
+            [ 'action' => 'vehicles.my-vehicles.photo.delete',  'name' => 'Delete Photo on My Vehicle', 'description' => '', 'add_member' => true ],
 
             [ 'action' => 'events.list',                        'name' => 'List Events', 'description' => '', 'add_member' => false ],
             [ 'action' => 'events.get',                         'name' => 'Get Event', 'description' => '', 'add_member' => false ],

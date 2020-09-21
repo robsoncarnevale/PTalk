@@ -91,4 +91,21 @@ class VehiclesController extends Controller
         return (new \App\Http\Controllers\VehiclesController())->DeleteMyVehicle($request, $vehicle);
     }
 
+    /**
+     * Upload photo to my vehicle
+     * @since 20/09/2020
+     */
+    public function UploadMyVehiclePhoto(Request $request, Vehicle $vehicle)
+    {
+        return (new \App\Http\Controllers\VehiclesController())->UploadMyVehiclePhoto($request, $vehicle);
+    }
+
+    /**
+     * Delete photo on my vehicle
+     * @since 20/09/2020
+     */
+    public function DeteleMyVehiclePhoto(Request $request, Vehicle $vehicle, VehiclePhoto $vehicle_photo)
+    {
+        return (new \App\Http\Controllers\VehiclesController())->DeteleMyVehiclePhoto($request, $vehicle, $vehicle_photo);
+    }
 }
