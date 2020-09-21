@@ -13,6 +13,8 @@ use App\Http\Requests\MyVehicleRequest;
 use App\Http\Resources\Vehicle as VehicleResource;
 use App\Http\Resources\VehicleCollection;
 
+use Illuminate\Support\Facades\Storage;
+
 use DB;
 use Exception;
 
