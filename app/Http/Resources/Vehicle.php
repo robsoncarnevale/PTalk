@@ -41,7 +41,7 @@ class Vehicle extends JsonResource
             return array();
         }
 
-        foreach($photos as $photo) {
+        foreach($photos->sortByDesc('id') as $photo) {
             $return_photos[] = [
                 'id' => $photo->id,
                 'photo' => Storage::disk('images')->url($photo->photo),

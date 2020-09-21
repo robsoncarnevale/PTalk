@@ -287,6 +287,10 @@ class VehiclesController extends Controller
             abort(401);
         }
 
+        if (! $request->has('photo')) {
+            return response()->json([ 'status' => 'error', 'message' => __('vehicles.need-photo') ]);
+        }
+
         $file = $request->file('photo');
         $upload_photo = Storage::disk('images')->putFile(getClubCode().'/vehicle-photos', $file);
 
