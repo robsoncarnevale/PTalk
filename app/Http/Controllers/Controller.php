@@ -107,6 +107,8 @@ class Controller extends BaseController
 
         if (strpos($privilege, 'mobile.') === 0) {
             $privilege = substr($privilege, 7);
+
+            $session = \App\Models\User::getMobileSession();
         }
 
         if ($session)
