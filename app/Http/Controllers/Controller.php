@@ -105,6 +105,10 @@ class Controller extends BaseController
         $authorized = false;
         $session = auth()->guard()->user();
 
+        if (strpos($privilege, 'mobile.') === 0) {
+            $privilege = substr($privilege, 7);
+        }
+
         if ($session)
         {
             $permissions = HasPrivilege::select('privilege_action')
