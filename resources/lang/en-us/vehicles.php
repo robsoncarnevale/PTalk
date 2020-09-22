@@ -7,4 +7,6 @@ return [
     'success-create'    =>  'Vehicle created successfully',
     'success-update'    =>  'Vehicle updated successfully',
     'success-delete'    =>  'Vehicle removed successfully',
+
+    'carplate-already-registered' => 'License plate already registered in another vehicle',
 ];
