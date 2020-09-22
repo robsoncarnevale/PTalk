@@ -45,35 +45,56 @@ class User extends JsonResource
             }
         }
 
+        if (array_key_exists('vehicles', $resource)) {
+            $resource['vehicles'] = Vehicle::collection($this->vehicles);
+            // foreach($resource['vehicles'] as $i_vehicle => $vehicle) {
+            //     $resource['vehicles'][$i_vehicle]['carplate_formatted'] = $this->vehicles[$i_vehicle]->carplate_formatted;
+            // }
+        }
+
         return $resource;
 
-        // return [
-        //     'id' => $resource['id'],
-        //     'name' => $resource['name'],
-        //     'email' => $resource['email'],
-        //     'phone' => $resource['phone'],
-        //     'type' => $resource['type'],
-        //     'document_cpf' => $resource['document_cpf'],
-        //     'document_rg' => $resource['document_rg'],
-        //     'photo' => $resource['photo'],
-        //     'photo_url' => UserPhoto::get($this->photo),
-        //     'privilege_id' => $resource['privilege_id'],
-        //     'first_name' => $resource['first_name'],
-        //     'last_name' => $resource['last_name'],
-        //     'company' => $resource['company'],
-        //     'company_activities' => $resource['company_activities'],
-        //     'comercial_address' => $resource['comercial_address'],
-        //     'home_address' => $resource['home_address'],
+    //     return [
+    //         'id' => $this->id,
+    //         'name' => $this->name,
+    //         "first_name" => "Davi",
+    //         "last_name" => "Souto",
+    //         'email' => $this->email,
+    //         'email_verified_at' => $this->email_everified_at,
+    //         'phone' => $this->phone,
+    //         'type' => $this->type,
+    //         'document_cpf' => $this->document_cpf,
+    //         'document_rg' => $this->document_rg,
+    //         'photo' => $this->photo,
+    //         'photo_url' => UserPhoto::get($this->photo),
+    //         'privilege_id' => $this->privilege_id,
+    //         'privileges' => $this->privilegesToArray($this->privileges),
+    //         'company' => $this->company,
+    //         'company_activities' => $this->company_activities,
+    //         'comercial_address' => $this->comercial_address,
+    //         'home_address' => $this->home_address,
             
-        //     'status' => $resource['status'],
-        //     'status_reason' => $resource['status_reason'],
-        //     'suspended_time' => $resource['suspended_time'],
-        //     'approval_status' => $resource['approval_status'],
-        //     'approval_status_date' => $resource['approval_status_date'],
-        //     'deleted' => $resource['deleted'],
+    //         'status' => $this->status,
+    //         'status_reason' => $this->status_reason,
+    //         'suspended_time' => $this->suspended_time,
+    //         'approval_status' => $this->approval_status,
+    //         'approval_status_date' => $this->approval_status_date,
+    //         'deleted' => $this->deleted,
+
+    //         "member_class_id" => $this->member_class_id,
+    //         "indicated_by" => $this->indicated_by,
           
-        //     'created_at' => $resource['created_at'],
-        //     'updated_at' => $resource['updated_at'],
-        // ];
+    //         'created_at' => $this->created_at,
+    //         'updated_at' => $this->updated_at,
+    //     ];
+    }
+
+    private function privilegesToArray($privileges)
+    {
+        if (! $privileges) {
+            return array();
+        }
+
+        return $privileges->toArray();
     }
 }

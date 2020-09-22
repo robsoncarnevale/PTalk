@@ -92,9 +92,20 @@ class VehiclesController extends Controller
 
         $vehicle->fill($request->all());
         $vehicle->club_code = getClubCode();
-
+    
         if ($vehicle->carplate) {
             $vehicle->carplate = strtoupper(preg_replace("#[^0-9A-Z]#is", '', $vehicle->carplate));
+   
+            // Check if carplate is already registered
+            $check_carplate = Vehicle::select('id')
+                ->where('carplate', $vehicle->carplate)
+                ->where('deleted', false)
+                ->where('club_code', getClubCode())
+                ->first();
+        
+            if ($check_carplate) {
+                return response()->json([ 'status' => 'error', 'message' => __('vehicles.carplate-already-registered') ]);
+            }
         }
 
         $vehicle->save();
@@ -124,7 +135,22 @@ class VehiclesController extends Controller
 
         if ($vehicle->carplate) {
             $vehicle->carplate = strtoupper(preg_replace("#[^0-9A-Z]#is", '', $vehicle->carplate));
+
+            // Check if carplate is already registered
+            if ($request->has('carplate')) {
+                $check_carplate = Vehicle::select('id')
+                    ->where('carplate', $vehicle->carplate)
+                    ->where('deleted', false)
+                    ->where('club_code', getClubCode())
+                    ->where('id', '<>', $vehicle->id)
+                    ->first();
+            
+                if ($check_carplate) {
+                    return response()->json([ 'status' => 'error', 'message' => __('vehicles.carplate-already-registered') ]);
+                }
+            }
         }
+
         
         $vehicle->save();
 
@@ -214,6 +240,17 @@ class VehiclesController extends Controller
 
         if ($vehicle->carplate) {
             $vehicle->carplate = strtoupper(preg_replace("#[^0-9A-Z]#is", '', $vehicle->carplate));
+
+            // Check if carplate is already registered
+            $check_carplate = Vehicle::select('id')
+                ->where('carplate', $vehicle->carplate)
+                ->where('deleted', false)
+                ->where('club_code', getClubCode())
+                ->first();
+            
+            if ($check_carplate) {
+                return response()->json([ 'status' => 'error', 'message' => __('vehicles.carplate-already-registered') ]);
+            }
         }
 
         $vehicle->save();
@@ -244,6 +281,20 @@ class VehiclesController extends Controller
 
         if ($vehicle->carplate) {
             $vehicle->carplate = strtoupper(preg_replace("#[^0-9A-Z]#is", '', $vehicle->carplate));
+
+            // Check if carplate is already registered
+            if ($request->has('carplate')) {
+                $check_carplate = Vehicle::select('id')
+                    ->where('carplate', $vehicle->carplate)
+                    ->where('deleted', false)
+                    ->where('club_code', getClubCode())
+                    ->where('id', '<>', $vehicle->id)
+                    ->first();
+            
+                if ($check_carplate) {
+                    return response()->json([ 'status' => 'error', 'message' => __('vehicles.carplate-already-registered') ]);
+                }
+            }
         }
 
         $vehicle->save();
