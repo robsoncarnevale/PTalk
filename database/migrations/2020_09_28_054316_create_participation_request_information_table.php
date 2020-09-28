@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRequestParticipationInformationTable extends Migration
+class CreateParticipationRequestInformationTable extends Migration
 {
     /**
      * Run the migrations.
