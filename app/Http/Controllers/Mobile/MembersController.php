@@ -133,7 +133,8 @@ class MembersController extends Controller
             $user->email = $request->has('email') ? $request->get('email') : null;
             $user->type = User::TYPE_MEMBER;
             $user->status = User::ACTIVE_STATUS;
-            $user->approval_status = User::MEMBER_STEP_STATUS_APPROVAL;
+            // $user->approval_status = User::MEMBER_STEP_STATUS_APPROVAL;
+            $user->approval_status = User::WAITING_STATUS_APPROVAL;
 
             if ($request->has('indicated_by')) {
                 $user->indicated_by = $indicator->id;
@@ -166,7 +167,7 @@ class MembersController extends Controller
             DB::commit();
 
             $sms = new \App\Http\Services\SmsService('aws_sns');
-            $sms->send(55, $phone, 'Você foi indicado para fazer parte do ' . $user->club->name . '! Complete sua solicitação baixando o app [link-do-app]');
+            $sms->send(55, $phone, 'Você foi indicado para fazer parte do ' . $user->club->name . '! Após aprovação acesse o clube baixando o app em [link-do-app]');
 
             return response()->json([ 'status' => 'success', 'data' => (new UserResource($user)), 'message' => __('members.success-create') ]);
         } catch (Exception $e) {
