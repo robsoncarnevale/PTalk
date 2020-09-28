@@ -135,6 +135,7 @@ Route::prefix('mobile')->group(function(){
     // Get code to continue refer member
     Route::get('/members/refer/get-code', [ 'uses' => 'Mobile\MembersController@GetCodeToContinueRequest', 'as' => 'mobile.members.refer.code' ]);
     Route::post('/members/refer/continue', [ 'uses' => 'Mobile\MembersController@ContinueReference', 'as' => 'mobile.members.refer.continue' ]);
+    Route::post('/members/participation-request', [ 'uses' => 'Mobile\MembersController@RequestParticipation', 'as' => 'mobile.members.participation-request' ]);
 
     Route::group([ 'middleware' => ['authorized.mobile', 'check.user-status.mobile'] ], function(){
         Route::get('/me', [ 'uses' => 'Mobile\MembersController@Me', 'as' => 'mobile.users.me' ]);

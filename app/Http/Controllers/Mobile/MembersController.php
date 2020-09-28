@@ -287,4 +287,9 @@ class MembersController extends Controller
             return response()->json([ 'status' => 'error', 'message' => __('members.error-continue', [ 'error' => $e->getMessage() ]) ]);
         }
     }
+
+    public function RequestParticipation(Request $request)
+    {
+        return $this->CreateFromReference($request, 'member');
+    }
 }
