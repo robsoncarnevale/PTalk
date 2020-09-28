@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Storage;
 
 use App\Models\User;
 use App\Models\Vehicle;
+use App\Models\ParticipationRequestInformation;
 use App\Http\Resources\User as UserResource;
 use App\Http\Resources\UserCollection;;
 
