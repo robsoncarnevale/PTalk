@@ -170,14 +170,15 @@ class MembersController extends Controller
                 $user['vehicle'] = $vehicle;
             }
 
-            if ($request->has('information')) {
+            if ($request->has('vehicle_carplate') || $request->has('vehicle_photo')) {
                 $information = new ParticipationRequestInformation();
-                $information->fill($request->get('information'));
+
+                $information->vehicle_carplate = $request->get('vehicle_carplate');
                 $information->user_id = $user->id;
                 $information->club_code = $user->club_code;
 
-                if ($request->has('information.vehicle_photo')) {
-                    $file = $request->file('information.vehicle_photo');
+                if ($request->has('vehicle_photo')) {
+                    $file = $request->file('vehicle_photo');
 
                     $upload_photo = Storage::disk('images')->putFile($user->club_code.'/request-vehicle-photos', $file);
 
