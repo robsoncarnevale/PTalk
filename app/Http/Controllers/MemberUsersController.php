@@ -94,6 +94,8 @@ class MemberUsersController extends Controller
         $users = User::select()
             // ->with('privilege_group')
             ->with('privilege_group:id,name')
+            ->with('participation_request_information')
+            ->with('indicator:id,name,photo,email,phone,nickname')
             ->where('club_code', getClubCode())
             ->where('deleted', false)
             ->where('approval_status', User::WAITING_STATUS_APPROVAL)
@@ -101,7 +103,7 @@ class MemberUsersController extends Controller
             ->orderBy('created_at')
             ->jsonPaginate(25, 3);
 
-        return response()->json([ 'status' => 'success', 'data' => UserResource::collection($users) ]);
+        return response()->json([ 'status' => 'success', 'data' => (new UserCollection($users)) ]);
     }
 
     /**

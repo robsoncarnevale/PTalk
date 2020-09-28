@@ -39,7 +39,7 @@ class User extends JsonResource
             $resource['photo_url'] = UserPhoto::get($resource['photo']);
         }
 
-        if (array_key_exists('indicator', $resource)) {
+        if (array_key_exists('indicator', $resource) && is_array($resource['indicator'])) {
             if (array_key_exists('photo', $resource['indicator'])) {
                 $resource['indicator']['photo'] = UserPhoto::get($resource['indicator']['photo']);
             }
@@ -50,6 +50,16 @@ class User extends JsonResource
             // foreach($resource['vehicles'] as $i_vehicle => $vehicle) {
             //     $resource['vehicles'][$i_vehicle]['carplate_formatted'] = $this->vehicles[$i_vehicle]->carplate_formatted;
             // }
+        }
+
+        if (array_key_exists('phone', $resource)) {
+            $resource['phone_formatted'] = $this->formatPhone($resource['phone']);
+        }
+
+        if (array_key_exists('participation_request_information', $resource) && is_array($resource['participation_request_information'])) {
+            if (array_key_exists('vehicle_photo', $resource['participation_request_information']) && $resource['participation_request_information']['vehicle_photo']) {
+                $resource['participation_request_information']['vehicle_photo'] = Storage::disk('images')->url($resource['participation_request_information']['vehicle_photo']);
+            }
         }
 
         return $resource;
@@ -96,5 +106,17 @@ class User extends JsonResource
         }
 
         return $privileges->toArray();
+    }
+
+    private function formatPhone($phone)
+    {
+        $formatedPhone = preg_replace('/[^0-9]/', '', $phone);
+        $matches = [];
+        preg_match('/^([0-9]{2})([0-9]{4,5})([0-9]{4})$/', $formatedPhone, $matches);
+        if ($matches) {
+            return '('.$matches[1].') '.$matches[2].'-'.$matches[3];
+        }
+    
+        return $phone; // return number without format
     }
 }

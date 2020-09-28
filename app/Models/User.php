@@ -45,6 +45,7 @@ class User extends Authenticatable implements JWTSubject
         'comercial_address',
         'document_cpf',
         'document_rg',
+        'indicated_by',
         // 'photo',
     ];
 
@@ -134,6 +135,11 @@ class User extends Authenticatable implements JWTSubject
     public function indicator()
     {
         return $this->belongsTo(User::class, 'indicated_by', 'id');
+    }
+
+    public function participation_request_information()
+    {
+        return $this->hasOne(ParticipationRequestInformation::class);
     }
 
     ///////////////////////
