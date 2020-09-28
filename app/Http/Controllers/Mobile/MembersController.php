@@ -153,9 +153,8 @@ class MembersController extends Controller
             $user->save();
 
             // Create Vehicle
-            if ($request->has('vehicle') && $request->has('vehicle.car_model_id'))
+            if ($request->has('vehicle'))
             {
-                // Test vehicle
                 $vehicle = new Vehicle($request->get('vehicle'));
                 $vehicle->carplate = $vehicle->carplate ? strtoupper($vehicle->carplate) : '';
                 $vehicle->user_id = $user->id;
@@ -165,10 +164,29 @@ class MembersController extends Controller
                 $user['vehicle'] = $vehicle;
             }
 
+            if ($request->has('information')) {
+                $information = new ParticipationRequestInformation();
+                $information->fill($request->get('information'));
+                $information->user_id = $user->id;
+                $information->club_code = getClubCode();
+
+                if ($request->has('information.vehicle_photo')) {
+                    $file = $request->file('information.vehicle_photo');
+
+                    $upload_photo = Storage::disk('images')->putFile(getClubCode().'/request-vehicle-photos', $file);
+
+                    $information->vehicle_photo = $upload_photo;
+                }
+
+                $information->save();
+            }
+
             DB::commit();
 
-            $sms = new \App\Http\Services\SmsService('aws_sns');
-            $sms->send(55, $phone, 'Você foi indicado para fazer parte do ' . $user->club->name . '! Após aprovação acesse o clube baixando o app em [link-do-app]');
+            if ($request->has('indicated_by')) {
+                $sms = new \App\Http\Services\SmsService('aws_sns');
+                $sms->send(55, $phone, 'Você foi indicado para fazer parte do ' . $user->club->name . '! Após aprovação acesse o clube baixando o app em [link-do-app]');
+            }
 
             return response()->json([ 'status' => 'success', 'data' => (new UserResource($user)), 'message' => __('members.success-create') ]);
         } catch (Exception $e) {
