@@ -70,7 +70,7 @@ class MembersController extends Controller
      * @author Davi Souto
      * @since 08/06/2020
      */
-    public function CreateFromReference(Request $request, $type = 'member')
+    public function CreateFromReference(Request $request, $type = 'member', $club_code = false)
     {
         if ($validator = self::validate($request, [
             'name'  =>  'required',
@@ -127,6 +127,11 @@ class MembersController extends Controller
 
             $user->club_code = getClubCode();
 
+            if ($club_code) {
+                $user->club_code = $club_code;
+            }
+
+
             $user->document_cpf = preg_replace("#[^0-9]*#is", "", $request->get('document_cpf'));
             $user->name = $request->get('name');
             $user->phone = $phone;
@@ -168,12 +173,12 @@ class MembersController extends Controller
                 $information = new ParticipationRequestInformation();
                 $information->fill($request->get('information'));
                 $information->user_id = $user->id;
-                $information->club_code = getClubCode();
+                $information->club_code = $user->club_code;
 
                 if ($request->has('information.vehicle_photo')) {
                     $file = $request->file('information.vehicle_photo');
 
-                    $upload_photo = Storage::disk('images')->putFile(getClubCode().'/request-vehicle-photos', $file);
+                    $upload_photo = Storage::disk('images')->putFile($user->club_code.'/request-vehicle-photos', $file);
 
                     $information->vehicle_photo = $upload_photo;
                 }
@@ -290,6 +295,6 @@ class MembersController extends Controller
 
     public function RequestParticipation(Request $request)
     {
-        return $this->CreateFromReference($request, 'member');
+        return $this->CreateFromReference($request, 'member', $request->get('club_code'));
     }
 }
