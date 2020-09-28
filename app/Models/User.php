@@ -35,6 +35,7 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $fillable = [
         'name', 
+        'nickname',
         'email', 
         'password', 
         'company', 
@@ -390,5 +391,14 @@ class User extends Authenticatable implements JWTSubject
     public static function setMobileSession($mobile_auth)
     {
         return self::$mobile_auth = $mobile_auth;
+    }
+
+    public function getDislayNameAttribute()
+    {
+        if (! empty($this->nickname)) {
+            return $this->nickname;
+        }
+
+        return explode(" ", $this->name)[0];
     }
 }

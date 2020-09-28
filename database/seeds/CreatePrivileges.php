@@ -39,6 +39,12 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'users.members.delete',               'name' => 'Delete Member', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.members.view-all',             'name' => 'List all members and administrators', 'description' => '', 'add_member' => false ], 
             [ 'action' => 'users.members.approval-status.set',  'name' => 'Set Member Approval Status', 'description' => '', 'add_member' => false ],
+            
+            [ 'action' => 'users.classes.list',                 'name' => 'List Members Classes', 'description' => '', 'add_member' => true ],
+            [ 'action' => 'users.classes.get',                  'name' => 'Get Members Class', 'description' => '', 'add_member' => true ],
+            [ 'action' => 'users.classes.create',               'name' => 'Create Members Class', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'users.classes.update',               'name' => 'Update Members Class', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'users.classes.delete',               'name' => 'Delete Members Class', 'description' => '', 'add_member' => false ],
 
             [ 'action' => 'privileges.groups.list',             'name' => 'List Privileges', 'description' => '', 'add_member' => false ],
             [ 'action' => 'privileges.groups.get',              'name' => 'Read Privilege', 'description' => '', 'add_member' => false ],
@@ -65,6 +71,8 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'vehicles.create',                    'name' => 'Create Vehicle', 'description' => '', 'add_member' => false ],
             [ 'action' => 'vehicles.update',                    'name' => 'Update Vehicle', 'description' => '', 'add_member' => false ],
             [ 'action' => 'vehicles.delete',                    'name' => 'Delete Vehicle', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'vehicles.photo.upload',              'name' => 'Upload Photo to Vehicle', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'vehicles.photo.delete',              'name' => 'Delete Photo on Vehicle', 'description' => '', 'add_member' => false ],
             [ 'action' => 'vehicles.my-vehicles.list',          'name' => 'List My Vehicles', 'description' => '', 'add_member' => true ], 
             [ 'action' => 'vehicles.my-vehicles.get',           'name' => 'Get My Vehicle', 'description' => '', 'add_member' => true ], 
             [ 'action' => 'vehicles.my-vehicles.create',        'name' => 'Create My Vehicle', 'description' => '', 'add_member' => true ], 

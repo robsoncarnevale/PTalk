@@ -34,6 +34,7 @@ class SessionMobile extends JsonResource
         return [
             'id' => $resource['id'],
             'name' => $resource['name'],
+            'nickname' => $resource['nickname'],
             'email' => $resource['email'],
             'photo' => $resource['photo'],
             'photo_url' => UserPhoto::get($this->photo),

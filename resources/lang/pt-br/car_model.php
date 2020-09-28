@@ -7,4 +7,6 @@ return [
     'success-update' => 'Modelo alterado com sucesso',
 
     'delete-error-count' => 'Não é possível deletar um modelo com veículos registrados',
+
+    'car-model-already-registered' => 'Modelo já registrado',
 ];

@@ -12,6 +12,7 @@ use App\Http\Requests\MyVehicleRequest;
 
 use App\Http\Resources\Vehicle as VehicleResource;
 use App\Http\Resources\VehicleCollection;
+use App\Http\Resources\VehiclePhoto as VehiclePhotoResource;
 
 use Illuminate\Support\Facades\Storage;
 
@@ -327,6 +328,55 @@ class VehiclesController extends Controller
     }
 
     /**
+     * Upload photo to vehicle
+     * @since 28/09/2020
+     */
+    public function UploadVehiclePhoto(Request $request, Vehicle $vehicle)
+    {
+        $this->validateClub($vehicle->club_code, 'vehicle');
+
+        if (! $request->has('photo')) {
+            return response()->json([ 'status' => 'error', 'message' => __('vehicles.need-photo') ]);
+        }
+
+        $file = $request->file('photo');
+        $upload_photo = Storage::disk('images')->putFile(getClubCode().'/vehicle-photos', $file);
+
+        if (! $upload_photo){
+            return response()->json([ 'status' => 'error', 'message' => __('vehicles.error-photo-upload') ]);
+        }
+            
+        $vehicle_photo = new VehiclePhoto();
+        $vehicle_photo->club_code = getClubCode();
+        $vehicle_photo->vehicle_id = $vehicle->id;
+        $vehicle_photo->photo = $upload_photo;
+        $vehicle_photo->save();
+
+        return response()->json([ 'status' => 'success', 'data' => (new VehiclePhotoResource($vehicle_photo)), 'message' => __('vehicles.success-photo-upload') ]);
+    }
+
+    /**
+     * Delete photo on vehicle
+     * @since 28/09/2020
+     */
+    public function DeteleVehiclePhoto(Request $request, Vehicle $vehicle, VehiclePhoto $vehicle_photo)
+    {
+        $this->validateClub($vehicle->club_code, 'vehicle');
+
+        if ($vehicle->user_id != User::getAuthenticatedUserId()) {
+            abort(401);
+        }
+
+        if (Storage::disk('images')->exists($vehicle_photo->photo)) {
+            Storage::disk('images')->delete($vehicle_photo->photo);
+        }
+
+        $vehicle_photo->delete();
+
+        return response()->json([ 'status' => 'success', 'data' => true, 'message' => __('vehicles.success-photo-remove') ]);
+    }
+
+    /**
      * Upload photo to my vehicle
      * @since 20/09/2020
      */
@@ -355,7 +405,7 @@ class VehiclesController extends Controller
         $vehicle_photo->photo = $upload_photo;
         $vehicle_photo->save();
 
-        return response()->json([ 'status' => 'success', 'data' => $vehicle_photo, 'message' => __('vehicles.success-photo-upload') ]);
+        return response()->json([ 'status' => 'success', 'data' => (new VehiclePhotoResource($vehicle_photo)), 'message' => __('vehicles.success-photo-upload') ]);
     }
 
     /**

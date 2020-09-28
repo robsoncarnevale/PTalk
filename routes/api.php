@@ -55,6 +55,12 @@ Route::group([ 'middleware' => 'authorized' ], function(){
     Route::delete('/users/members/{user_id}', [ 'uses' => 'MemberUsersController@Delete', 'as' => 'users.members.delete' ])->where(['user_id' => '[0-9]+']);
     Route::get('/users/members/waiting-approval', [ 'uses' => 'MemberUsersController@WaitingApproval', 'as' => 'users.members.waiting-approval' ]);
     Route::post('/users/members/{user_id}/approval-status/{status}', [ 'uses' => 'MemberUsersController@SetApprovalStatus', 'as' => 'users.members.approval-status.set' ])->where(['user_id' => '[0-9]+']);
+    // Members Classes
+    Route::get('/users/classes', [ 'uses' => 'MembersClassesController@List', 'as' => 'users.classes.list' ]);
+    Route::get('/users/classes/{member_class_id}', [ 'uses' => 'MembersClassesController@Get', 'as' => 'users.classes.get' ])->where(['member_class_id' => '[0-9]+']);
+    Route::put('/users/classes', [ 'uses' => 'MembersClassesController@Create', 'as' => 'users.classes.create' ]);
+    Route::post('users/classes/{member_class_id}', [ 'uses' => 'MembersClassesController@Update', 'as' => 'users.classes.update' ])->where(['member_class_id' => '[0-9]+']);
+    Route::delete('/users/classes/{member_class_id}', [ 'uses' => 'MembersClassesController@Delete', 'as' => 'users.classes.delete' ])->where(['member_class_id' => '[0-9]+']);
 
 
     // Privileges Groups
@@ -86,14 +92,16 @@ Route::group([ 'middleware' => 'authorized' ], function(){
     Route::put('/vehicles', [ 'uses' => 'VehiclesController@Create', 'as' => 'vehicles.create' ]);
     Route::post('/vehicles/{vehicle}', [ 'uses' => 'VehiclesController@Update', 'as' => 'vehicles.update' ])->where(['vehicle_id' => '[0-9]+']);
     Route::delete('/vehicles/{vehicle}', [ 'uses' => 'VehiclesController@Delete', 'as' => 'vehicles.delete' ])->where(['vehicle_id' => '[0-9]+']);
+    Route::put('/vehicles/{vehicle}/photo', [ 'uses' => 'VehiclesController@UploadVehiclePhoto', 'as' => 'vehicles.photo.upload' ]);
+    Route::delete('/vehicles/{vehicle}/photo/{vehicle_photo}', [ 'uses' => 'VehiclesController@DeteleVehiclePhoto', 'as' => 'vehicles.photo.delete' ]);
     // My vehicles
     Route::get('/vehicles/my', [ 'uses' => 'VehiclesController@ListMyVehicles', 'as' => 'vehicles.my-vehicles.list' ]);
     Route::get('/vehicles/my/{vehicle_id}', [ 'uses' => 'VehiclesController@GetMyVehicle', 'as' => 'vehicles.my-vehicles.get' ])->where(['vehicle_id' => '[0-9]+']);
     Route::put('/vehicles/my', [ 'uses' => 'VehiclesController@CreateMyVehicle', 'as' => 'vehicles.my-vehicles.create' ]);
     Route::post('/vehicles/my/{vehicle}', [ 'uses' => 'VehiclesController@UpdateMyVehicle', 'as' => 'vehicles.my-vehicles.update' ])->where(['vehicle_id' => '[0-9]+']);
     Route::delete('/vehicles/my/{vehicle}', [ 'uses' => 'VehiclesController@DeleteMyVehicle', 'as' => 'vehicles.my-vehicles.delete' ])->where(['vehicle_id' => '[0-9]+']);
-    Route::put('/vehicles/my/{vehicle}/photo', [ 'uses' => 'VehiclesController@UploadMyVehiclePhoto', 'as' => 'vehicles.my-vehicles.photo.upload' ])->where(['vehicle_id' => '[0-9]+']);
-    Route::delete('/vehicles/my/{vehicle}/photo/{vehicle_photo}', [ 'uses' => 'VehiclesController@DeteleMyVehiclePhoto', 'as' => 'vehicles.my-vehicles.photo.delete' ])->where(['vehicle_id' => '[0-9]+']);
+    Route::put('/vehicles/my/{vehicle}/photo', [ 'uses' => 'VehiclesController@UploadMyVehiclePhoto', 'as' => 'vehicles.my-vehicles.photo.upload' ]);
+    Route::delete('/vehicles/my/{vehicle}/photo/{vehicle_photo}', [ 'uses' => 'VehiclesController@DeteleMyVehiclePhoto', 'as' => 'vehicles.my-vehicles.photo.delete' ]);
 
     // Events
     Route::get('/events', [ 'uses' => 'EventsController@List', 'as' => 'events.list' ]);
@@ -141,8 +149,8 @@ Route::prefix('mobile')->group(function(){
         Route::put('/vehicles/my', [ 'uses' => 'Mobile\VehiclesController@CreateMyVehicle', 'as' => 'mobile.vehicles.my-vehicles.create' ]);
         Route::post('/vehicles/my/{vehicle}', [ 'uses' => 'Mobile\VehiclesController@UpdateMyVehicle', 'as' => 'mobile.vehicles.my-vehicles.update' ])->where(['vehicle_id' => '[0-9]+']);
         Route::delete('/vehicles/my/{vehicle}', [ 'uses' => 'Mobile\VehiclesController@DeleteMyVehicle', 'as' => 'mobile.vehicles.my-vehicles.delete' ])->where(['vehicle_id' => '[0-9]+']);
-        Route::put('/vehicles/my/{vehicle}/photo', [ 'uses' => 'VehiclesController@UploadMyVehiclePhoto', 'as' => 'mobile.vehicles.my-vehicles.photo.upload' ])->where(['vehicle_id' => '[0-9]+']);
-        Route::delete('/vehicles/my/{vehicle}/photo/{vehicle_photo}', [ 'uses' => 'VehiclesController@DeteleMyVehiclePhoto', 'as' => 'mobile.vehicles.my-vehicles.photo.delete' ])->where(['vehicle_id' => '[0-9]+']);
+        Route::put('/vehicles/my/{vehicle}/photo', [ 'uses' => 'VehiclesController@UploadMyVehiclePhoto', 'as' => 'mobile.vehicles.my-vehicles.photo.upload' ]);
+        Route::delete('/vehicles/my/{vehicle}/photo/{vehicle_photo}', [ 'uses' => 'VehiclesController@DeteleMyVehiclePhoto', 'as' => 'mobile.vehicles.my-vehicles.photo.delete' ]);
 
         // Events
         Route::get('/events', [ 'uses' => 'Mobile\EventsController@List', 'as' => 'mobile.events.list' ]);

@@ -29,6 +29,7 @@ class Session extends JsonResource
         return [
             'id' => $resource['id'],
             'name' => $resource['name'],
+            'nickname' => $resource['nickname'],
             'email' => $resource['email'],
             'type' => $resource['type'],
             'photo' => $resource['photo'],

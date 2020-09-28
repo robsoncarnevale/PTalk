@@ -17,14 +17,18 @@ class MembersClassesSeeder extends Seeder
      */
     private $classes = array(
         [
-            'label' => 'talk',
-            'name' => 'Talk',
+            'label' => 'silver',
+            'name' => 'Silver',
             'default' => true,
         ],
         [
             'label' => 'gold',
             'name' => 'Gold',
-        ]
+        ],
+        [
+            'label' => 'vip',
+            'name' => 'Vip',
+        ],
     );
 
     /**

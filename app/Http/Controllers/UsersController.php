@@ -71,7 +71,9 @@ class UsersController extends Controller
             ->withCount(['vehicles' => function($q){
                 $q->where('deleted', false);
             }])
-            ->with('vehicles')
+            ->with(['vehicles' => function($q){
+                $q->where('deleted', false);
+            }])
             ->where('club_code', getClubCode())
             ->where('deleted', false)
             ->where('approval_status', 'approved')
@@ -161,6 +163,8 @@ class UsersController extends Controller
             if ($request->has('comercial_address')) $user->comercial_address = $request->get('comercial_address');
             if ($request->has('company')) $user->company = $request->get('company');
             if ($request->has('company_activities')) $user->company_activities = $request->get('company_activities');
+            if ($request->has('nickname')) $user->nickname = $request->get('nickname');
+            if ($request->has('member_class_id')) $user->member_class_id = $request->get('member_class_id');
 
             // Photo upload
             if ($request->has('photo'))
@@ -259,6 +263,8 @@ class UsersController extends Controller
             if ($request->has('comercial_address')) $user->comercial_address = $request->get('comercial_address');
             if ($request->has('company')) $user->company = $request->get('company');
             if ($request->has('company_activities')) $user->company_activities = $request->get('company_activities');
+            if ($request->has('nickname')) $user->nickname = $request->get('nickname');
+            if ($request->has('member_class_id')) $user->member_class_id = $request->get('member_class_id');
 
             if ($request->has('status'))
             {
@@ -304,6 +310,7 @@ class UsersController extends Controller
         $vehicles = Vehicle::select()
             ->with('car_model:id,name,car_brand_id,picture', 'car_model.car_brand:id,name', 'car_color:id,name')
             ->where('user_id', $user->id)
+            ->where('deleted', false)
             ->get();
 
         $user->vehicles = $vehicles;

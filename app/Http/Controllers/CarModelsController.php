@@ -126,6 +126,16 @@ class CarModelsController extends Controller
             return $validator;
         }
 
+        // Validate duplication
+        $check_car_model = CarModel::select('id')
+            ->where('name', $request->get('name'))
+            ->where('club_code', getClubCode())
+            ->first();
+
+        if ($check_car_model) {
+            return response()->json([ 'status' => 'error', 'message' => __('car_model.car-model-already-registered') ]);
+        }
+
         $car_model = new CarModel();
         $car_model->fill($request->all());
         $car_model->club_code = getClubCode();
@@ -158,6 +168,17 @@ class CarModelsController extends Controller
         }
 
         $car_model->fill($request->all());
+
+        // Validate duplication
+        $check_car_model = CarModel::select('id')
+            ->where('name', $car_model->name)
+            ->where('id', '<>', $car_model->id)
+            ->where('club_code', getClubCode())
+            ->first();
+
+        if ($check_car_model) {
+            return response()->json([ 'status' => 'error', 'message' => __('car_model.car-model-already-registered') ]);
+        }
 
         // Picture upload
         if ($request->has('picture')) {

@@ -84,6 +84,16 @@ class CarColorsController extends Controller
             return $validator;
         }
 
+        // Validate duplication
+        $check_car_color = CarColor::select('id')
+            ->where('name', $request->get('name'))
+            ->where('club_code', getClubCode())
+            ->first();
+
+        if ($check_car_color) {
+            return response()->json([ 'status' => 'error', 'message' => __('car_color.car-color-already-registered') ]);
+        }
+
         $car_color = new CarColor();
         $car_color->fill($request->all());
         $car_color->club_code = getClubCode();
@@ -115,6 +125,17 @@ class CarColorsController extends Controller
         }
 
         $car_color->fill($request->all());
+
+        // Validate duplication
+        $check_car_color = CarColor::select('id')
+            ->where('name', $car_color->name)
+            ->where('id', '<>', $car_color->id)
+            ->where('club_code', getClubCode())
+            ->first();
+
+        if ($check_car_color) {
+            return response()->json([ 'status' => 'error', 'message' => __('car_color.car-color-already-registered') ]);
+        }
 
         if (strlen($car_color->value) <= 6 && strpos($car_color->value, '#') === false) {
             $car_color->value = '#' . $car_color->value;

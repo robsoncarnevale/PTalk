@@ -7,4 +7,6 @@ return [
     'success-update' => 'Cor alterada com sucesso',
 
     'delete-error-count' => 'Não é possível deletar uma cor com veículos registrados',
+
+    'car-color-already-registered' => 'Cor já registrada',
 ];

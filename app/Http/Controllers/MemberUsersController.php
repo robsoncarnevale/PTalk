@@ -96,7 +96,7 @@ class MemberUsersController extends Controller
             ->with('privilege_group:id,name')
             ->where('club_code', getClubCode())
             ->where('deleted', false)
-            ->where('approval_status', 'waiting')
+            ->where('approval_status', User::WAITING_STATUS_APPROVAL)
             ->where('type', 'member')
             ->orderBy('created_at')
             ->jsonPaginate(25, 3);

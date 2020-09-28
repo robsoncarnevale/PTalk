@@ -53,6 +53,7 @@ class UserRequest extends FormRequest
             'phone'  =>  'required|min:8|max:11',
             'email'  =>  'required|email',
             'privilege_id'  =>  'required|integer',
+            'nickname' => 'max:20',
         ];
     }
 
@@ -63,6 +64,7 @@ class UserRequest extends FormRequest
             'phone'  =>  'min:8|max:11',
             'email'  =>  'email',
             'privilege_id'  =>  'integer',
+            'nickname' => 'max:20',
         ];
     }
 }

@@ -75,7 +75,7 @@ class MembersController extends Controller
         if ($validator = self::validate($request, [
             'name'  =>  'required',
             'phone'  =>  'required|min:8|max:11',
-            'indicated_by' => 'required',
+            // 'indicated_by' => 'required',
         ])) return $validator;
         
         $phone = preg_replace("#[^0-9]*#is", "", $request->get('phone'));
@@ -103,18 +103,20 @@ class MembersController extends Controller
                 return response()->json([ 'status' => 'error', 'message' => __('members.error-email-already-registered') ]);
             }
         }
-            
-        // Get the indicator
-        $indicator = User::select()
-            ->where('id', $request->get('indicated_by'))
-            ->where('status', '<>', User::INACTIVE_STATUS)
-            ->where('approval_status', User::APPROVED_STATUS_APPROVAL)
-            ->where('deleted', false)
-            ->where('club_code', getClubCode())
-            ->first();
 
-        if (! $indicator) {
-            return response()->json([ 'status' => 'error', 'message' => __('members.error-indicator-not-found') ]);
+        // Get the indicator
+        if ($request->has('indicated_by')) {
+            $indicator = User::select()
+                ->where('id', $request->get('indicated_by'))
+                ->where('status', '<>', User::INACTIVE_STATUS)
+                ->where('approval_status', User::APPROVED_STATUS_APPROVAL)
+                ->where('deleted', false)
+                ->where('club_code', getClubCode())
+                ->first();
+    
+            if (! $indicator) {
+                return response()->json([ 'status' => 'error', 'message' => __('members.error-indicator-not-found') ]);
+            }
         }
         
         $user = new User();
@@ -132,7 +134,10 @@ class MembersController extends Controller
             $user->type = User::TYPE_MEMBER;
             $user->status = User::ACTIVE_STATUS;
             $user->approval_status = User::MEMBER_STEP_STATUS_APPROVAL;
-            $user->indicated_by = $indicator->id;
+
+            if ($request->has('indicated_by')) {
+                $user->indicated_by = $indicator->id;
+            }
             
             if ($request->has('document_rg')) $user->document_rg = $request->get('document_rg');
             if ($request->has('phone')) $user->phone = preg_replace("#[^0-9]*#is", "", $request->get('phone'));

@@ -24,6 +24,7 @@ class Profile extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'nickname' => $this->nickname,
             'privilege_id' => $this->privilege_id,
             'photo' => $this->photo,
             'photo_url' => UserPhoto::get($this->photo),

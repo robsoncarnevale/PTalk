@@ -13,4 +13,15 @@ use Illuminate\Database\Eloquent\Model;
 class MemberClass extends Model
 {
     protected $table = 'members_classes';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name',
+        'description',
+        'default',
+    ];
 }
