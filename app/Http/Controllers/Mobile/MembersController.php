@@ -133,6 +133,7 @@ class MembersController extends Controller
             $user->email = $request->has('email') ? $request->get('email') : null;
             $user->type = User::TYPE_MEMBER;
             $user->status = User::ACTIVE_STATUS;
+            $user->password = '';
             // $user->approval_status = User::MEMBER_STEP_STATUS_APPROVAL;
             $user->approval_status = User::WAITING_STATUS_APPROVAL;
 
