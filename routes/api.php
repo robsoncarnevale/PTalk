@@ -94,6 +94,7 @@ Route::group([ 'middleware' => 'authorized' ], function(){
     Route::delete('/vehicles/{vehicle}', [ 'uses' => 'VehiclesController@Delete', 'as' => 'vehicles.delete' ])->where(['vehicle_id' => '[0-9]+']);
     Route::put('/vehicles/{vehicle}/photo', [ 'uses' => 'VehiclesController@UploadVehiclePhoto', 'as' => 'vehicles.photo.upload' ]);
     Route::delete('/vehicles/{vehicle}/photo/{vehicle_photo}', [ 'uses' => 'VehiclesController@DeteleVehiclePhoto', 'as' => 'vehicles.photo.delete' ]);
+    Route::put('/photo-without-vehicle', [ 'uses' => 'VehiclesController@UploadPhotoWithoutVehicle', 'as' => 'vehicles.photo.upload-without-vehicle' ]);
     // My vehicles
     Route::get('/vehicles/my', [ 'uses' => 'VehiclesController@ListMyVehicles', 'as' => 'vehicles.my-vehicles.list' ]);
     Route::get('/vehicles/my/{vehicle_id}', [ 'uses' => 'VehiclesController@GetMyVehicle', 'as' => 'vehicles.my-vehicles.get' ])->where(['vehicle_id' => '[0-9]+']);
