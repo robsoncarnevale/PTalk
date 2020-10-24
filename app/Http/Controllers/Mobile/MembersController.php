@@ -78,6 +78,10 @@ class MembersController extends Controller
             'phone'  =>  'required|min:8|max:11',
             // 'indicated_by' => 'required',
         ])) return $validator;
+
+        if (! $club_code) {
+            $club_code = getClubCode();
+        }
         
         $phone = preg_replace("#[^0-9]*#is", "", $request->get('phone'));
 
@@ -85,7 +89,7 @@ class MembersController extends Controller
         $check_phone = User::select('id')
             ->where('phone', $phone)
             ->where('deleted', false)
-            ->where('club_code', getClubCode())
+            ->where('club_code', $club_code)
             ->first();
 
         if ($check_phone) {
@@ -97,7 +101,7 @@ class MembersController extends Controller
             $check_email = User::select('id')
                 ->where('email', $request->get('email'))
                 ->where('deleted', false)
-                ->where('club_code', getClubCode())
+                ->where('club_code', $club_code)
                 ->first();
         
             if ($check_email) {
@@ -112,7 +116,7 @@ class MembersController extends Controller
                 ->where('status', '<>', User::INACTIVE_STATUS)
                 ->where('approval_status', User::APPROVED_STATUS_APPROVAL)
                 ->where('deleted', false)
-                ->where('club_code', getClubCode())
+                ->where('club_code', $club_code)
                 ->first();
     
             if (! $indicator) {
@@ -126,12 +130,7 @@ class MembersController extends Controller
         {
             DB::beginTransaction();
 
-            $user->club_code = getClubCode();
-
-            if ($club_code) {
-                $user->club_code = $club_code;
-            }
-
+            $user->club_code = $club_code;
 
             $user->document_cpf = preg_replace("#[^0-9]*#is", "", $request->get('document_cpf'));
             $user->name = $request->get('name');
