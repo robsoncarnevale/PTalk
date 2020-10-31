@@ -9,7 +9,7 @@ use Illuminate\Queue\SerializesModels;
 
 use Illuminate\Support\Facades\Storage;
 
-class RegisterMail extends Mailable
+class RepprovalMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -34,7 +34,7 @@ class RegisterMail extends Mailable
         $this->color = preg_replace("#[^a-zA-Z0-9]#is", "", $user->club->primary_color);
         $this->logo_url = Storage::disk('images')->url($user->club->code . "/defaults/logo.png");
 
-        $this->title = "Bem vindo ao " . $user->club->name;
+        $this->title = "Retorno de solicitação ao " . $user->club->name;
         $this->from_name = $user->club->name . " - Register";
 
         $explode_name = explode(" ", $user->name);
@@ -54,6 +54,6 @@ class RegisterMail extends Mailable
     {
         return $this->from('noreply@bitnary.com.br', $this->from_name)
             ->subject($this->title)
-            ->view('emails.register');
+            ->view('emails.repproval-status');
     }
 }

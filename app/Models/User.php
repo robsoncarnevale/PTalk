@@ -279,6 +279,34 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
+     * Save the actual approval status to history
+     * 
+     * @author Davi Souto
+     * @since 19/08/2020
+     */
+    public function saveApprovalHistory()
+    {
+        $last_status = \App\Models\UserApprovalHistory::select()
+            ->where('user_id', $this->id)
+            ->orderBy('created_at', 'DESC')
+            ->first();
+
+        if (! $last_status || $last_status->status != $this->approval_status) {
+            $status_history = new \App\Models\UserApprovalHistory();
+            $status_history->club_code = $this->club_code;
+            $status_history->user_id = $this->id;
+            $status_history->approval_status = $this->approval_status;
+            $status_history->reason = $this->refused_reason;
+    
+            $status_history->save();
+            
+            return $status_history;
+        }
+
+        return $last_status;
+    }
+
+    /**
      * {@inheritdoc}
      * Add field photo_url if has photo
      *

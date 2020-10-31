@@ -129,7 +129,13 @@ class MemberUsersController extends Controller
 
         $user->approval_status = $status;
         $user->approval_status_date = date('Y-m-d H:i:s');
+
+        if ($request->has('refused_reason')) {
+            $user->refused_reason = $request->get('refused_reason');
+        }
+
         $user->save();
+        $user->saveApprovalHistory();
 
         // Send register mail
         if ($user->approval_status == User::APPROVED_STATUS_APPROVAL && ! empty($user->email))
@@ -138,6 +144,13 @@ class MemberUsersController extends Controller
             {
                 Mail::to($user->email)
                     ->send(new \App\Mail\RegisterMail($user));
+            } catch(\Exception $e) {
+            }
+        } else {
+            try
+            {
+                Mail::to($user->email)
+                    ->send(new \App\Mail\RepprovalMail($user));
             } catch(\Exception $e) {
             }
         }
