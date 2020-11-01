@@ -86,7 +86,7 @@ class CarColorsController extends Controller
 
         // Validate duplication
         $check_car_color = CarColor::select('id')
-            ->where('name', $request->get('name'))
+            ->whereRaw('LOWER(name) = ?', strtolower($request->get('name')))
             ->where('club_code', getClubCode())
             ->first();
 
@@ -128,7 +128,7 @@ class CarColorsController extends Controller
 
         // Validate duplication
         $check_car_color = CarColor::select('id')
-            ->where('name', $car_color->name)
+            ->whereRaw('LOWER(name) = ?', strtolower($car_color->name))
             ->where('id', '<>', $car_color->id)
             ->where('club_code', getClubCode())
             ->first();

@@ -19,6 +19,7 @@ class MemberClass extends JsonResource
             'name' => $this->name,
             'label' => $this->label,
             'description' => $this->description,
+            'color' => $this->color,
             'default' => $this->default,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

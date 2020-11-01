@@ -22,6 +22,7 @@ class MemberClass extends Model
     protected $fillable = [
         'name',
         'description',
+        'color',
         'default',
     ];
 }

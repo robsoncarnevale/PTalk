@@ -19,15 +19,21 @@ class MembersClassesSeeder extends Seeder
         [
             'label' => 'silver',
             'name' => 'Silver',
+            'description' => 'Usuários cadastrados que não pagam anuidade para participar',
+            'color' => '#C4D4E0',
             'default' => true,
         ],
         [
             'label' => 'gold',
             'name' => 'Gold',
+            'description' => 'Usuários que pagam anuidade',
+            'color' => '#FFBD1B',
         ],
         [
             'label' => 'vip',
             'name' => 'Vip',
+            'description' => 'Usuários que pagam anuidade, ajudam na SEDE e participam de maneira ativa em ações do grupo',
+            'color' => '#E63D39',
         ],
     );
 
