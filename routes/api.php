@@ -111,6 +111,12 @@ Route::group([ 'middleware' => 'authorized' ], function(){
     Route::post('events/{event}', [ 'uses' => 'EventsController@Update', 'as' => 'events.update' ]);
     Route::delete('/events/{event}', [ 'uses' => 'EventsController@Delete', 'as' => 'events.delete' ]);
 
+    // Blacklist
+    Route::get('/blacklist', [ 'uses' => 'BlacklistController@List', 'as' => 'blacklist.list' ]);
+    Route::get('/blacklist/{blacklist_id}', [ 'uses' => 'BlacklistController@Get', 'as' => 'blacklist.get' ])->where(['blacklist_id' => '[0-9]+']);
+    Route::put('/blacklist', [ 'uses' => 'BlacklistController@Create', 'as' => 'blacklist.create' ]);
+    Route::post('/blacklist/{blacklist}', [ 'uses' => 'BlacklistController@Update', 'as' => 'blacklist.update' ]);
+
     // Status
     Route::get('/club/status', [ 'uses' => 'ClubController@GetStatus', 'as' => 'club.status' ]);
 });

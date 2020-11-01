@@ -15,4 +15,5 @@ return [
     'error-phone-already-registered' => "Telefone já registrado",
     'error-email-already-registered' => "E-mail já registrado",
     'error-indicator-not-found' => 'Indicador não encontrado',
+    'error-number-in-blacklist' => "Seu cadastro está incluso na blacklist.\nPara mais informações, entre em contato com a nossa equipe.",
 ];

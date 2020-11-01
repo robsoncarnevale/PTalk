@@ -427,12 +427,41 @@ class User extends Authenticatable implements JWTSubject
         return self::$mobile_auth = $mobile_auth;
     }
 
-    public function getDislayNameAttribute()
+    /**
+     * Get de nickname if exists or first name + last name
+     * @author Davi Souto
+     * @ return string
+     */
+    public function getDisplayNameAttribute()
     {
         if (! empty($this->nickname)) {
             return $this->nickname;
         }
 
-        return explode(" ", $this->name)[0];
+        $name_exploded = explode(" ", $this->name);
+
+        $first_name = $name_exploded[0];
+        $last_name =  (count($name_exploded) > 1) ? end($name_exploded) : '';
+
+        return trim($first_name . ' ' . $last_name);
+    }
+
+    /**
+     * Get formatted phone number
+     * @author Davi Souto
+     * @since 31/10/2020
+     */
+    private function getPhoneFormattedAttribute()
+    {
+        $formatedPhone = preg_replace('/[^0-9]/', '', $this->phone);
+
+        $matches = [];
+        preg_match('/^([0-9]{2})([0-9]{4,5})([0-9]{4})$/', $formatedPhone, $matches);
+
+        if ($matches) {
+            return '('.$matches[1].') '.$matches[2].'-'.$matches[3];
+        }
+    
+        return $phone; // return number without format
     }
 }

@@ -109,6 +109,17 @@ class MembersController extends Controller
             }
         }
 
+        // Check if number is in blacklist
+        $blacklist = \App\Models\Blacklist::select()
+            ->where('club_code', $club_code)
+            ->where('phone', $phone)
+            ->where('status', \App\Models\Blacklist::BLOCKED_STATUS)
+            ->first();
+
+        if ($blacklist) {
+            return response()->json([ 'status' => 'error', 'message' => __('members.error-number-in-blacklist') ]);
+        }
+
         // Get the indicator
         if ($request->has('indicated_by')) {
             $indicator = User::select()
