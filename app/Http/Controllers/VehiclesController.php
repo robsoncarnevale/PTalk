@@ -37,18 +37,49 @@ class VehiclesController extends Controller
      */
     public function List(Request $request, $page = 1)
     {
+        $filters = [];
+
+        if ($request->has('filters')) {
+            $filters = $request->get('filters');
+        }
+
         $vehicles = Vehicle::select()
             ->with('user')
-            ->whereHas('user', function($q){
+            ->whereHas('user', function($q) use ($filters){
                 $q->where('deleted', false)
                   ->where('status', '<>', User::INACTIVE_STATUS)
                   ->where('status', '<>', User::BANNED_STATUS)
                   ->where('approval_status', 'approved')
-                  ->where('club_code', getClubCode())
-                  ->where('id', '<>', User::getAuthenticatedUserId());
+                  ->where('club_code', getClubCode());
+                //   ->where('id', '<>', User::getAuthenticatedUserId());
+
+                // Filter by user name / nickname
+                if (array_key_exists('name', $filters) && ! empty($filters['name'])) {
+                    $q->where(function($q) use ($filters){
+                        $name = str_replace(' ', '%', trim($filters['name']));
+
+                        $q->whereRaw('LOWER(name) like ?', strtolower("%{$name}%"))
+                          ->orWhereRaw('LOWER(nickname) like ?', strtolower("%{$name}%"));
+                    });
+                }
             })
-            ->where('deleted', false)
-            ->jsonPaginate(25, 3);
+            ->where('deleted', false);
+
+        if ($request->has('filters')) {
+            // Filter by car model
+            if (array_key_exists('car_model_id', $filters) && ! empty($filters['car_model_id'])) {
+                $vehicles->where('car_model_id', $filters['car_model_id']);
+            }
+
+            // Filter by carplate
+            if (array_key_exists('carplate', $filters) && ! empty($filters['carplate'])) {
+                $carplate = strtoupper(preg_replace("#[^0-9A-Z]#is", '', $filters['carplate']));
+
+                $vehicles->whereRaw('carplate LIKE ?', '%'.strtoupper($carplate).'%');
+            }
+        }
+
+        $vehicles = $vehicles->jsonPaginate(25, 3);
 
         return response()->json([ 'status' => 'success', 'data' => (new VehicleCollection($vehicles)) ]);
     }

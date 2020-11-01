@@ -62,6 +62,10 @@ class User extends JsonResource
             }
         }
 
+        if (isset($this->display_name)) {
+            $resource['display_name'] = $this->display_name;
+        }
+
         return $resource;
 
     //     return [
