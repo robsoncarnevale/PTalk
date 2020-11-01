@@ -113,7 +113,7 @@ class UsersController extends Controller
 
         // Check if number is in blacklist
         $blacklist = \App\Models\Blacklist::select()
-            ->where('club_code', getClubClode())
+            ->where('club_code', getClubCode())
             ->where('phone', $phone)
             ->where('status', \App\Models\Blacklist::BLOCKED_STATUS)
             ->first();
