@@ -89,6 +89,10 @@ class MembersController extends Controller
         $check_phone = User::select('id')
             ->where('phone', $phone)
             ->where('deleted', false)
+            ->where(function($q){
+                $q->where('approval_status', User::APPROVED_STATUS_APPROVAL)
+                  ->orWhere('approval_status', User::WAITING_STATUS_APPROVAL);
+            })
             ->where('club_code', $club_code)
             ->first();
 
