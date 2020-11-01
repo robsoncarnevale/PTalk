@@ -113,7 +113,7 @@ class UsersController extends Controller
 
         // Check if number is in blacklist
         $blacklist = \App\Models\Blacklist::select()
-            ->where('club_code', $club_code)
+            ->where('club_code', getClubClode())
             ->where('phone', $phone)
             ->where('status', \App\Models\Blacklist::BLOCKED_STATUS)
             ->first();
@@ -134,7 +134,7 @@ class UsersController extends Controller
             ->first();
 
         if ($check_phone) {
-            return response()->json([ 'status' => 'error', 'message' => __('members.error-phone-already-registered') ]);
+            return response()->json([ 'status' => 'error', 'message' => __('members.error-phone-already-registered-or-waiting-approval') ]);
         }
 
         // Check if email is already registered

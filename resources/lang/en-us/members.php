@@ -17,4 +17,5 @@ return [
     'error-indicator-not-found' => 'Indicator not found',
     'error-number-in-blacklist' => "Number not allowed for registration !",
     'error-member-waiting-approval' => 'Registration already requested and under analysis, please wait for release',
+    'error-phone-already-registered-or-waiting-approval' => 'Telephone already registered or register awaiting release',
 ];

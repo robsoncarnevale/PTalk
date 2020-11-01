@@ -17,4 +17,5 @@ return [
     'error-indicator-not-found' => 'Indicador não encontrado',
     'error-number-in-blacklist' => "Número não permitido para cadastro !",
     'error-member-waiting-approval' => 'Cadastro já solicitado e em análise, por favor aguarde liberação',
+    'error-phone-already-registered-or-waiting-approval' => 'Telefone já registrado ou cadastro aguardando liberação',
 ];
