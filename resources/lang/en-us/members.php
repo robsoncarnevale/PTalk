@@ -15,4 +15,6 @@ return [
     'error-phone-already-registered' => "Phone already registered",
     'error-email-already-registered' => "E-mail already registered",
     'error-indicator-not-found' => 'Indicator not found',
+    'error-number-in-blacklist' => "Number not allowed for registration !",
+    'error-member-waiting-approval' => 'Registration already requested and under analysis, please wait for release',
 ];

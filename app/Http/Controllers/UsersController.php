@@ -111,10 +111,25 @@ class UsersController extends Controller
     {
         $phone = preg_replace("#[^0-9]*#is", "", $request->get('phone'));
 
+        // Check if number is in blacklist
+        $blacklist = \App\Models\Blacklist::select()
+            ->where('club_code', $club_code)
+            ->where('phone', $phone)
+            ->where('status', \App\Models\Blacklist::BLOCKED_STATUS)
+            ->first();
+
+        if ($blacklist) {
+            return response()->json([ 'status' => 'error', 'message' => __('members.error-number-in-blacklist') ]);
+        }
+
         // Check if phone is already registered
         $check_phone = User::select('id')
             ->where('phone', $phone)
             ->where('deleted', false)
+            ->where(function($q){
+                $q->where('approval_status', User::WAITING_STATUS_APPROVAL)
+                  ->orWhere('approval_status', User::APPROVED_STATUS_APPROVAL);
+          })
             ->where('club_code', getClubCode())
             ->first();
 

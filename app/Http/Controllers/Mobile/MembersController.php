@@ -85,13 +85,37 @@ class MembersController extends Controller
         
         $phone = preg_replace("#[^0-9]*#is", "", $request->get('phone'));
 
+        // Check if number is in blacklist
+        $blacklist = \App\Models\Blacklist::select()
+            ->where('club_code', $club_code)
+            ->where('phone', $phone)
+            ->where('status', \App\Models\Blacklist::BLOCKED_STATUS)
+            ->first();
+
+        if ($blacklist) {
+            return response()->json([ 'status' => 'error', 'message' => __('members.error-number-in-blacklist') ]);
+        }
+
+        // Check if member is waiting approval
+        $check_waiting_approval = User::select('id')
+            ->where('phone', $phone)
+            ->where('deleted', false)
+            ->where(function($q){
+                  $q->where('approval_status', User::WAITING_STATUS_APPROVAL);
+            })
+            ->where('club_code', $club_code)
+            ->first();
+
+        if ($check_waiting_approval) {
+            return response()->json([ 'status' => 'error', 'message' => __('members.error-member-waiting-approval') ]);
+        }
+
         // Check if phone is already registered
         $check_phone = User::select('id')
             ->where('phone', $phone)
             ->where('deleted', false)
             ->where(function($q){
-                $q->where('approval_status', User::APPROVED_STATUS_APPROVAL)
-                  ->orWhere('approval_status', User::WAITING_STATUS_APPROVAL);
+                $q->where('approval_status', User::APPROVED_STATUS_APPROVAL);
             })
             ->where('club_code', $club_code)
             ->first();
@@ -111,17 +135,6 @@ class MembersController extends Controller
             if ($check_email) {
                 return response()->json([ 'status' => 'error', 'message' => __('members.error-email-already-registered') ]);
             }
-        }
-
-        // Check if number is in blacklist
-        $blacklist = \App\Models\Blacklist::select()
-            ->where('club_code', $club_code)
-            ->where('phone', $phone)
-            ->where('status', \App\Models\Blacklist::BLOCKED_STATUS)
-            ->first();
-
-        if ($blacklist) {
-            return response()->json([ 'status' => 'error', 'message' => __('members.error-number-in-blacklist') ]);
         }
 
         // Get the indicator
