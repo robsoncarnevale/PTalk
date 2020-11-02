@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Mobile;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\Mobile\UpdateProfile as UpdateProfileRequest;
 use Illuminate\Support\Facades\Storage;
 
 use App\Models\User;
@@ -45,7 +46,7 @@ class MembersController extends Controller
      * @author Davi Souto
      * @since 03/08/2020
      */
-    public function UpdateProfile(Request $request)
+    public function UpdateProfile(UpdateProfileRequest $request)
     {
         $session = User::getMobileSession();
 
@@ -55,10 +56,11 @@ class MembersController extends Controller
 
         $user->fill($request->all());
         $user->document_cpf = preg_replace("#[^0-9]*#is", "", $user->document_cpf);
-        $user->phone = preg_replace("#[^0-9]*#is", "", $user->phone);
-        
-        if ($request->has('photo'))
+        // $user->phone = preg_replace("#[^0-9]*#is", "", $user->phone);
+
+        if ($request->has('photo')) {
             $user->upload($request->file('photo'));
+        }
 
         $user->update();
 
