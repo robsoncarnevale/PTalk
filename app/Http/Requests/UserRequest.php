@@ -48,7 +48,7 @@ class UserRequest extends FormRequest
     private function createRules()
     {
         return [
-            'document_cpf'  =>  'required|size:11',
+            'document_cpf'  =>  [ 'required' , 'size:11', new \App\Rules\ValidCpf() ],
             'name'  =>  'required',
             'phone'  =>  'required|min:8|max:11',
             'email'  =>  'required|email',
@@ -60,7 +60,7 @@ class UserRequest extends FormRequest
     private function updateRules()
     {
         return [
-            'document_cpf'  =>  'size:11',
+            'document_cpf'  =>  [ 'size:11', new \App\Rules\ValidCpf() ],
             'phone'  =>  'min:8|max:11',
             'email'  =>  'email',
             'privilege_id'  =>  'integer',
