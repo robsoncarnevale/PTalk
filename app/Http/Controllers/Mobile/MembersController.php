@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Mobile;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\Mobile\UpdateProfile as UpdateProfileRequest;
+use App\Http\Requests\Mobile\UpdateProfileRequest;
 use Illuminate\Support\Facades\Storage;
 
 use App\Models\User;
