@@ -33,6 +33,10 @@ Route::post('/password/forget/{club_code}/{token}', [ 'uses' => 'PasswordControl
 Route::post('/password/forget/get-token/{club_code}/{email}', [ 'uses' => 'PasswordController@GetForgetToken', 'as' => 'password.forget.get-token' ]);
 Route::post('/password/first-access/get-token/{club_code}/{email}', [ 'uses' => 'PasswordController@GetFirstAccessToken', 'as' => 'password.first-access.post' ]);
 
+// Services
+Route::get('/service/cep/find/{cep}', [ 'uses' => 'ServicesController@GetAddressByCep', 'as' => 'services.cep.find' ]);
+
+
 Route::group([ 'middleware' => 'authorized' ], function(){
     // Logout
     Route::get('/logout', [ 'uses' => 'AuthController@Logout', 'as' => 'auth.logout' ]);
@@ -61,6 +65,18 @@ Route::group([ 'middleware' => 'authorized' ], function(){
     Route::put('/users/classes', [ 'uses' => 'MembersClassesController@Create', 'as' => 'users.classes.create' ]);
     Route::post('users/classes/{member_class_id}', [ 'uses' => 'MembersClassesController@Update', 'as' => 'users.classes.update' ])->where(['member_class_id' => '[0-9]+']);
     Route::delete('/users/classes/{member_class_id}', [ 'uses' => 'MembersClassesController@Delete', 'as' => 'users.classes.delete' ])->where(['member_class_id' => '[0-9]+']);
+    // Users Address
+    Route::get('/users/{user}/address', [ 'uses' => 'UserAddressController@List', 'as' => 'users.address.list' ]);
+    Route::get('/users/{user}/address/{address}', [ 'uses' => 'UserAddressController@Get', 'as' => 'users.address.get' ]);
+    Route::put('/users/{user}/address', [ 'uses' => 'UserAddressController@Create', 'as' => 'users.address.create' ]);
+    Route::post('users/{user}/address/{address}', [ 'uses' => 'UserAddressController@Update', 'as' => 'users.address.update' ]);
+    Route::delete('/users/{user}/classes/{address}', [ 'uses' => 'UserAddressController@Delete', 'as' => 'users.address.delete' ]);
+    // My Users Address
+    Route::get('/users/address/my', [ 'uses' => 'UserAddressController@ListMyAddress', 'as' => 'users.address.list.my' ]);
+    Route::get('/users/address/my/{address}', [ 'uses' => 'UserAddressController@GetMyAddress', 'as' => 'users.address.get.my' ]);
+    Route::put('/users/address/my', [ 'uses' => 'UserAddressController@CreateMyAddress', 'as' => 'users.address.create.my' ]);
+    Route::post('users/address/{address}', [ 'uses' => 'UserAddressController@UpdateMyAddress', 'as' => 'users.address.update.my' ]);
+    Route::delete('/users/classes/{address}', [ 'uses' => 'UserAddressController@DeleteMyddress', 'as' => 'users.address.delete.my' ]);
 
 
     // Privileges Groups
@@ -143,6 +159,9 @@ Route::prefix('mobile')->group(function(){
     Route::get('/members/refer/get-code', [ 'uses' => 'Mobile\MembersController@GetCodeToContinueRequest', 'as' => 'mobile.members.refer.code' ]);
     Route::post('/members/refer/continue', [ 'uses' => 'Mobile\MembersController@ContinueReference', 'as' => 'mobile.members.refer.continue' ]);
     Route::post('/members/participation-request', [ 'uses' => 'Mobile\MembersController@RequestParticipation', 'as' => 'mobile.members.participation-request' ]);
+
+    // Services
+    Route::get('/service/cep/find/{cep}', [ 'uses' => 'Mobile\ServicesController@GetAddressByCep', 'as' => 'mobile.services.cep.find' ]);
 
     Route::group([ 'middleware' => ['authorized.mobile', 'check.user-status.mobile'] ], function(){
         Route::get('/me', [ 'uses' => 'Mobile\MembersController@Me', 'as' => 'mobile.users.me' ]);

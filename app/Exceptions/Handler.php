@@ -57,6 +57,17 @@ class Handler extends ExceptionHandler
         if ($exception instanceof \Symfony\Component\ErrorHandler\Error\FatalError ) { 
         }
 
+        // Handle 404
+        if ($this->isHttpException($exception)) {
+            if ($exception->getStatusCode() == 404) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Endpoint inexistente: /' . request()->path(),
+                    'code' => 404
+                ], 404);
+            }
+        }
+
         return response()->json([
             'status'    => 'error', 
             'message'   => $exception->getMessage(), 

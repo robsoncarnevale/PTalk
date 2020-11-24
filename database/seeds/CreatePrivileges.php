@@ -46,6 +46,18 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'users.classes.update',               'name' => 'Update Members Class', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.classes.delete',               'name' => 'Delete Members Class', 'description' => '', 'add_member' => false ],
 
+            [ 'action' => 'users.address.list',                 'name' => 'List User Addresses', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'users.address.get',                  'name' => 'Get User Address', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'users.address.create',               'name' => 'Create User Address', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'users.address.update',               'name' => 'Update User Address', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'users.address.delete',               'name' => 'Delete User Addres', 'description' => '', 'add_member' => false ],
+
+            [ 'action' => 'users.address.list.my',              'name' => 'List My Addresses', 'description' => '', 'add_member' => true ],
+            [ 'action' => 'users.address.get.my',               'name' => 'Get My Address', 'description' => '', 'add_member' => true ],
+            [ 'action' => 'users.address.create.my',            'name' => 'Create My Address', 'description' => '', 'add_member' => true ],
+            [ 'action' => 'users.address.update.my',            'name' => 'Update My Address', 'description' => '', 'add_member' => true ],
+            [ 'action' => 'users.address.delete.my',            'name' => 'Delete My Address', 'description' => '', 'add_member' => true ],
+
             [ 'action' => 'privileges.groups.list',             'name' => 'List Privileges', 'description' => '', 'add_member' => false ],
             [ 'action' => 'privileges.groups.get',              'name' => 'Read Privilege', 'description' => '', 'add_member' => false ],
             [ 'action' => 'privileges.groups.admins.list',      'name' => 'List Admins Privileges', 'description' => '', 'add_member' => false ],
