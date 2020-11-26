@@ -40,6 +40,7 @@ class RefreshBankAccountUsers extends Command
         echo "Checking users who don't have an bank account on \033[36m" . \DatabaseSeeder::$club_code . "\033[0m " . PHP_EOL . PHP_EOL;
 
         $users = \App\Models\User::select()
+            ->where('deleted', false)
             ->orderBy('id')
             ->get();
 
