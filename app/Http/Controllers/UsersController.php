@@ -187,6 +187,7 @@ class UsersController extends Controller
 
             $user->save();
             $user->saveStatusHistory();
+            $user->createBankAccount();
 
             // Create Vehicle
             // if ($request->has('vehicle'))

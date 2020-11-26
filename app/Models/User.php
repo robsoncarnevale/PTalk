@@ -307,6 +307,34 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
+     * Create bank account to user
+     * 
+     * @author Davi Souto
+     * @since 25/11/2020
+     */
+    public function createBankAccount()
+    {
+        $check = \App\Models\BankAccount::select()
+            ->where('user_id', $this->id)
+            ->first();
+
+        if ($check) {
+            return false;
+        }
+
+        $bank_account = new \App\Models\BankAccount();
+        $bank_account->club_code = $this->club_code;
+        $bank_account->user_id = $this->id;
+        $bank_account->account_number = preg_replace("#[^0-9]*#", "", $this->phone);
+        $bank_account->account_holder = $this->name;
+        $bank_account->balance = 0.00;
+        $bank_account->status = \App\Models\BankAccount::ACTIVE_STATUS;
+        $bank_account->save();
+
+        return $bank_account;
+    }
+
+    /**
      * {@inheritdoc}
      * Add field photo_url if has photo
      *

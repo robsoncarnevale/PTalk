@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\Club;
 use App\Models\Vehicle;
 use App\Models\User;
 
@@ -16,6 +17,9 @@ use App\Models\User;
 class ClubController extends Controller
 {
     protected $only_admin = false;
+    protected $ignore_routes = [
+        'club.data'
+    ];
 
     /**
      * Returns club status for dashboard
@@ -59,5 +63,24 @@ class ClubController extends Controller
             $status['next_events'] = '-';
 
         return response()->json([ 'status' => 'success', 'data' => $status ]);
+    }
+
+    /**
+     * Get data from club
+     * 
+     * @author Davi Souto
+     * @since 26/11/2020
+     */
+    public function getData(Request $request)
+    {
+        $club = Club::select()
+            ->where('code', getClubCode())
+            ->first();
+
+        if (! $club) {
+            return response()->json([ 'status' => 'error', 'message' => '404' ], 404);
+        }
+
+        return response()->json([ 'status' => 'success', 'data' => $club ]);
     }
 }
