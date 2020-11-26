@@ -41,6 +41,7 @@ class RefreshBankAccountUsers extends Command
 
         $users = \App\Models\User::select()
             ->where('deleted', false)
+            ->where('approval_status', \App\Models\User::APPROVED_STATUS_APPROVAL)
             ->orderBy('id')
             ->get();
 
