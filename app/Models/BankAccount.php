@@ -25,4 +25,12 @@ class BankAccount extends Model
     protected $hidden = [
         'club_code',
     ];
+
+    /**
+     * Get the user class
+     */
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User');
+    }
 }

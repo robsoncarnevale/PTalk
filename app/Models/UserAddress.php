@@ -67,7 +67,7 @@ class UserAddress extends Model
      */
     public function user()
     {
-        return $this->hasOne('App\Models\User');
+        return $this->belongsTo('App\Models\User');
     }
 
     /**

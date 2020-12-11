@@ -33,7 +33,7 @@ class Vehicle extends JsonResource
         ];
     }
 
-    private function photosToArray($photos)
+    public static function photosToArray($photos)
     {
         $return_photos = array();
 

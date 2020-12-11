@@ -34,9 +34,15 @@ class Profile extends JsonResource
             'company_activities' => $this->company_activities,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'approval_status_date' => $this->approval_status_date,
             // 'status' => $this->status,
             'type' => $this->type,
-            'vehicles' => MemberVehicle::collection($this->vehicles)
+            'member_class' => $this->member_class,
+            'privilege_group' => $this->privilege_group,
+            'vehicles' => MemberVehicle::collection($this->vehicles),
+            'bank_account' => [
+                'id' => $this->bank_account->id,
+            ]
         ];
     }
 }

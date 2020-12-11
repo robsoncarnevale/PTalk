@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\BankAccount;
 use App\Models\User;
 
+use App\Http\Resources\BankAccount as BankAccountResource;
+use App\Http\Resources\BankAccountCollection;
+
 /**
  * Car Brands Controller
  *
@@ -29,7 +32,7 @@ class BankAccountController extends Controller
             ->orderBy('account_holder')
             ->jsonPaginate(50);
 
-        return response()->json([ 'status' => 'success', 'data' => $data ]);
+        return response()->json([ 'status' => 'success', 'data' => (new BankAccountCollection($data)) ]);
     }
 
     /**
@@ -42,7 +45,7 @@ class BankAccountController extends Controller
     {
         $this->validateClub($bank_account->club_code, 'bank_account');
 
-        return response()->json([ 'status' => 'success', 'data' => $bank_account ]);
+        return response()->json([ 'status' => 'success', 'data' => (new BankAccountResource($bank_account)) ]);
     }
 
     /**
@@ -57,6 +60,6 @@ class BankAccountController extends Controller
             ->where('user_id', User::getAuthenticatedUserId())
             ->first();
 
-        return response()->json([ 'status' => 'success', 'data' => $bank_account ]);
+        return response()->json([ 'status' => 'success', 'data' => (new BankAccountResource($bank_account)) ]);
     }
 }

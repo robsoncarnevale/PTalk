@@ -25,4 +25,9 @@ class MemberClass extends Model
         'color',
         'default',
     ];
+
+    protected $hidden = [
+        'club_code',
+        'default',
+    ];
 }

@@ -66,6 +66,13 @@ class User extends JsonResource
             $resource['display_name'] = $this->display_name;
         }
 
+        if (! array_key_exists('vehicles_count', $resource)) {
+            $resource['vehicles_count'] = \App\Models\Vehicle::select('id', 'user_id')
+                ->where('user_id', $this->id)
+                ->where('deleted', false)
+                ->count();
+        }
+
         return $resource;
 
     //     return [

@@ -233,7 +233,6 @@ class VehiclesController extends Controller
     public function ListMyVehicles(Request $request)
     {
         $vehicles = Vehicle::select()
-            ->with('car_model:id,name,car_brand_id,picture', 'car_model.car_brand:id,name', 'car_color:id,name')
             ->where('user_id', User::getAuthenticatedUserId())
             ->where('deleted', false);
 

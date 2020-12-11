@@ -25,6 +25,8 @@ class Session extends JsonResource
             ->where('privilege_group_id', $resource['privilege_id'])
             ->get()
             ->pluck('privilege_action');
+
+        $resource['member_class'] = $this->member_class;
         
         return [
             'id' => $resource['id'],
@@ -37,6 +39,7 @@ class Session extends JsonResource
             'privilege_id' => $resource['privilege_id'],
             'first_name' => $resource['first_name'],
             'last_name' => $resource['last_name'],
+            'member_class' => $resource['member_class'],
             'privileges' => $resource['privileges'],
         ];
     }

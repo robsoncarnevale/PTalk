@@ -68,6 +68,7 @@ class UsersController extends Controller
         $users = User::select()
             // ->with('privilege_group')
             ->with('privilege_group:id,name')
+            ->with('member_class')
             ->withCount(['vehicles' => function($q){
                 $q->where('deleted', false);
             }])
@@ -89,14 +90,59 @@ class UsersController extends Controller
         $users = User::select()
             // ->with('privilege_group')
             ->with('privilege_group:id,name')
+            ->with('member_class')
             ->where('club_code', getClubCode())
             ->where('deleted', false)
-            ->where('status', '<>', User::INACTIVE_STATUS)
-            ->where('status', '<>', User::BANNED_STATUS)
             ->where('approval_status', 'approved')
-            ->where('id', '<>', Auth::guard()->user()->id)
-            ->orderBy('name')
-            ->jsonPaginate(25, 3);
+            // ->where('id', '<>', Auth::guard()->user()->id)
+            ->orderBy('name');
+
+        if (! $request->has('filters')) {
+            $filters = [];
+        }
+        if ($request->has('filters')) {
+            $filters = $request->get('filters');
+
+            if (array_key_exists('status', $filters)) {
+                $users->where('status', $filters['status']);
+            } else {
+                $users->where('status', '<>', User::INACTIVE_STATUS)
+                    ->where('status', '<>', User::BANNED_STATUS);
+            }
+
+            if (array_key_exists('name', $filters)) {
+                $users->whereRaw('LOWER(name) like ?', strtolower("%{$filters['name']}%"))
+                    ->orWhereRaw('LOWER(nickname) like ?', strtolower("%{$filters['name']}%"));
+            }
+
+            if (array_key_exists('state', $filters)) {
+                $users->whereHas('addresses', function($q) use ($filters){
+                    $q->where('state', strtoupper($filters['state']));
+                });
+            }
+
+            if (array_key_exists('city', $filters)) {
+                $users->whereHas('addresses', function($q) use ($filters){
+                    $q->whereRaw('LOWER(city) like ?', strtolower("%{$filters['city']}%"));
+                });
+            }
+
+            if (array_key_exists('car_model_id', $filters)) {
+                $users->whereHas('vehicles', function($q) use ($filters){
+                    $q->where('car_model_id', $filters['car_model_id'])
+                    ->where('deleted', false);
+                });
+            }
+
+            if (array_key_exists('car_color_id', $filters)) {
+                $users->whereHas('vehicles', function($q) use ($filters){
+                    $q->where('car_color_id', $filters['car_color_id'])
+                        ->where('deleted', false);
+                });
+            }
+        }
+
+        $users = $users->jsonPaginate(25, 3);
 
         return response()->json([ 'status' => 'success', 'data' => (new UserCollection($users)) ]);
     }
@@ -368,6 +414,7 @@ class UsersController extends Controller
     private static function Get(Request $request, $user_id, $type = 'members')
     {
         $user = User::select()
+            ->with('member_class')
             ->with(['vehicles' => function($q){
                 $q->where('deleted', false);
             }, 'vehicles.car_model:id,name,car_brand_id,picture', 'vehicles.car_model.car_brand:id,name', 'vehicles.car_color:id,name,value'])
@@ -392,6 +439,7 @@ class UsersController extends Controller
     public static function Me(Request $request)
     {
         $user = User::select()
+            ->with('member_class')
             ->where('club_code', getClubCode())
             ->where('id', Auth::guard()->user()->id)
             ->first();
@@ -408,6 +456,7 @@ class UsersController extends Controller
     public function ViewProfile(Request $request, $user_id)
     {
         $user = User::select()
+            ->with('member_class')
             ->with(['vehicles' => function($q){
                 $q->where('deleted', false);
             }])

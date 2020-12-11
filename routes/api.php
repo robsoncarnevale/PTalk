@@ -141,6 +141,7 @@ Route::group([ 'middleware' => 'authorized' ], function(){
     // Club
     Route::get('/club/status', [ 'uses' => 'ClubController@GetStatus', 'as' => 'club.status' ]);
     Route::get('/club/data', [ 'uses' => 'ClubController@GetData', 'as' => 'club.data' ]);
+    Route::get('/club/available-data', [ 'uses' => 'ClubController@GetAvailableData', 'as' => 'club.available-data' ]);
 });
 
 

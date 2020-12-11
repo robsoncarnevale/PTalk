@@ -142,6 +142,30 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasOne(ParticipationRequestInformation::class);
     }
 
+    /**
+     * Get the users addresses
+     */
+    public function addresses()
+    {
+        return $this->hasMany('App\Models\UserAddress');
+    }
+
+    /**
+     * Get the bank account
+     */
+    public function bank_account()
+    {
+        return $this->hasOne('App\Models\BankAccount');
+    }
+
+    /**
+     * Get the user class
+     */
+    public function member_class()
+    {
+        return $this->belongsTo('App\Models\MemberClass');
+    }
+
     ///////////////////////
 
     /**

@@ -93,6 +93,7 @@ class MemberUsersController extends Controller
     {
         $users = User::select()
             // ->with('privilege_group')
+            ->with('member_class')
             ->with('privilege_group:id,name')
             ->with('participation_request_information')
             ->with('indicator:id,name,photo,email,phone,nickname')

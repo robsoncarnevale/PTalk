@@ -8,6 +8,12 @@ use App\Models\Club;
 use App\Models\Vehicle;
 use App\Models\User;
 
+use App\Models\UserAddress;
+use App\Models\CarModel;
+use App\Models\CarColor;
+
+use App\Http\Resources\AvailableData as AvailableDataResource;
+
 /**
  * Club Controller
  *
@@ -18,7 +24,8 @@ class ClubController extends Controller
 {
     protected $only_admin = false;
     protected $ignore_routes = [
-        'club.data'
+        'club.data',
+        'club.available-data',
     ];
 
     /**
@@ -82,5 +89,96 @@ class ClubController extends Controller
         }
 
         return response()->json([ 'status' => 'success', 'data' => $club ]);
+    }
+
+    /**
+     * Get available data for filters from club
+     * 
+     * @author Davi Souto
+     * @since 10/12/2020
+     */
+    public function GetAvailableData(Request $request)
+    {
+        $addresses = UserAddress::select('state', 'city', 'user_id')
+            ->distinct('state', 'city')
+            ->whereHas('user')
+            ->get();
+
+        $find_car_models = CarModel::select('id', 'name', 'car_brand_id')
+        ->with('car_brand')
+            ->distinct('id')
+            ->whereHas('vehicles', function($q){
+                $q->where('deleted', false);
+                $q->whereHas('user');
+            })
+            ->get();
+
+        $find_car_colors = CarColor::select('id', 'name', 'value')
+        ->distinct('value')
+        ->whereHas('vehicles', function($q){
+                $q->where('deleted', false);
+                $q->whereHas('user');
+            })
+            ->get();
+
+        $states = [];
+        $cities = [];
+        $car_models = [];
+        $car_colors = [];
+
+        foreach($addresses as $address) {
+            $this_state = strtoupper($address->state);
+            $this_city = $address->city;
+
+            $city_key = strtolower(trim($this_city));
+            $this_city = ucfirst($this_city);
+
+            if (! array_key_exists($city_key, $cities)) {
+                $cities[$city_key] = $this_city;
+            }
+
+            if (! array_key_exists($this_state, $states)) {
+                $states[$this_state] = $this_state;
+            }
+        }
+
+        foreach($find_car_models as $car_model){
+            $car_brand_key = strtolower(str_replace(' ', '_', $car_model->car_brand->name));
+            $car_model_key = strtolower(str_replace(' ', '_', $car_model->name));
+
+            if (! array_key_exists($car_brand_key, $car_models)){
+                $car_models[$car_brand_key] = array(
+                    'car_brand_id' => $car_model->car_brand->id,
+                    'car_brand_name' => $car_model->car_brand->name,
+                    'car_models' => array(),
+                );
+            }
+
+            if (! array_key_exists($car_model_key, $car_models[$car_brand_key]['car_models'])){
+                $car_models[$car_brand_key]['car_models'][$car_model_key] = array(
+                    'car_model_id' => $car_model->id,
+                    'car_model_name' => $car_model->name,
+                );
+            }
+        }
+
+        foreach($find_car_colors as $car_color){
+            if (! array_key_exists($car_color->id, $car_colors)){
+                $car_colors[$car_color->value] = array(
+                    'car_color_id' => $car_color->id,
+                    'car_color_name' => $car_color->name,
+                    'car_color_value' => $car_color->value,
+                );
+            }
+        }
+
+        $data = [
+            'states' => $states,
+            'cities' => $cities,
+            'car_models' => $car_models,
+            'car_colors' => $car_colors,
+        ];
+
+        return response()->json([ 'status' => 'success', 'data' => new AvailableDataResource($data) ]);
     }
 }
