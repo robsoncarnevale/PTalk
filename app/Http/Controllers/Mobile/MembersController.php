@@ -153,8 +153,21 @@ class MembersController extends Controller
                 return response()->json([ 'status' => 'error', 'message' => __('members.error-indicator-not-found') ]);
             }
         }
+
+        $check_user_refused = User::select()
+            ->where('phone', $phone)
+            ->where('deleted', false)
+            ->where(function($q){
+                $q->where('approval_status', User::REFUSED_STATUS_APPROVAL);
+            })
+            ->where('club_code', $club_code)
+            ->first();
         
-        $user = new User();
+        if ($check_user_refused) {
+            $user = $check_user_refused;
+        } else {
+            $user = new User();
+        }
 
         try
         {
@@ -165,7 +178,11 @@ class MembersController extends Controller
             $user->document_cpf = preg_replace("#[^0-9]*#is", "", $request->get('document_cpf'));
             $user->name = $request->get('name');
             $user->phone = $phone;
-            $user->email = $request->has('email') ? $request->get('email') : null;
+
+            if ($request->has('email')) {
+                $user->email = $request->get('email');
+            }
+
             $user->type = User::TYPE_MEMBER;
             $user->status = User::ACTIVE_STATUS;
             $user->password = '';
