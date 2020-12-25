@@ -166,6 +166,22 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsTo('App\Models\MemberClass');
     }
 
+    /**
+     * Get the user approval history
+     */
+    public function approval_history()
+    {
+        return $this->hasMany('App\Models\UserApprovalHistory');
+    }
+
+    /**
+     * Get the user status history
+     */
+    public function status_history()
+    {
+        return $this->hasMany('App\Models\UserStatusHistory');
+    }
+
     ///////////////////////
 
     /**

@@ -45,6 +45,7 @@ Route::group([ 'middleware' => 'authorized' ], function(){
     Route::get('/users/me', [ 'uses' => 'UsersController@Me', 'as' => 'users.me' ]);
     Route::get('/users/all', [ 'uses' => 'UsersController@ListAll', 'as' => 'users.members.view-all' ]);
     Route::get('/users/profile/{user_id}', [ 'uses' => 'UsersController@ViewProfile', 'as' => 'users.profile.view' ])->where(['user_id' => '[0-9]+']);
+    Route::get('/users/history/{user_id}', [ 'uses' => 'UsersController@GetHistory', 'as' => 'users.history' ])->where(['user_id' => '[0-9]+']);
     // Admin User
     Route::get('/users/administrators', [ 'uses' => 'AdminUsersController@List', 'as' => 'users.administrators.list' ]);
     Route::get('/users/administrators/{user_id}', [ 'uses' => 'AdminUsersController@Get', 'as' => 'users.administrators.get' ])->where(['user_id' => '[0-9]+']);

@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Models\Vehicle;
 
 use App\Http\Resources\Profile as ProfileResource;
+use App\Http\Resources\UserHistory as UserHistoryResource;
 use App\Http\Resources\User as UserResource;
 use App\Http\Resources\UserCollection;
 
@@ -472,5 +473,23 @@ class UsersController extends Controller
             return response()->json([ 'status' => 'error', 'message' => __('members.not-found') ]);
 
         return response()->json([ 'status' => 'success', 'data' => (new ProfileResource($user)) ]);
+    }
+
+    /**
+     * Returns the user history (approval status and status)
+     */
+    public function GetHistory(Request $request, $user_id)
+    {
+        $user = User::select()
+            ->where('id', $user_id)
+            ->where('club_code', getClubCode())
+            ->where('deleted', false)
+            ->first();
+
+        if (! $user) {
+            return response()->json([ 'status' => 'error', 'message' => __('members.not-found') ]);
+        }
+
+        return response()->json([ 'status' => 'success', 'data' => (new UserHistoryResource($user)) ]);
     }
 }
