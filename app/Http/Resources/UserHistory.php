@@ -18,8 +18,8 @@ class UserHistory extends JsonResource
     {
         return [
             'id' => $this->id,
-            'approval_history' => $this->approval_history,
-            'status_history' => $this->status_history,
+            'approval_history' => $this->approval_history->sortBy('created_at'),
+            'status_history' => $this->status_history->sortByDesc('created_at'),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

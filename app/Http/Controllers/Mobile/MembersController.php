@@ -131,6 +131,9 @@ class MembersController extends Controller
             $check_email = User::select('id')
                 ->where('email', $request->get('email'))
                 ->where('deleted', false)
+                ->where(function($q){
+                    $q->where('approval_status', User::APPROVED_STATUS_APPROVAL);
+                })
                 ->where('club_code', $club_code)
                 ->first();
         

@@ -12,8 +12,14 @@ use Illuminate\Support\Facades\Mail;
 
 use App\Models\User;
 use App\Models\Vehicle;
+use App\Models\UserStatusHistory;
+use App\Models\UserApprovalHistory;
 use App\Http\Resources\User as UserResource;
 use App\Http\Resources\UserCollection;
+use App\Http\Resources\UserWaitingApproval as UserWaitingApprovalResource;
+use App\Http\Resources\UserWaitingApprovalCollection;
+use App\Http\Resources\UserHistoryApproval as UserHistoryApprovalResource;
+use App\Http\Resources\UserHistoryApprovalCollection;
 
 use DB;
 use Exception;
@@ -97,6 +103,8 @@ class MemberUsersController extends Controller
             ->with('privilege_group:id,name')
             ->with('participation_request_information')
             ->with('indicator:id,name,photo,email,phone,nickname')
+            ->with('approval_history')
+            ->with('approval_history.created_by')
             ->where('club_code', getClubCode())
             ->where('deleted', false)
             ->where('approval_status', User::WAITING_STATUS_APPROVAL)
@@ -104,7 +112,22 @@ class MemberUsersController extends Controller
             ->orderBy('created_at')
             ->jsonPaginate(25, 3);
 
-        return response()->json([ 'status' => 'success', 'data' => (new UserCollection($users)) ]);
+        return response()->json([ 'status' => 'success', 'data' => (new UserWaitingApprovalCollection($users)) ]);
+    }
+
+    /**
+     * Returns members history approval
+     * 
+     * @author Davi Souto
+     * @since 18/01/2021
+     */
+    public function HistoryApproval(Request $request)
+    {
+        $history = UserApprovalHistory::select()
+            ->orderBy('created_at', 'desc')
+            ->jsonPaginate(50, 3);
+
+        return response()->json([ 'status' => 'success', 'data' => (new UserHistoryApprovalCollection($history)) ]);
     }
 
     /**
@@ -122,6 +145,8 @@ class MemberUsersController extends Controller
 
         $user = User::select()
             ->with('club:code,name,primary_color,contact_mail')
+            ->with('approval_history')
+            ->with('approval_history.created_by')
             ->where('id', $user_id)
             ->where('club_code', getClubCode())
             ->where('deleted', false)
@@ -156,6 +181,6 @@ class MemberUsersController extends Controller
             }
         }
 
-        return response()->json([ 'status' => 'success', 'data' => (new UserResource($user)) ]);
+        return response()->json([ 'status' => 'success', 'data' => (new UserWaitingApprovalResource($user)) ]);
     }
 }

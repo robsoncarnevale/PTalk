@@ -481,6 +481,10 @@ class UsersController extends Controller
     public function GetHistory(Request $request, $user_id)
     {
         $user = User::select()
+            ->with('approval_history')
+            ->with('approval_history.created_by')
+            ->with('status_history')
+            ->with('status_history.created_by')
             ->where('id', $user_id)
             ->where('club_code', getClubCode())
             ->where('deleted', false)

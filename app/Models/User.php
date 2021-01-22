@@ -298,6 +298,7 @@ class User extends Authenticatable implements JWTSubject
         {
             $last_status->suspended_time = $this->suspended_time;
             $last_status->reason = $this->status_reason;
+            $last_status->created_by = $this->getAuthenticatedUserId();
             
             $last_status->save();
 
@@ -309,6 +310,7 @@ class User extends Authenticatable implements JWTSubject
         $status_history->user_id = $this->id;
         $status_history->status = $this->status;
         $status_history->reason = $this->status_reason;
+        $status_history->created_by = $this->getAuthenticatedUserId();
 
         if ($this->status == User::SUSPENDED_STATUS)
             $status_history->suspended_time = $this->suspended_time;
@@ -337,6 +339,7 @@ class User extends Authenticatable implements JWTSubject
             $status_history->user_id = $this->id;
             $status_history->approval_status = $this->approval_status;
             $status_history->reason = $this->refused_reason;
+            $status_history->created_by = $this->getAuthenticatedUserId();
     
             $status_history->save();
             

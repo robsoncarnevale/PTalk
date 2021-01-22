@@ -28,11 +28,21 @@ class BankAccountController extends Controller
      */
     function List(Request $request)
     {
-        $data = BankAccount::select()
+        $accounts = BankAccount::select()
             ->orderBy('account_holder')
             ->jsonPaginate(50);
 
-        return response()->json([ 'status' => 'success', 'data' => (new BankAccountCollection($data)) ]);
+        $resume = [
+            'accounts' => BankAccount::count(),
+            'total_balance' => BankAccount::select(\DB::raw('SUM(balance) as total'))->first()['total']
+        ];
+
+        $collection = [
+            'resume' => $resume,
+            'accounts' => $accounts
+        ];
+
+        return response()->json([ 'status' => 'success', 'data' => (new BankAccountCollection($collection)) ]);
     }
 
     /**

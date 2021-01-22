@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 // use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class BankAccountCollection extends JsonResource
+class UserWaitingApprovalCollection extends JsonResource
 {
     /**
      * Transform the resource collection into an array.
@@ -14,13 +14,10 @@ class BankAccountCollection extends JsonResource
      * @return array
      */
     public function toArray($request)
-    {;
+    {
         return [
-            'data' => [
-                'resume' => $this['resume'],
-                'accounts' => BankAccount::collection($this['accounts']['data']),
-            ],
-            'paginator' => $this['accounts']['paginator'],
+            'data' => UserWaitingApproval::collection($this['data']),
+            'paginator' => $this['paginator'],
         ];
     }
 }
