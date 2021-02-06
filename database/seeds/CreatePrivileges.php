@@ -110,6 +110,9 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'bankaccount.list',                  'name' => 'List All Bank Accounts', 'description' => '', 'add_member' => false ],
             [ 'action' => 'bankaccount.extract',               'name' => 'Extract of User Bank Account', 'description' => '', 'add_member' => false ],
             [ 'action' => 'bankaccount.my.extract',            'name' => 'Extract of My Bank Account', 'description' => '', 'add_member' => true ],
+            [ 'action' => 'bankaccount.find',                  'name' => 'Find a Bank Account', 'description' => '', 'add_member' => true ],
+            [ 'action' => 'bankaccount.launch.debit',          'name' => 'Launch Debit on Bank Account', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'bankaccount.launch.credit',         'name' => 'Launch Credit on Bank Account', 'description' => '', 'add_member' => false ],
 
 
             [ 'action' => 'club.status',                        'name' => 'Read club status', 'description' => '', 'add_member' => true ],

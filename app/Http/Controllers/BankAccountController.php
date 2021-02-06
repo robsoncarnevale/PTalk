@@ -8,6 +8,7 @@ use App\Models\BankAccount;
 use App\Models\User;
 
 use App\Http\Resources\BankAccount as BankAccountResource;
+use App\Http\Resources\BankAccountResume as BankAccountResumeResource;
 use App\Http\Resources\BankAccountCollection;
 
 /**
@@ -71,5 +72,35 @@ class BankAccountController extends Controller
             ->first();
 
         return response()->json([ 'status' => 'success', 'data' => (new BankAccountResource($bank_account)) ]);
+    }
+
+    /**
+     * Find bank account
+     * @author Davi Souto
+     * @since 06/02/2021
+     */
+    public function Find(BankAccount $bank_account)
+    {
+        return response()->json([ 'status' => 'success', 'data' => (new BankAccountResumeResource($bank_account)) ]);
+    }
+
+    /**
+     * Launch debit on bank account
+     * @author Davi Souto
+     * @since 06/02/2021
+     */
+    public function LaunchDebit(BankAccount $bank_account, Request $request)
+    {
+        return response()->json([ 'status' => 'success', 'data' => (new LaunchResource($launch)) ]);
+    }
+
+    /**
+     * Launch credit on bank account
+     * @author Davi Souto
+     * @since 06/02/2021
+     */
+    public function LaunchCredit(BankAccount $bank_account, Request $request)
+    {
+        return response()->json([ 'status' => 'success', 'data' => (new LaunchResource($launch)) ]);
     }
 }
