@@ -133,9 +133,9 @@ Route::group([ 'middleware' => 'authorized' ], function(){
     Route::get('/bank-account/list', [ 'uses' => 'BankAccountController@List', 'as' => 'bankaccount.list' ]);
     Route::get('/bank-account/extract/{bank_account}', [ 'uses' => 'BankAccountController@Extract', 'as' => 'bankaccount.extract' ]);
     Route::get('/bank-account/my/extract', [ 'uses' => 'BankAccountController@ExtractMyAccount', 'as' => 'bankaccount.my.extract' ]);
-    Route::get('/bank-account/find/{bank_account}', [ 'uses' => 'BankAccountController@Find', 'as' => 'bankaccount.find' ]);
-    Route::put('/bank-account/launch/{bank_account}/debit', [ 'uses' => 'BankAccountController@LaunchDebit', 'as' => 'bankaccount.launch.debit' ]);
-    Route::put('/bank-account/launch/{bank_account}/credit', [ 'uses' => 'BankAccountController@LaunchCredit', 'as' => 'bankaccount.launch.credit' ]);
+    Route::get('/bank-account/find/{bank_account}', [ 'uses' => 'BankAccountController@Find', 'as' => 'bankaccount.find' ])->where(['bank_account' => '[0-9]+']);
+    Route::put('/bank-account/launch/{bank_account}/debit', [ 'uses' => 'BankAccountController@LaunchDebit', 'as' => 'bankaccount.launch.debit' ])->where(['bank_account' => '[0-9]+']);
+    Route::put('/bank-account/launch/{bank_account}/credit', [ 'uses' => 'BankAccountController@LaunchCredit', 'as' => 'bankaccount.launch.credit' ])->where(['bank_account' => '[0-9]+']);
 
     // Blacklist
     Route::get('/blacklist', [ 'uses' => 'BlacklistController@List', 'as' => 'blacklist.list' ]);

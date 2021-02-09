@@ -188,5 +188,7 @@ return [
         'privilege' => 'privilégio',
         'privilege_id' => 'privilégio',
         'carplate' => 'placa',
+
+        'value' => 'valor',
     ],
 ];

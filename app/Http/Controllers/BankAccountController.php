@@ -4,12 +4,19 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use DB;
+
+use App\Models\AccountLaunch;
 use App\Models\BankAccount;
 use App\Models\User;
 
 use App\Http\Resources\BankAccount as BankAccountResource;
 use App\Http\Resources\BankAccountResume as BankAccountResumeResource;
+use App\Http\Resources\Extract as ExtractResource;
 use App\Http\Resources\BankAccountCollection;
+use App\Http\Resources\Launch as LaunchResource;
+
+use App\Http\Requests\LaunchRequest;
 
 /**
  * Car Brands Controller
@@ -30,6 +37,7 @@ class BankAccountController extends Controller
     function List(Request $request)
     {
         $accounts = BankAccount::select()
+            ->orderBy('balance', 'desc')
             ->orderBy('account_holder')
             ->jsonPaginate(50);
 
@@ -56,7 +64,7 @@ class BankAccountController extends Controller
     {
         $this->validateClub($bank_account->club_code, 'bank_account');
 
-        return response()->json([ 'status' => 'success', 'data' => (new BankAccountResource($bank_account)) ]);
+        return response()->json([ 'status' => 'success', 'data' => (new ExtractResource($bank_account)) ]);
     }
 
     /**
@@ -71,7 +79,7 @@ class BankAccountController extends Controller
             ->where('user_id', User::getAuthenticatedUserId())
             ->first();
 
-        return response()->json([ 'status' => 'success', 'data' => (new BankAccountResource($bank_account)) ]);
+        return response()->json([ 'status' => 'success', 'data' => (new ExtractResource($bank_account)) ]);
     }
 
     /**
@@ -79,8 +87,17 @@ class BankAccountController extends Controller
      * @author Davi Souto
      * @since 06/02/2021
      */
-    public function Find(BankAccount $bank_account)
+    public function Find($bank_account)
     {
+        $bank_account = BankAccount::select()
+            ->where('account_number', $bank_account)
+            ->where('club_code', getClubCode())
+            ->first();
+
+        if (! $bank_account) {
+            return response()->json([ 'status' => 'error', 'message' => __('bank_account.not-found') ], 404);
+        }
+
         return response()->json([ 'status' => 'success', 'data' => (new BankAccountResumeResource($bank_account)) ]);
     }
 
@@ -89,8 +106,38 @@ class BankAccountController extends Controller
      * @author Davi Souto
      * @since 06/02/2021
      */
-    public function LaunchDebit(BankAccount $bank_account, Request $request)
+    public function LaunchDebit($bank_account, LaunchRequest $request)
     {
+        $bank_account = BankAccount::select()
+            ->where('account_number', $bank_account)
+            ->where('club_code', getClubCode())
+            ->first();
+
+        if (! $bank_account) {
+            return response()->json([ 'status' => 'error', 'message' => __('bank_account.not-found') ], 404);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $launch = new AccountLaunch();
+            $launch->club_code = getClubCode();
+            $launch->account_number = $bank_account->account_number;
+            $launch->created_by = User::getAuthenticatedUserId();
+            $launch->amount = $request->get('value');
+            $launch->type = AccountLaunch::DEBIT_TYPE;
+            $launch->save();
+
+            $bank_account->balance -= $request->get('value');
+            $bank_account->save();
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            return response()->json([ 'status' => 'error', 'message' => __('bank_account.error-launch-debit')]);
+        }
+
         return response()->json([ 'status' => 'success', 'data' => (new LaunchResource($launch)) ]);
     }
 
@@ -99,8 +146,38 @@ class BankAccountController extends Controller
      * @author Davi Souto
      * @since 06/02/2021
      */
-    public function LaunchCredit(BankAccount $bank_account, Request $request)
+    public function LaunchCredit($bank_account, LaunchRequest $request)
     {
+        $bank_account = BankAccount::select()
+            ->where('account_number', $bank_account)
+            ->where('club_code', getClubCode())
+            ->first();
+
+        if (! $bank_account) {
+            return response()->json([ 'status' => 'error', 'message' => __('bank_account.not-found') ], 404);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $launch = new AccountLaunch();
+            $launch->club_code = getClubCode();
+            $launch->account_number = $bank_account->account_number;
+            $launch->created_by = User::getAuthenticatedUserId();
+            $launch->amount = $request->get('value');
+            $launch->type = AccountLaunch::CREDIT_TYPE;
+            $launch->save();
+
+            $bank_account->balance += $request->get('value');
+            $bank_account->save();
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            return response()->json([ 'status' => 'error', 'message' => __('bank_account.error-launch-credit')]);
+        }
+
         return response()->json([ 'status' => 'success', 'data' => (new LaunchResource($launch)) ]);
     }
 }
