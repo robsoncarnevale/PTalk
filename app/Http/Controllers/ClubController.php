@@ -99,25 +99,68 @@ class ClubController extends Controller
      */
     public function GetAvailableData(Request $request)
     {
+        $type = $request->get('type', false);
+
         $addresses = UserAddress::select('state', 'city', 'user_id')
             ->distinct('state', 'city')
-            ->whereHas('user')
+            ->whereHas('user', function($q) use ($type) {
+                $q->where('deleted', false)
+                  ->where('approval_status', \App\Models\User::APPROVED_STATUS_APPROVAL);
+
+                if ($type) {
+                    if ($type == \App\Models\User::TYPE_ADMIN) {
+                        $q->where('type', \App\Models\User::TYPE_ADMIN);
+                    }
+
+                    if ($type == \App\Models\User::TYPE_MEMBER) {
+                        $q->where('type', \App\Models\User::TYPE_MEMBER);
+                    }
+                }
+            })
             ->get();
 
         $find_car_models = CarModel::select('id', 'name', 'car_brand_id')
-        ->with('car_brand')
+            ->with('car_brand')
             ->distinct('id')
-            ->whereHas('vehicles', function($q){
+            ->whereHas('vehicles', function($q) use ($type) {
                 $q->where('deleted', false);
-                $q->whereHas('user');
+
+                $q->whereHas('user', function($q) use ($type) {
+                    $q->where('deleted', false)
+                      ->where('approval_status', \App\Models\User::APPROVED_STATUS_APPROVAL);
+
+                    if ($type) {
+                        if ($type == \App\Models\User::TYPE_ADMIN) {
+                            $q->where('type', \App\Models\User::TYPE_ADMIN);
+                        }
+    
+                        if ($type == \App\Models\User::TYPE_MEMBER) {
+                            $q->where('type', \App\Models\User::TYPE_MEMBER);
+                        }
+                    }
+                });
             })
             ->get();
 
         $find_car_colors = CarColor::select('id', 'name', 'value')
         ->distinct('value')
-        ->whereHas('vehicles', function($q){
+        ->whereHas('vehicles', function($q) use ($type) {
                 $q->where('deleted', false);
-                $q->whereHas('user');
+
+                $q->whereHas('user', function($q) use ($type) {
+                    $q->where('deleted', false)
+                      ->where('approval_status', \App\Models\User::APPROVED_STATUS_APPROVAL);
+
+                    if ($type) {
+                        if ($type == \App\Models\User::TYPE_ADMIN) {
+                            $q->where('type', \App\Models\User::TYPE_ADMIN);
+                        }
+    
+                        if ($type == \App\Models\User::TYPE_MEMBER) {
+                            $q->where('type', \App\Models\User::TYPE_MEMBER);
+                        }
+                    }
+                });
             })
             ->get();
 

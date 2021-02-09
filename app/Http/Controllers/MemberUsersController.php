@@ -109,10 +109,65 @@ class MemberUsersController extends Controller
             ->where('deleted', false)
             ->where('approval_status', User::WAITING_STATUS_APPROVAL)
             ->where('type', 'member')
-            ->orderBy('created_at')
-            ->jsonPaginate(25, 3);
+            ->orderBy('created_at');
 
-        return response()->json([ 'status' => 'success', 'data' => (new UserWaitingApprovalCollection($users)) ]);
+        $search = trim($request->get('search'));
+
+        if (! empty($search)){
+            $users->where(function($q) use ($search) {
+                $search_numbers = $search;
+                $search_numbers = preg_replace('#[^0-9]#is', '', $search_numbers);
+
+                $q->whereRaw('LOWER(name) like ?', strtolower("%{$search}%"))
+                  ->orWhereRaw('LOWER(email) like ?', strtolower("%{$search}%"));
+
+                  if (! empty($search_numbers)) {
+                    $q->orWhereRaw('LOWER(phone) like ?', strtolower("%{$search_numbers}%"))
+                      ->orWhereRaw('LOWER(document_cpf) like ?', strtolower("%{$search_numbers}%"));
+                  }
+
+                  $q->orWhere(function($q) use ($search){
+                      $q->whereHas('participation_request_information', function($q) use ($search){
+                        $search_carplate = $search;
+
+                        if (strlen($search) >= 4 && strpos($search, '-') === false) {
+                            $search_carplate = substr($search, 0, 3) . '-' . substr($search, 3);
+                        }
+                        
+                        $q->whereRaw('LOWER(vehicle_carplate) like ?', strtolower("%{$search_carplate}%"));
+
+                        
+                      });
+                  });
+            });
+        }
+
+        $count_indicators = clone $users;
+        $count_voluntary = clone $users;
+        $count_total = clone $users;
+
+        $count_indicators = $count_indicators
+            ->whereHas('indicator')
+            ->count();
+
+        $count_voluntary = $count_voluntary
+            ->whereDoesntHave('indicator')
+            ->count();
+
+        $count_total = $count_total->count();
+
+        $users = $users->jsonPaginate(25, 3);
+
+        $result = [
+            'history' => (new UserWaitingApprovalCollection($users)),
+            'count' => [ 
+                'indicators' => $count_indicators,
+                'voluntary' => $count_voluntary,
+                'total' => $count_total
+            ]
+        ];
+
+        return response()->json([ 'status' => 'success', 'data' => $result ]);
     }
 
     /**
