@@ -36,10 +36,40 @@ class BankAccountController extends Controller
      */
     function List(Request $request)
     {
+        $search = $request->get('search', '');
+
         $accounts = BankAccount::select()
             ->orderBy('balance', 'desc')
             ->orderBy('account_holder')
-            ->jsonPaginate(50);
+            ->whereHas('user', function($q){
+                $q->where('deleted', false)
+                  ->where('approval_status', \App\Models\User::APPROVED_STATUS_APPROVAL);
+            });
+
+        if (! empty($search)) {
+            $accounts->where(function($q) use ($search){
+                $search_numbers = $search;
+                $search_numbers = preg_replace('#[^0-9]#is', '', $search_numbers);
+
+                $q->orWhereRaw('LOWER(account_holder) like ?', strtolower("%{$search}%"));
+
+                $q->whereHas('user', function($q) use ($search, $search_numbers){
+                    $q->whereRaw('LOWER(name) like ?', strtolower("%{$search}%"))
+                      ->orWhereRaw('LOWER(nickname) like ?', strtolower("%{$search}%"));
+
+                      if (! empty($search_numbers)) {
+                        $q->orWhereRaw('LOWER(phone) like ?', strtolower("%{$search_numbers}%"))
+                          ->orWhereRaw('LOWER(document_cpf) like ?', strtolower("%{$search_numbers}%"));
+                      }
+                });
+
+                if (! empty($search_numbers)) {
+                    $q->orWhereRaw('LOWER(account_number) like ?', strtolower("%{$search_numbers}%"));
+                }
+            });
+        }
+
+        $accounts = $accounts->jsonPaginate(50);
 
         $resume = [
             'accounts' => BankAccount::count(),
