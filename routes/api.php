@@ -179,6 +179,20 @@ Route::prefix('mobile')->group(function(){
         Route::get('/me', [ 'uses' => 'Mobile\MembersController@Me', 'as' => 'mobile.users.me' ]);
         Route::post('/profile/update', [ 'uses' => 'Mobile\MembersController@UpdateProfile', 'as' => 'mobile.profile.update' ]);
 
+        // Users Address
+        Route::get('/users/{user}/address', [ 'uses' => 'Mobile\UserAddressController@List', 'as' => 'mobile.users.address.list' ]);
+        Route::get('/users/{user}/address/{address}', [ 'uses' => 'Mobile\UserAddressController@Get', 'as' => 'mobile.users.address.get' ]);
+        Route::put('/users/{user}/address', [ 'uses' => 'Mobile\UserAddressController@Create', 'as' => 'mobile.users.address.create' ]);
+        Route::post('users/{user}/address/{address}', [ 'uses' => 'Mobile\UserAddressController@Update', 'as' => 'mobile.users.address.update' ]);
+        Route::delete('/users/{user}/classes/{address}', [ 'uses' => 'Mobile\UserAddressController@Delete', 'as' => 'mobile.users.address.delete' ]);
+        // My User Address
+        Route::get('/users/address/my', [ 'uses' => 'Mobile\UserAddressController@ListMyAddress', 'as' => 'mobile.users.address.list.my' ]);
+        Route::get('/users/address/my/{address}', [ 'uses' => 'Mobile\UserAddressController@GetMyAddress', 'as' => 'mobile.users.address.get.my' ]);
+        Route::put('/users/address/my', [ 'uses' => 'Mobile\UserAddressController@CreateMyAddress', 'as' => 'mobile.users.address.create.my' ]);
+        Route::post('users/address/{address}', [ 'uses' => 'Mobile\UserAddressController@UpdateMyAddress', 'as' => 'mobile.users.address.update.my' ]);
+        Route::delete('/users/classes/{address}', [ 'uses' => 'Mobile\UserAddressController@DeleteMyddress', 'as' => 'mobile.users.address.delete.my' ]);
+
+        
         // Vehicles
         Route::get('/vehicles', [ 'uses' => 'Mobile\VehiclesController@List', 'as' => 'mobile.vehicles.list' ]);
         Route::get('/vehicles/{vehicle_id}', [ 'uses' => 'Mobile\VehiclesController@Get', 'as' => 'mobile.vehicles.get' ])->where(['vehicle_id' => '[0-9]+']);
