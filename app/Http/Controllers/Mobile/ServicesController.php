@@ -25,6 +25,6 @@ class ServicesController extends Controller
      */
     public function GetAddressByCep(Request $request, $cep)
     {
-        return (new \App\Http\Controllers\ServiceController)->GetAddressByCep($request, $user);
+        return (new \App\Http\Controllers\ServicesController)->GetAddressByCep($request, $user);
     }
 }
