@@ -13,7 +13,7 @@ use Exception;
  * @author Davi Souto
  * @since 05/03/2021
  */
-class ServiceController extends Controller
+class ServicesController extends Controller
 {
     protected $only_admin = false;
     protected $ignore_privileges = true;
