@@ -28,6 +28,8 @@ class CreatePrivileges extends Seeder
             // 'auth.logout',
 
             [ 'action' => 'users.me',                           'name' => 'View My User Profile', 'description' => '', 'add_member' => true ],
+            [ 'action' => 'users.me.update',                    'name' => 'Update My User Profile', 'description' => '', 'add_member' => true ],
+
             [ 'action' => 'users.profile.view',                 'name' => 'View User Profile', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.history',                      'name' => 'View User History', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.members.history-approval',     'name' => 'User History Approval', 'description' => '', 'add_member' => false ],

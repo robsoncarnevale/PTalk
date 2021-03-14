@@ -41,8 +41,10 @@ Route::group([ 'middleware' => 'authorized' ], function(){
     // Logout
     Route::get('/logout', [ 'uses' => 'AuthController@Logout', 'as' => 'auth.logout' ]);
 
-    // User
+    // My Profile
     Route::get('/users/me', [ 'uses' => 'UsersController@Me', 'as' => 'users.me' ]);
+    Route::post('/users/me', [ 'uses' => 'UsersController@UpdateMyProfile', 'as' => 'users.me.update' ]);
+    // User
     Route::get('/users/all', [ 'uses' => 'UsersController@ListAll', 'as' => 'users.members.view-all' ]);
     Route::get('/users/profile/{user_id}', [ 'uses' => 'UsersController@ViewProfile', 'as' => 'users.profile.view' ])->where(['user_id' => '[0-9]+']);
     Route::get('/users/history/{user_id}', [ 'uses' => 'UsersController@GetHistory', 'as' => 'users.history' ])->where(['user_id' => '[0-9]+']);

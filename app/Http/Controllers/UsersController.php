@@ -485,11 +485,48 @@ class UsersController extends Controller
     {
         $user = User::select()
             ->with('member_class')
-            ->where('club_code', getClubCode())
+            ->with(['vehicles' => function($q){
+                $q->where('deleted', false);
+            }])
             ->where('id', Auth::guard()->user()->id)
+            ->where('club_code', getClubCode())
+            ->where('deleted', false)
+            ->where('status', '<>', User::INACTIVE_STATUS)
+            ->where('status', '<>', User::BANNED_STATUS)
+            ->where('approval_status', User::APPROVED_STATUS_APPROVAL)
             ->first();
 
-        return response()->json([ 'status' => 'success', 'data' => (new UserResource($user))  ]);
+        return response()->json([ 'status' => 'success', 'data' => (new ProfileResource($user))  ]);
+    }
+
+    /**
+     * Update user logged data
+     *
+     * @author Davi Souto
+     * @since 11/03/2020
+     */
+    function UpdateMyProfile(Request $request)
+    {
+        $user = User::select()
+            ->with('member_class')
+            ->with(['vehicles' => function($q){
+                $q->where('deleted', false);
+            }])
+            ->where('id', Auth::guard()->user()->id)
+            ->where('club_code', getClubCode())
+            ->where('deleted', false)
+            ->where('status', '<>', User::INACTIVE_STATUS)
+            ->where('status', '<>', User::BANNED_STATUS)
+            ->where('approval_status', User::APPROVED_STATUS_APPROVAL)
+            ->first();
+
+        if (! $user) {
+            return response()->json([ 'status' => 'error', 'message' => __('member.not-found') ]);
+        }
+
+        $user->fill($request->all());
+
+        return response()->json([ 'status' => 'success', 'data' => (new ProfileResource($user))  ]);   
     }
     
     /**
