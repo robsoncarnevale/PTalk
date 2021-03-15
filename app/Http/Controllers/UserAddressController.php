@@ -42,7 +42,7 @@ class UserAddressController extends Controller
     public function ListMyAddresses(Request $request)
     {
         $list = UserAddress::select()
-            ->where('user_id', Auth::guard()->user()->id)
+            ->where('user_id', User::getAuthenticatedUserId())
             ->where('club_code', getClubCode())
             ->get();
 
