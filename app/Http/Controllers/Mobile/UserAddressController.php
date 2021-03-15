@@ -61,7 +61,7 @@ class UserAddressController extends Controller
 
     public function CreateMyAddress(Request $request)
     {
-        return (new \App\Http\Controllers\UserAddressController)->CreateMyAddress($request, $user);
+        return (new \App\Http\Controllers\UserAddressController)->CreateMyAddress($request);
     }
 
     public function UpdateMyAddress(Request $request, UserAddress $address)
