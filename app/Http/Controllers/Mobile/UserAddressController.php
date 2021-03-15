@@ -49,9 +49,9 @@ class UserAddressController extends Controller
 
     //////////////////
 
-    public function ListMyAddress(Request $request)
+    public function ListMyAddresses(Request $request)
     {
-        return (new \App\Http\Controllers\UserAddressController)->ListMyAddress($request);
+        return (new \App\Http\Controllers\UserAddressController)->ListMyAddresses($request);
     }
 
     public function GetMyAddress(Request $request, UserAddress $address)

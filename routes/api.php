@@ -181,6 +181,7 @@ Route::prefix('mobile')->group(function(){
     Route::get('/service/cep/find/{cep}', [ 'uses' => 'Mobile\ServicesController@GetAddressByCep', 'as' => 'mobile.services.cep.find' ]);
 
     Route::group([ 'middleware' => ['authorized.mobile', 'check.user-status.mobile'] ], function(){
+        // Profile
         Route::get('/me', [ 'uses' => 'Mobile\MembersController@Me', 'as' => 'mobile.users.me' ]);
         // Route::post('/users/me', [ 'uses' => 'Mobile\MembersController@UpdateMyProfile', 'as' => 'mobile.users.me.update' ]);
         Route::get('/users/me/address', [ 'uses' => 'Mobile\UserAddressController@ListMyAddresses', 'as' => 'users.me.address' ]);
