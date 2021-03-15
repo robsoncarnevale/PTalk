@@ -182,6 +182,10 @@ Route::prefix('mobile')->group(function(){
 
     Route::group([ 'middleware' => ['authorized.mobile', 'check.user-status.mobile'] ], function(){
         Route::get('/me', [ 'uses' => 'Mobile\MembersController@Me', 'as' => 'mobile.users.me' ]);
+        // Route::post('/users/me', [ 'uses' => 'Mobile\MembersController@UpdateMyProfile', 'as' => 'mobile.users.me.update' ]);
+        Route::get('/users/me/address', [ 'uses' => 'Mobile\UserAddressController@ListMyAddresses', 'as' => 'users.me.address' ]);
+        Route::put('/users/me/address', [ 'uses' => 'Mobile\UserAddressController@CreateMyAddress', 'as' => 'users.me.address.create' ]);
+        Route::post('users/me/address/{address}', [ 'uses' => 'Mobile\UserAddressController@UpdateMyAddress', 'as' => 'users.me.address.update' ]);
         Route::post('/profile/update', [ 'uses' => 'Mobile\MembersController@UpdateProfile', 'as' => 'mobile.profile.update' ]);
 
         // Users Address
@@ -191,11 +195,11 @@ Route::prefix('mobile')->group(function(){
         Route::post('users/{user}/address/{address}', [ 'uses' => 'Mobile\UserAddressController@Update', 'as' => 'mobile.users.address.update' ]);
         Route::delete('/users/{user}/classes/{address}', [ 'uses' => 'Mobile\UserAddressController@Delete', 'as' => 'mobile.users.address.delete' ]);
         // My User Address
-        Route::get('/users/address/my', [ 'uses' => 'Mobile\UserAddressController@ListMyAddress', 'as' => 'mobile.users.address.list.my' ]);
-        Route::get('/users/address/my/{address}', [ 'uses' => 'Mobile\UserAddressController@GetMyAddress', 'as' => 'mobile.users.address.get.my' ]);
-        Route::put('/users/address/my', [ 'uses' => 'Mobile\UserAddressController@CreateMyAddress', 'as' => 'mobile.users.address.create.my' ]);
-        Route::post('users/address/{address}', [ 'uses' => 'Mobile\UserAddressController@UpdateMyAddress', 'as' => 'mobile.users.address.update.my' ]);
-        Route::delete('/users/classes/{address}', [ 'uses' => 'Mobile\UserAddressController@DeleteMyddress', 'as' => 'mobile.users.address.delete.my' ]);
+        // Route::get('/users/address/my', [ 'uses' => 'Mobile\UserAddressController@ListMyAddress', 'as' => 'mobile.users.address.list.my' ]);
+        // Route::get('/users/address/my/{address}', [ 'uses' => 'Mobile\UserAddressController@GetMyAddress', 'as' => 'mobile.users.address.get.my' ]);
+        // Route::put('/users/address/my', [ 'uses' => 'Mobile\UserAddressController@CreateMyAddress', 'as' => 'mobile.users.address.create.my' ]);
+        // Route::post('users/address/{address}', [ 'uses' => 'Mobile\UserAddressController@UpdateMyAddress', 'as' => 'mobile.users.address.update.my' ]);
+        // Route::delete('/users/classes/{address}', [ 'uses' => 'Mobile\UserAddressController@DeleteMyddress', 'as' => 'mobile.users.address.delete.my' ]);
 
         
         // Vehicles
