@@ -180,6 +180,10 @@ class MemberUsersController extends Controller
     public function HistoryApproval(Request $request)
     {
         $history = UserApprovalHistory::select()
+            ->where('club_code', getClubCode())
+            ->whereHas('user', function($q){
+                $q->where('deleted', false);
+            })
             ->orderBy('created_at', 'desc')
             ->jsonPaginate(50, 3);
 
