@@ -226,6 +226,8 @@ class MemberUsersController extends Controller
                 $user->member_class_id = MemberClass::select()
                     ->where('default', true)
                     ->first()['id'];
+
+                $user->save();
             }
         }
 
