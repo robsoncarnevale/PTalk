@@ -218,6 +218,10 @@ class MemberUsersController extends Controller
         $user->save();
         $user->saveApprovalHistory();
 
+        if ($user->approval_status == User::APPROVED_STATUS_APPROVAL) {
+            $user->createBankAccount();
+        }
+
         // Send register mail
         if ($user->approval_status == User::APPROVED_STATUS_APPROVAL && ! empty($user->email))
         {
