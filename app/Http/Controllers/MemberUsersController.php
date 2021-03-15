@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\UserStatusHistory;
 use App\Models\UserApprovalHistory;
+use App\Models\MemberClass;
 use App\Http\Resources\User as UserResource;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserWaitingApproval as UserWaitingApprovalResource;
@@ -220,6 +221,12 @@ class MemberUsersController extends Controller
 
         if ($user->approval_status == User::APPROVED_STATUS_APPROVAL) {
             $user->createBankAccount();
+
+            if (! $user->member_class_id) {
+                $user->member_class_id = MemberClass::select()
+                    ->where('default', true)
+                    ->first()['id'];
+            }
         }
 
         // Send register mail
