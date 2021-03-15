@@ -7,6 +7,7 @@ return [
     'success-create'    =>  'Member created successfully',
     'success-get-code'  =>  'Your code has been sent',
     'success-continue'  =>  'Request made successfully',
+    'success-update-profile' => 'Profile updated successfully',
 
     'error-create'  =>  "Error creating member - :error",
     'error-update'  =>  "Error updating member - :error",

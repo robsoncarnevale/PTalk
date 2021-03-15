@@ -29,6 +29,10 @@ class CreatePrivileges extends Seeder
 
             [ 'action' => 'users.me',                           'name' => 'View My User Profile', 'description' => '', 'add_member' => true ],
             [ 'action' => 'users.me.update',                    'name' => 'Update My User Profile', 'description' => '', 'add_member' => true ],
+            [ 'action' => 'users.me.address',                   'name' => 'List My Addresses', 'description' => '', 'add_member' => true ],
+            [ 'action' => 'users.me.address.create',            'name' => 'Create My Address', 'description' => '', 'add_member' => true ],
+            [ 'action' => 'users.me.address.update',            'name' => 'Update My Address', 'description' => '', 'add_member' => true ],
+
 
             [ 'action' => 'users.profile.view',                 'name' => 'View User Profile', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.history',                      'name' => 'View User History', 'description' => '', 'add_member' => false ],

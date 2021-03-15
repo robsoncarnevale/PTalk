@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
+use App\Http\Requests\ProfileRequest;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -505,7 +506,7 @@ class UsersController extends Controller
      * @author Davi Souto
      * @since 11/03/2020
      */
-    function UpdateMyProfile(Request $request)
+    function UpdateMyProfile(ProfileRequest $request)
     {
         $user = User::select()
             ->with('member_class')
@@ -524,9 +525,29 @@ class UsersController extends Controller
             return response()->json([ 'status' => 'error', 'message' => __('member.not-found') ]);
         }
 
-        $user->fill($request->all());
+        if ($request->has('document_cpf')) $user->document_cpf = preg_replace("#[^0-9]*#is", "", $request->get('document_cpf'));
+        if ($request->has('name')) $user->name = $request->get('name');
+        if ($request->has('nickname')) $user->nickname = $request->get('nickname');
+        if ($request->has('document_rg')) $user->document_rg = $request->get('document_rg');
+        if ($request->has('company')) $user->company = $request->get('company');
+        if ($request->has('company_activities')) $user->company_activities = $request->get('company_activities');
 
-        return response()->json([ 'status' => 'success', 'data' => (new ProfileResource($user))  ]);   
+        // Photo remove and upload
+        if ($request->has('remove_photo') && $request->get('remove_photo') == 'true')
+        {
+            if (! empty($user->photo) && Storage::disk('images')->exists($user->photo))
+                Storage::disk('images')->delete($user->photo);
+
+            $user->photo = null;
+        } else if ($request->has('photo'))
+        {
+            if ($request->has('photo'))
+                $user->upload($request->file('photo'));
+        }
+
+        $user->save();
+
+        return response()->json([ 'status' => 'success', 'data' => (new ProfileResource($user)), 'message' => __('members.success-update-profile') ]);   
     }
     
     /**

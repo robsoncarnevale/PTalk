@@ -11,6 +11,7 @@ use App\Http\Resources\UserAddress as UserAddressResource;
 
 use DB;
 use Exception;
+use Auth;
 
 /**
  * User Address Controller
@@ -26,6 +27,22 @@ class UserAddressController extends Controller
     {
         $list = UserAddress::select()
             ->where('user_id', $user->id)
+            ->where('club_code', getClubCode())
+            ->get();
+
+        return response()->json([ 'status' => 'success', 'data' => UserAddressResource::collection($list) ]);
+    }
+
+    /**
+     * Return user logged addresses
+     * 
+     * @author Davi Souto
+     * @since 14/13/2021
+     */
+    public function ListMyAddresses(Request $request)
+    {
+        $list = UserAddress::select()
+            ->where('user_id', Auth::guard()->user()->id)
             ->where('club_code', getClubCode())
             ->get();
 
@@ -92,16 +109,20 @@ class UserAddressController extends Controller
 
     public function CreateMyAddress(Request $request)
     {
-        return response()->json([ 'status' => 'success', 'data' => '' ]);
+        $address = new UserAddress();
+        
+        $address->fill($request->all());
+        $address->club_code = getClubCode();
+        $address->user_id = User::getAuthenticatedUserId();
+        
+        $address->save();
+
+        return response()->json([ 'status' => 'success', 'data' => new UserAddressResource($address) ]);
     }
 
     public function UpdateMyAddress(Request $request, UserAddress $address)
     {
         $this->validateClub($address->club_code, 'address');
-
-        if ($address->user_id != User::getAuthenticatedUserId()) {
-            abort(401);
-        }
 
         $address = $address->fill($request->all());
         $address->save();
@@ -121,5 +142,6 @@ class UserAddressController extends Controller
 
         return response()->json([ 'status' => 'success', 'data' => new UserAddressResource($address) ]);
     }
+
 
 }

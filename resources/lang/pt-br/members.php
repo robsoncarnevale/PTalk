@@ -7,6 +7,7 @@ return [
     'success-create'    =>  'Membro criado com sucesso',
     'success-get-code'  => 'Seu código foi enviado',
     'success-continue'  =>  'Solicitação efetuada com sucesso',
+    'success-update-profile' => 'Perfil atualizado com sucesso',
 
     'error-create'  =>  'Erro ao criar membro - :error',
     'error-update'  =>  "Erro ao atualizar membro - :error",
