@@ -16,6 +16,9 @@ class Event extends Model
 
     const ACTIVE_STATUS = 'active';
     const INACTIVE_STATUS = 'inactive';
+    const CLOSED_STATUS = 'closed';
+    const REALIZED_STATUS = 'realizado';
+    const CANCELLED_STATUS = 'cancelado';
 
     protected $fillable = [
         'name',
