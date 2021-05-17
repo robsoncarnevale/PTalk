@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @author Davi Souto
  * @since 23/23/2021
  */
-class Event extends Model
+class EventClassData extends Model
 {
     protected $table = 'event_class_data';
 
