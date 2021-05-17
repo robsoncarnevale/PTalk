@@ -12,6 +12,7 @@ use App\Http\Resources\EventCollection;
 
 use DB;
 use Exception;
+use Storage;
 
 class EventsController extends Controller
 {
@@ -41,6 +42,8 @@ class EventsController extends Controller
     {
         $this->validateClub($event->club_code, 'event');
 
+        // $event->with('history');
+
         return response()->json([ 'status' => 'success', 'data' => (new EventResource($event)) ]);
     }
 
@@ -58,9 +61,17 @@ class EventsController extends Controller
     
             $event->fill($request->all());
             $event->club_code = getClubCode();
+            $event->name = ucwords($event->name);
             $event->created_by = User::getAuthenticatedUserId();
-            $event->status = Event::ACTIVE_STATUS;
+            $event->status = Event::DRAFT_STATUS;
+
+            // Photo upload
+            if ($request->has('cover_picture')) {
+                $event->upload($request->file('cover_picture'));
+            }
+
             $event->save();
+            $event->saveHistory(false);
 
             DB::commit();
         } catch (Exception $e) {
@@ -82,8 +93,28 @@ class EventsController extends Controller
         DB::beginTransaction();
 
         try {
+            $old_data = array();
+            $old_data['event'] = $event->toArray();
+
             $event->fill($request->all());
+            $event->name = ucwords($event->name);
+
+            // Photo remove and upload
+            if ($request->has('remove_cover_picture') && $request->get('remove_cover_picture') == 'true')
+            {
+                if (! empty($event->cover_picture) && Storage::disk('images')->exists($event->cover_picture)) {
+                    Storage::disk('images')->delete($event->cover_picture);
+                }
+
+                $event->cover_picture = null;
+            } else if ($request->has('cover_picture'))
+            {
+                $event->upload($request->file('cover_picture'));
+            }
+
             $event->save();
+            $event->saveHistory($old_data);
+
 
             DB::commit();
         } catch(Exception $e) {
@@ -103,6 +134,10 @@ class EventsController extends Controller
     public function Delete(Event $event, EventRequest $request)
     {
         $this->validateClub($event->club_code, 'event');
+
+        if (! in_array($event->status, [ Event::DRAFT_STATUS ])) {
+            return response()->json([ 'status' => 'error', 'message' => __('events.error-delete-not-draft') ]);
+        }
 
         $event->deleted = true;
         $event->save();

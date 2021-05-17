@@ -32,6 +32,9 @@ class Event extends JsonResource
             'cover_picture' => $this->getCoverPicture($this->cover_picture),
             'created_by' => $this->userArray($this->user),
             'status' => $this->status,
+
+            'history' => EventHistory::collection($this->history->sortByDesc('created_at')),
+            // 'history' => EventHistory::collection($this->whenLoaded('history')),
         ];
     }
 

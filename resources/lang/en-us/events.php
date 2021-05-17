@@ -8,4 +8,6 @@ return [
 
     'error-create'  =>  "Error creating event - :error",
     'error-update'  =>  "Error updating event - :error",
+
+    'error-delete-not-draft' => 'You can only remove draft events',
 ];
