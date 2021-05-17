@@ -26,6 +26,7 @@ class Event extends Model
         'address',
         'meeting_point',
         'date',
+        'date_limit',
         'start_time',
         'end_time',
         'max_vehicles',
