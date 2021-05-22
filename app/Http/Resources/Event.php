@@ -5,6 +5,8 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
 
+use App\Models\MemberClass;
+
 class Event extends JsonResource
 {
     private static $default_cover_picture = '/defaults/default-event-picture.png';
@@ -24,6 +26,7 @@ class Event extends JsonResource
             'address' => $this->address,
             'meeting_point' => $this->meeting_point,
             'date' => $this->date,
+            'date_limit' => $this->date_limit,
             'start_time' => $this->start_time,
             'end_time' => $this->end_time,
             'max_vehicles' => $this->max_vehicles,
@@ -33,6 +36,7 @@ class Event extends JsonResource
             'created_by' => $this->userArray($this->user),
             'status' => $this->status,
 
+            'class_data' => $this->mapClassData(EventClassData::collection($this->class_data)),
             'history' => EventHistory::collection($this->history->sortByDesc('created_at')),
             // 'history' => EventHistory::collection($this->whenLoaded('history')),
         ];
@@ -55,5 +59,25 @@ class Event extends JsonResource
         $default = getClubCode() . self::$default_cover_picture;
 
         return Storage::disk('images')->url((! empty($photo)) ? $photo : $default);
+    }
+
+    public static function mapClassData($class_data)
+    {
+        $result_class_data = array();
+
+        foreach($class_data as $v_class_data){
+            if (! is_object($v_class_data)) {
+                $v_class_data = (object) $v_class_data;
+            }
+
+            $member_class = MemberClass::select()
+                ->where('club_code', getClubCode())
+                ->where('id', $v_class_data->member_class_id)
+                ->first();
+
+            $result_class_data[$member_class->label] = $v_class_data;
+        }
+
+        return $result_class_data;
     }
 }

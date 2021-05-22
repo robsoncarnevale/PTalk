@@ -133,6 +133,8 @@ Route::group([ 'middleware' => 'authorized' ], function(){
     Route::put('/events', [ 'uses' => 'EventsController@Create', 'as' => 'events.create' ]);
     Route::post('events/{event}', [ 'uses' => 'EventsController@Update', 'as' => 'events.update' ]);
     Route::delete('/events/{event}', [ 'uses' => 'EventsController@Delete', 'as' => 'events.delete' ]);
+    Route::post('events/{event}/start', [ 'uses' => 'EventsController@Start', 'as' => 'events.start' ]);
+    Route::post('events/{event}/cancel', [ 'uses' => 'EventsController@Cancel', 'as' => 'events.cancel' ]);
 
     // Digital Bank Account
     Route::get('/bank-account/list', [ 'uses' => 'BankAccountController@List', 'as' => 'bankaccount.list' ]);

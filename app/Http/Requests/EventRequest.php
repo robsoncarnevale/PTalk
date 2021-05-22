@@ -16,6 +16,17 @@ class EventRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation()
+    {
+        if ($this->has('start_time')) {
+            $this->merge([ 'start_time' => preg_replace("#[^0-9]*#is", "", $this->start_time) ]);
+        }
+
+        if ($this->has('end_time')) {
+            $this->merge([ 'end_time' => preg_replace("#[^0-9]*#is", "", $this->end_time) ]);
+        }
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -34,13 +45,54 @@ class EventRequest extends FormRequest
 
     private function createRules()
     {
-        return [
-        ];
+        return array_merge([
+            'name' => 'required',
+
+            'max_vehicles' => 'integer|min:1|max:9999|nullable',
+            'max_participants' => 'integer|min:1|max:9999|nullable',
+            'max_companions' => 'integer|min:1|max:9999|nullable',
+
+            'start_time' => 'numeric|nullable',
+            'end_time' => 'numeric|nullable',
+
+            'date' => 'date_format:Y-m-d',
+            'date_limit' => 'date_format:Y-m-d|after:date',
+        ], getClassValidation());
     }
 
     private function updateRules()
     {
-        return [
-        ];
+        
+
+        return array_merge([
+            'name' => 'required',
+
+            'max_vehicles' => 'integer|min:1|max:9999|nullable',
+            'max_participants' => 'integer|min:1|max:9999|nullable',
+            'max_companions' => 'integer|min:1|max:9999|nullable',
+
+            'start_time' => 'numeric|nullable',
+            'end_time' => 'numeric|nullable',
+
+            'date' => 'date_format:Y-m-d',
+            'date_limit' => 'date_format:Y-m-d|before:date',
+        ], $this->getClassValidation());
+    }
+
+    private function getClassValidation()
+    {
+        $class_validation = array();
+        $classes = \App\Models\MemberClass::select()
+            ->where('club_code', getClubCode())
+            ->get()
+            ->toArray();
+
+        foreach($classes as $member_class) {
+            $validation_init = 'class.' . $member_class['label'] . '.';
+
+            $class_validation[$validation_init . 'start_subscription_date'] = 'date:Y-m-d|before:date|nullable';
+        } 
+
+        return $class_validation;
     }
 }

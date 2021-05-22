@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * Event Class Data Model
@@ -31,5 +32,16 @@ class EventClassData extends Model
     public function event()
     {
         return $this->hasOne('App\Models\Event');
+    }
+
+    ///////////////////////////////////
+
+    function getStartSubscriptionDateAttribute($date)
+    {
+        if ($date) {
+            return (new Carbon($date))->format('Y-m-d');
+        }
+        
+        return null;
     }
 }

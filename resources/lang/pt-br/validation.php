@@ -1,5 +1,21 @@
 <?php
 
+$class_validation = array();
+$classes = \App\Models\MemberClass::select()
+    ->where('club_code', getClubCode())
+    ->get()
+    ->toArray();
+
+// Get class attributes
+foreach($classes as $member_class) {
+    $validation_init = 'class.' . $member_class['label'] . '.';
+
+    $class_validation[$validation_init . 'start_subscription_date'] = 'data início de inscrição (' . $member_class['name'] . ')';
+    $class_validation[$validation_init . 'vehicle_value'] = 'valor por veículo (' . $member_class['name'] . ')';
+    $class_validation[$validation_init . 'participant_value'] = 'valor por participante (' . $member_class['name'] . ')';
+    $class_validation[$validation_init . 'companion_value'] = 'valor por acompanhante (' . $member_class['name'] . ')';
+} 
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -145,7 +161,7 @@ return [
     |
     */
 
-    'attributes' => [
+    'attributes' => array_merge([
         'address'               => 'endereço',
         'age'                   => 'idade',
         'body'                  => 'conteúdo',
@@ -190,5 +206,10 @@ return [
         'carplate' => 'placa',
 
         'value' => 'valor',
-    ],
+
+        'max_vehicles' => 'valor por veículo',
+        'max_participants' => 'valor por participante',
+        'max_companions' => 'valor por acompanhante',
+        'date_limit' => 'data limite de inscrição',
+    ], $class_validation),
 ];
