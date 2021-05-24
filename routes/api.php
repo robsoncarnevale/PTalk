@@ -135,6 +135,7 @@ Route::group([ 'middleware' => 'authorized' ], function(){
     Route::delete('/events/{event}', [ 'uses' => 'EventsController@Delete', 'as' => 'events.delete' ]);
     Route::post('events/{event}/start', [ 'uses' => 'EventsController@Start', 'as' => 'events.start' ]);
     Route::post('events/{event}/cancel', [ 'uses' => 'EventsController@Cancel', 'as' => 'events.cancel' ]);
+    Route::post('events/{event}/subscribe', [ 'uses' => 'EventsController@Subscribe', 'as' => 'events.subscribe' ]);
 
     // Digital Bank Account
     Route::get('/bank-account/list', [ 'uses' => 'BankAccountController@List', 'as' => 'bankaccount.list' ]);
@@ -220,6 +221,8 @@ Route::prefix('mobile')->group(function(){
         // Events
         Route::get('/events', [ 'uses' => 'Mobile\EventsController@List', 'as' => 'mobile.events.list' ]);
         Route::get('/events/{event}', [ 'uses' => 'Mobile\EventsController@Get', 'as' => 'mobile.events.get' ]);
+        Route::post('events/{event}/subscribe', [ 'uses' => 'EventsController@Subscribe', 'as' => 'mobile.events.subscribe' ]);
+
 
         // Refer member
         Route::post('/members/refer', [ 'uses' => 'Mobile\MembersController@CreateFromReference', 'as' => 'mobile.members.refer' ]);

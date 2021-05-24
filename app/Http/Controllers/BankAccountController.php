@@ -156,6 +156,8 @@ class BankAccountController extends Controller
             $launch->created_by = User::getAuthenticatedUserId();
             $launch->amount = $request->get('value');
             $launch->type = AccountLaunch::DEBIT_TYPE;
+            $launch->description = AccountLaunch::DEBIT_DESCRIPTION;
+            $launch->mode = AccountLaunch::MANUAL_MODE;
             $launch->save();
 
             $bank_account->balance -= $request->get('value');
@@ -196,6 +198,8 @@ class BankAccountController extends Controller
             $launch->created_by = User::getAuthenticatedUserId();
             $launch->amount = $request->get('value');
             $launch->type = AccountLaunch::CREDIT_TYPE;
+            $launch->description = AccountLaunch::CREDIT_DESCRIPTION;
+            $launch->mode = AccountLaunch::MANUAL_MODE;
             $launch->save();
 
             $bank_account->balance += $request->get('value');

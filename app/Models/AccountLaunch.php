@@ -18,6 +18,13 @@ class AccountLaunch extends Model
     const CREDIT_TYPE = 'credit';
     const DEBIT_TYPE = 'debit';
 
+    const DEBIT_DESCRIPTION = 'debit';
+    const CREDIT_DESCRIPTION = 'credit';
+    const EVENT_SUBSCRIBE_DESCRIPTION = 'event_subscribe';
+
+    const MANUAL_MODE = 'manual';
+    const AUTOMATIC_MODE = 'automatic';
+
     protected $fillable = [
     ];
 
@@ -39,5 +46,13 @@ class AccountLaunch extends Model
     public function bank_account()
     {
         return $this->belongsTo('App\Models\BankAccount', 'account_number', 'account_number');
+    }
+
+    /**
+     * Get event
+     */
+    public function event()
+    {
+        return $this->belongsTo('App\Models\Event');
     }
 }

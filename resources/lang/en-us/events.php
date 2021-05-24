@@ -13,7 +13,17 @@ return [
 
     'success-start-event' => 'Event :name initialized with success',
     'success-cancel-event' => 'Event :name cancelled with success',
-    'error-start-event' => "Não foi possível inicializar o evento :name.\nNecessário preencher os seguintes campos: \n\n:fields",
+    'error-start-event' => "The :name event could not be initialized.\Need to fill in the following fields: \n\n:fields",
+
+    'success-subscrive-event' => 'Successful registration for the :name event',
+    'error-subscribe-event' => [
+        'status' => ':name event is not active',
+        'start_subscription_date' => 'The registration date for :member_class_name members starts with :date',
+        'without_balance' => 'Insufficient balance for enrollment in the :value of the :name event',
+        'already-subscribted' => 'You are already registered for the :name event',
+
+        'generic' => 'An error occurred while registering for the :name event -: error',
+    ],
 
     'fields' => [
         'name' => 'Name',

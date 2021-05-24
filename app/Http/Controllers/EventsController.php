@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
-// use Illuminate\Http\Request;
+use Illuminate\Http\Request;
 use App\Http\Requests\EventRequest;
+use App\Http\Requests\SubscribeEventRequest;
 
+
+use App\Models\AccountLaunch;
 use App\Models\Event;
-use App\Models\User;
+use App\Models\EventSubscription;
 use App\Models\MemberClass;
+use App\Models\User;
+
 use App\Http\Resources\Event as EventResource;
 use App\Http\Resources\EventCollection;
 
@@ -26,20 +31,10 @@ class EventsController extends Controller
      */
     public function List(EventRequest $request)
     {
-        $events = false;
-
-        if (User::isMobile()) {
-            $events = Event::select()
-                ->where('club_code', getClubCode())
-                ->where('deleted', false)
-                ->where('status', Event::ACTIVE_STATUS)
-                ->jsonPaginate(20);
-        } else {
-            $events = Event::select()
-                ->where('club_code', getClubCode())
-                ->where('deleted', false)
-                ->jsonPaginate(20);
-        }
+        $events = Event::select()
+            ->where('club_code', getClubCode())
+            ->where('deleted', false)
+            ->jsonPaginate(20);
 
         return response()->json([ 'status' => 'success', 'data' => (new EventCollection($events)) ]);
     }
@@ -304,5 +299,110 @@ class EventsController extends Controller
         $this->validateClub($event->club_code, 'event');
 
         return response()->json([ 'status' => 'success', 'data' => (new EventResource($event)), 'message' => __('events.success-cancel-event', [ 'name' => $event->name ]) ]);
+    }
+
+    /**
+     * Subscribe in event
+     * 
+     * @author Davi Souto
+     * @since 24/05/2021
+     */
+    public function Subscribe(Event $event, SubscribeEventRequest $request)
+    {
+        $check_subscription = EventSubscription::select()
+            ->where('club_code', getClubCode())
+            ->where('user_id', User::getAuthenticatedUserId())
+            ->where('event_id', $event->id)
+            ->first();
+        
+        // Check if you are already registered for the event
+        if ($check_subscription){
+            return response()->json([ 'status' => 'error', 'message' => __('events.error-subscribe-event.already-subscribted', [ 'name' => $event->name ]) ]);
+        }
+
+        // Check if event is active
+        if ($event->status !== Event::ACTIVE_STATUS) {
+            return response()->json([ 'status' => 'error', 'message' => __('events.error-subscribe-event.status', [ 'name' => $event->name ]) ]);
+        }
+
+        $user =  User::getAuthenticatedUser();
+        $member_class = $user->member_class;
+        $bank_account = $user->bank_account;
+
+        $member_params = false;
+
+        foreach($event->class_data as $class) {
+            if ($class->member_class_id == $member_class->id) {
+                $member_params = $class;
+                
+                break;
+            }
+        }
+
+        $date_actual = strtotime(date('Y-m-d H:i:s'));
+        $date_subscript = strtotime($member_params->start_subscription_date . ' 00:00:00');
+
+        if ($date_actual < $date_subscript) {
+            return response()->json([ 'status' => 'error', 'message' => __('events.error-subscribe-event.start_subscription_date', [ 'member_class_name' => $member_class->name, 'date' => date('d/m/Y', $date_subscript) ]) ]);
+        }
+
+        $price = 0;
+        
+        // Participant price
+        $price += $member_params->participant_value;
+
+        // Vehicle price
+        if ($request->vehicle === true || $request->vehicle === 1 || $request->vehicle === '1') {
+            $price += $member_params->vehicle_value;
+        }
+
+        // Companions price
+        if ((int) $request->companions > 0) {
+            $price += $member_params->companion_value * (int) $request->companions;
+        } 
+
+        $price = floatval($price);
+        $account_balance = floatval($bank_account->balance);
+
+        if ($account_balance < $price) {
+            return response()->json([ 'status' => 'error', 'message' => __('events.error-subscribe-event.without_balance', [ 'name' => $event->name, 'value' => 'R$' . number_format($price, 2, ',', '.') ]) ]);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            // Launch Debit
+            $launch = new AccountLaunch();
+            $launch->club_code = getClubCode();
+            $launch->account_number = $bank_account->account_number;
+            $launch->created_by = User::getAuthenticatedUserId();
+            $launch->amount = $price;
+            $launch->type = AccountLaunch::DEBIT_TYPE;
+            $launch->description = AccountLaunch::EVENT_SUBSCRIBE_DESCRIPTION;
+            $launch->mode = AccountLaunch::AUTOMATIC_MODE;
+            $launch->event_id = $event->id;
+            $launch->save();
+
+            // Discount price on user bank account
+            $bank_account->balance -= $launch->amount;
+            $bank_account->save();
+
+            // Create event subscription
+            $event_subscription = new EventSubscription();
+            $event_subscription->club_code = getClubCode();
+            $event_subscription->event_id = $event->id;
+            $event_subscription->user_id = User::getAuthenticatedUserId();
+            $event_subscription->status = EventSubscription::ACTIVE_STATUS;
+            
+            $event_subscription->save();
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+        
+            return response()->json([ 'status' => 'error', 'message' => __('events.error-subscribe-event.generic', [ 'name' => $event->name, 'error' => $e->getMessage() ]) ]);
+        }
+        
+        return response()->json([ 'status' => 'success', 'data' => (new EventResource($event)), 'message' => __('events.success-subscribe-event', [ 'name' => $event->name ]) ]);
     }
 }

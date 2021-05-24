@@ -5,7 +5,9 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
 
+use App\Models\EventSubscription;
 use App\Models\MemberClass;
+use App\Models\User;
 
 class Event extends JsonResource
 {
@@ -38,6 +40,7 @@ class Event extends JsonResource
 
             'class_data' => $this->mapClassData(EventClassData::collection($this->class_data)),
             'history' => EventHistory::collection($this->history->sortByDesc('created_at')),
+            'has_subscripted' => $this->checkSubscripted(),
             // 'history' => EventHistory::collection($this->whenLoaded('history')),
         ];
     }
@@ -52,6 +55,28 @@ class Event extends JsonResource
             'company' => $this->user->company,
             'status' => $this->user->status,
         ];
+    }
+
+    /**
+     * Check if has subscripted in event
+     * 
+     * @return boolean
+     * @author Davi Souto
+     * @since 24/05/2021
+     */
+    private function checkSubscripted()
+    {
+        $check_subscription = EventSubscription::select()
+            ->where('club_code', getClubCode())
+            ->where('user_id', User::getAuthenticatedUserId())
+            ->where('event_id', $this->id)
+            ->first();
+
+        if ($check_subscription) {
+            return true;
+        }
+
+        return false;
     }
 
     public static function getCoverPicture($photo)

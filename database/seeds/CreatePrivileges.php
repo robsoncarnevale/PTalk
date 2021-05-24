@@ -109,6 +109,7 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'events.delete',                      'name' => 'Delete Event', 'description' => '', 'add_member' => false ],
             [ 'action' => 'events.start',                       'name' => 'Start Event', 'description' => '', 'add_member' => false ],
             [ 'action' => 'events.cancel',                      'name' => 'Cancel Event', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'events.subscribe',                   'name' => 'Subscribe in Event', 'description' => '', 'add_member' => true ],
 
             [ 'action' => 'blacklist.list',                     'name' => 'List Blacklist', 'description' => '', 'add_member' => false ], 
             [ 'action' => 'blacklist.get',                      'name' => 'Get Blacklist', 'description' => '', 'add_member' => false ],    

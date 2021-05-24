@@ -50,6 +50,7 @@ class Extract extends JsonResource
 
         $extract = AccountLaunch::select()
             ->with('get_created_by')
+            ->with('event')
             ->where('account_number', $this->account_number)
             ->whereBetween('created_at', [ $first_date, $last_date ])
             ->orderBy('created_at', 'desc')

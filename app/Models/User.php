@@ -475,6 +475,34 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
+     * Returns user authenticated (mobile or web)
+     * @return \App\Models\User
+     * @author Davi Souto
+     * @since 24/05/2021
+     */
+    public static function getAuthenticatedUser()
+    {
+        $id = false;
+
+        if (self::$mobile_auth) {
+            $id = self::$mobile_auth->id;
+        }
+
+        if (auth()->guard()->user()) {
+            $id = auth()->guard()->user()->id;
+        }
+
+        if ($id) {
+            return self::select()
+                ->where('club_code', getClubCode())
+                ->where('id', $id)
+                ->first();
+        }
+
+        return false;
+    }
+
+    /**
      * Returns true if user is authenticated on mobile
      * @return bool
      * @since 16/09/2020

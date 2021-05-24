@@ -15,6 +15,16 @@ return [
     'success-cancel-event' => 'Evento :name cancelado com sucesso',
     'error-start-event' => "Não foi possível inicializar o evento :name.\nNecessário preencher os seguintes campos: \n\n:fields",
 
+    'success-subscribe-event' => 'Inscrição efetuada com sucesso no evento :name',
+    'error-subscribe-event' => [
+        'status' => 'Evento :name não está ativo',
+        'start_subscription_date' => 'A data de inscrição para membros :member_class_name se inicia em :date',
+        'without_balance' => 'Saldo insuficiente para inscrição no valor de :value no evento :name',
+        'already-subscribted' => 'Você já está inscrito no evento :name',
+
+        'generic' => 'Ocorreu um erro ao se inscrever no evento :name - :error',
+    ],
+
     'fields' => [
         'name' => 'Nome',
         'cover_picture' => 'Capa do Evento',
