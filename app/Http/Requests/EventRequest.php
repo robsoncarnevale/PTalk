@@ -57,7 +57,7 @@ class EventRequest extends FormRequest
 
             'date' => 'date_format:d/m/Y',
             'date_limit' => 'date_format:d/m/Y|after:date',
-        ], getClassValidation());
+        ], $this->getClassValidation());
     }
 
     private function updateRules()
@@ -79,7 +79,7 @@ class EventRequest extends FormRequest
         ], $this->getClassValidation());
     }
 
-    private function getClassValidation()
+    private static function getClassValidation()
     {
         $class_validation = array();
         $classes = \App\Models\MemberClass::select()
