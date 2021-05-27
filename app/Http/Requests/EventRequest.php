@@ -56,7 +56,7 @@ class EventRequest extends FormRequest
             'end_time' => 'numeric|nullable',
 
             'date' => 'date_format:d/m/Y',
-            'date_limit' => 'date_format:d/m/Y|after:date',
+            'date_limit' => 'date_format:d/m/Y|before:date',
         ], $this->getClassValidation());
     }
 

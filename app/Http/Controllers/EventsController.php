@@ -66,6 +66,8 @@ class EventsController extends Controller
             $event = new Event();
     
             $event->fill($request->all());
+            $event->date = dateBrToDatabase($request->date);
+            $event->date_limit = dateBrToDatabase($request->date_limit);
             $event->club_code = getClubCode();
             $event->name = ucwords($event->name);
             $event->created_by = User::getAuthenticatedUserId();

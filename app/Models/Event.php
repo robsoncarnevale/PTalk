@@ -119,7 +119,7 @@ class Event extends Model
         if (! $old_data) {
             $history->resume = json_encode([
                 'event' => $this->toArray(),
-                'class' => array_key_exists('class', $old_data) ? $old_data['class']->toArray() : []
+                'class' => array_key_exists('class', $request->all()) ? $request->all()['class'] : []
             ]);
 
             $history->status = Event::DRAFT_STATUS;
