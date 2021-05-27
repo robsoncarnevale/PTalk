@@ -55,8 +55,8 @@ class EventRequest extends FormRequest
             'start_time' => 'numeric|nullable',
             'end_time' => 'numeric|nullable',
 
-            'date' => 'date_format:Y-m-d',
-            'date_limit' => 'date_format:Y-m-d|after:date',
+            'date' => 'date_format:d/m/Y',
+            'date_limit' => 'date_format:d/m/Y|after:date',
         ], getClassValidation());
     }
 
@@ -74,8 +74,8 @@ class EventRequest extends FormRequest
             'start_time' => 'numeric|nullable',
             'end_time' => 'numeric|nullable',
 
-            'date' => 'date_format:Y-m-d',
-            'date_limit' => 'date_format:Y-m-d|before:date',
+            'date' => 'date_format:d/m/Y',
+            'date_limit' => 'date_format:d/m/Y|before:date',
         ], $this->getClassValidation());
     }
 
@@ -90,7 +90,7 @@ class EventRequest extends FormRequest
         foreach($classes as $member_class) {
             $validation_init = 'class.' . $member_class['label'] . '.';
 
-            $class_validation[$validation_init . 'start_subscription_date'] = 'date:Y-m-d|before:date|nullable';
+            $class_validation[$validation_init . 'start_subscription_date'] = 'date_format:d/m/Y|before:date|nullable';
         } 
 
         return $class_validation;

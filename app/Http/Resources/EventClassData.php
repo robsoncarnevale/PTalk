@@ -18,6 +18,7 @@ class EventClassData extends JsonResource
             'event_id' => $this->event_id,
             'member_class_id' => $this->member_class_id,
             'start_subscription_date' => $this->start_subscription_date,
+            'start_subscription_date_br' => $this->start_subscription_date_br,
             'vehicle_value' => $this->vehicle_value,
             'participant_value' => $this->participant_value,
             'companion_value' => $this->companion_value,

@@ -92,3 +92,19 @@
             return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT));
         }
     }
+
+    if (! function_exists('dateBrToDatabase')) {
+        function dateBrToDatabase($date){
+            $year = substr($date, 6);
+            $month = substr($date, 3,-5);
+            $day = substr($date, 0,-8);
+
+            return $year . "-" . $month . "-" . $day;
+        }
+    }
+
+    if (! function_exists('dateDatabaseToBr')) {
+        function dateDatabaseToBr($date) {
+            return implode('/', array_reverse(explode('-', $date)));
+        }
+    }

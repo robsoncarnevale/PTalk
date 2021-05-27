@@ -44,4 +44,13 @@ class EventClassData extends Model
         
         return null;
     }
+
+    function getStartSubscriptionDateBrAttribute()
+    {
+        if ($this->start_subscription_date) {
+            return (new Carbon($this->start_subscription_date))->format('d/m/Y');
+        }
+        
+        return null;
+    }
 }

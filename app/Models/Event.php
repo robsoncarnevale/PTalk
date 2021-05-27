@@ -214,6 +214,7 @@ class Event extends Model
                 $event_class->member_class_id = $class->id;
 
                 $event_class->fill($class_data);
+                $event_class->start_subscription_date = dateBrToDatabase($class_data['start_subscription_date']);
 
                 $event_class->save();
 
@@ -232,10 +233,28 @@ class Event extends Model
         return null;
     }
 
+    function getDateBrAttribute()
+    {
+        if ($this->date) {
+            return (new Carbon($this->date))->format('d/m/Y');
+        }
+        
+        return null;
+    }
+
     function getDateLimitAttribute($date)
     {
         if ($date) {
             return (new Carbon($date))->format('Y-m-d');
+        }
+        
+        return null;
+    }
+
+    function getDateLimitBrAttribute()
+    {
+        if ($this->date_limit) {
+            return (new Carbon($this->date_limit))->format('d/m/Y');
         }
         
         return null;

@@ -113,6 +113,8 @@ class EventsController extends Controller
 
 
             $event->fill($request->all());
+            $event->date = dateBrToDatabase($request->date);
+            $event->date_limit = dateBrToDatabase($request->date_limit);
             $event->name = ucwords($event->name);
 
             // Photo remove and upload
