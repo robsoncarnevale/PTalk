@@ -40,8 +40,9 @@ class Event extends JsonResource
             'created_by' => $this->userArray($this->user),
             'status' => $this->status,
 
+            'address' => $this->address ? new EventAddress($this->address) : false,
             'class_data' => $this->mapClassData(EventClassData::collection($this->class_data)),
-            'history' => EventHistory::collection($this->history->sortByDesc('created_at')),
+            'history' => $this->mapHistory(EventHistory::collection($this->history->sortByDesc('created_at'))),
             'has_subscripted' => $this->checkSubscripted(),
             // 'history' => EventHistory::collection($this->whenLoaded('history')),
         ];
@@ -106,5 +107,35 @@ class Event extends JsonResource
         }
 
         return $result_class_data;
+    }
+
+    public static function mapHistory($history_data)
+    {
+        $result = $history_data;
+
+        foreach($history_data as $i_history => $history) {
+            $resume = json_decode($history->resume, true);
+
+            if (array_key_exists('old_event', $resume) && array_key_exists('address', $resume['old_event']) && ! empty($resume['old_event']['address']) && is_array($resume['old_event']['address'])) {
+                $address = $resume['old_event']['address']['street_address'];
+
+                if ($resume['old_event']['address']['number']) {
+                    $address .= ', ' . $resume['old_event']['address']['number'];
+                }
+
+                if ($resume['old_event']['address']['complement']) {
+                    $address .= ', ' . $resume['old_event']['address']['complement'];
+                }
+
+                $address .= " - " . $resume['old_event']['address']['neighborhood'];
+                $address .= " - " . $resume['old_event']['address']['city'];
+                $address .= " - " . $resume['old_event']['address']['state'];
+
+                $resume['old_event']['address'] = $address;
+                $result[$i_history]['resume'] = json_encode($resume);
+            }
+        }
+
+        return $result;
     }
 }

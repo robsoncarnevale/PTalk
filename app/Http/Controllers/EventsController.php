@@ -34,6 +34,7 @@ class EventsController extends Controller
         $events = Event::select()
             ->where('club_code', getClubCode())
             ->where('deleted', false)
+            ->orderBy('id')
             ->jsonPaginate(20);
 
         return response()->json([ 'status' => 'success', 'data' => (new EventCollection($events)) ]);
@@ -66,8 +67,15 @@ class EventsController extends Controller
             $event = new Event();
     
             $event->fill($request->all());
-            $event->date = dateBrToDatabase($request->date);
-            $event->date_limit = dateBrToDatabase($request->date_limit);
+
+            if (! empty($request->get('date'))) {
+                $event->date = dateBrToDatabase($request->date);
+            } else $event->date = null;
+
+            if (! empty($request->get('date_limit'))) {
+                $event->date_limit = dateBrToDatabase($request->date_limit);
+            } else $event->date_limit = null;
+
             $event->club_code = getClubCode();
             $event->name = ucwords($event->name);
             $event->created_by = User::getAuthenticatedUserId();
@@ -104,6 +112,7 @@ class EventsController extends Controller
         try {
             $old_data = array();
             $old_data['event'] = $event->toArray();
+            $old_data['event']['address'] = $event->address ? $event->address->toArray() : false;
 
             if ($request->get('class')) {
                 $old_data['class'] = EventResource::mapClassData($event->class_data->toArray());
@@ -115,8 +124,15 @@ class EventsController extends Controller
 
 
             $event->fill($request->all());
-            $event->date = dateBrToDatabase($request->date);
-            $event->date_limit = dateBrToDatabase($request->date_limit);
+
+            if (! empty($request->get('date'))) {
+                $event->date = dateBrToDatabase($request->date);
+            }
+
+            if (! empty($request->get('date_limit'))) {
+                $event->date_limit = dateBrToDatabase($request->date_limit);
+            }
+
             $event->name = ucwords($event->name);
 
             // Photo remove and upload

@@ -36,7 +36,6 @@ class Event extends Model
     protected $fillable = [
         'name',
         'description',
-        'address',
         'meeting_point',
         'date',
         'date_limit',
@@ -74,6 +73,14 @@ class Event extends Model
     public function history()
     {
         return $this->hasMany('App\Models\EventHistory');
+    }
+
+    /**
+     * Get event address
+     */
+    public function address()
+    {
+        return $this->hasOne('App\Models\EventAddress');
     }
 
     /////////////////////////
@@ -117,10 +124,30 @@ class Event extends Model
 
         // First register
         if (! $old_data) {
+            $address = false;
+
+            // Address
+            if ($request->get('event_address_zip_code')) {
+                $address = $request->get('event_address_street_address');
+
+                if ($request->get('event_address_number')) {
+                    $address .= ', ' . $request->get('event_address_number');
+                }
+
+                if ($request->get('event_address_complement')) {
+                    $address .= ', ' . $request->get('event_address_complement');
+                }
+
+                $address .= " - " . $request->get('event_address_neighborhood');
+                $address .= " - " . $request->get('event_address_city');
+                $address .= " - " . $request->get('event_address_state');
+            }
+
             $history->resume = json_encode([
-                'event' => $this->toArray(),
-                'class' => array_key_exists('class', $request->all()) ? $request->all()['class'] : []
+                'event' => array_merge($this->toArray(), [ 'address' => $address ]),
+                'class' => array_key_exists('class', $request->all()) ? $request->all()['class'] : [],
             ]);
+            
 
             $history->status = Event::DRAFT_STATUS;
         } else {
@@ -129,6 +156,43 @@ class Event extends Model
 
             $diff_event = array();
             $diff_class = array();
+
+            $address = false;
+            $old_address = false;
+
+            // Address
+            if ($request->get('event_address_zip_code')) {
+                $address = $request->get('event_address_street_address');
+
+                if ($request->get('event_address_number')) {
+                    $address .= ', ' . $request->get('event_address_number');
+                }
+
+                if ($request->get('event_address_complement')) {
+                    $address .= ', ' . $request->get('event_address_complement');
+                }
+
+                $address .= " - " . $request->get('event_address_neighborhood');
+                $address .= " - " . $request->get('event_address_city');
+                $address .= " - " . $request->get('event_address_state');
+            }
+
+            // Old Address
+            if ($old_data['event']['address']) {
+                $old_address = $old_data['event']['address']['street_address'];
+
+                if ($old_data['event']['address']['number']) {
+                    $old_address .= ', ' . $old_data['event']['address']['number'];
+                }
+
+                if ($old_data['event']['address']['complement']) {
+                    $old_address .= ', ' . $old_data['event']['address']['complement'];
+                }
+
+                $old_address .= " - " . $old_data['event']['address']['neighborhood'];
+                $old_address .= " - " . $old_data['event']['address']['city'];
+                $old_address .= " - " . $old_data['event']['address']['state'];
+            }
 
             // Clean event date
             foreach(['date', 'date_limit'] as $date_field) {
@@ -167,7 +231,19 @@ class Event extends Model
             
             unset($actual_data_event['class_data']);
 
-            $diff_event = array_diff($actual_data_event, $old_data['event']);
+            if ($address != $old_address) {
+                $diff_event = array_diff(array_merge($actual_data_event, [ 'address' => $address ]), array_merge($old_data['event'], [ 'address' => $old_address]));
+            } else {
+                if (isset($actual_data_event['address'])) {
+                    unset($actual_data_event['address']);
+                }
+
+                if (isset($old_data['event']['address'])) {
+                    unset($old_data['event']['address']);
+                }
+
+                $diff_event = array_diff($actual_data_event, $old_data['event']);
+            }
 
             $history->resume = json_encode([
                 'event' => $diff_event,
@@ -214,7 +290,10 @@ class Event extends Model
                 $event_class->member_class_id = $class->id;
 
                 $event_class->fill($class_data);
-                $event_class->start_subscription_date = dateBrToDatabase($class_data['start_subscription_date']);
+
+                if (! empty($class_data['start_subscription_date'])) {
+                    $event_class->start_subscription_date = dateBrToDatabase($class_data['start_subscription_date']);
+                } else $event_class->start_subscription_date = null;
 
                 $event_class->save();
 

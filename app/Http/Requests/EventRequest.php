@@ -55,8 +55,8 @@ class EventRequest extends FormRequest
             'start_time' => 'numeric|nullable',
             'end_time' => 'numeric|nullable',
 
-            'date' => 'date_format:d/m/Y',
-            'date_limit' => 'date_format:d/m/Y|before:date',
+            'date' => 'date_format:d/m/Y|nullable',
+            'date_limit' => 'date_format:d/m/Y|before:date|nullable',
         ], $this->getClassValidation());
     }
 
@@ -74,8 +74,8 @@ class EventRequest extends FormRequest
             'start_time' => 'numeric|nullable',
             'end_time' => 'numeric|nullable',
 
-            'date' => 'date_format:d/m/Y',
-            'date_limit' => 'date_format:d/m/Y|before:date',
+            'date' => 'date_format:d/m/Y|nullable',
+            'date_limit' => 'date_format:d/m/Y|before:date|nullable',
         ], $this->getClassValidation());
     }
 
