@@ -36,7 +36,7 @@ class EventsController extends Controller
             ->where('status', Event::ACTIVE_STATUS);
 
         $result = [
-            'events' => new EventCollection($events),
+            'events' => EventResource::collection($events),
             'subscriptions' => [],
         ];
 
