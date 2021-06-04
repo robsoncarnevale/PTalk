@@ -9,7 +9,11 @@ use App\Http\Requests\SubscribeEventRequest;
 use App\Models\Event;
 use App\Models\User;
 use App\Models\MemberClass;
+use App\Models\EventSubscription;
+
 use App\Http\Resources\Event as EventResource;
+use App\Http\Resources\EventMobile as EventMobileResource;
+use App\Http\Resources\EventSubscriptionMobile as EventSubscriptionMobileResource;
 use App\Http\Resources\EventCollection;
 
 // use App\Models\Event;
@@ -33,11 +37,19 @@ class EventsController extends Controller
         $events = Event::select()
             ->where('club_code', getClubCode())
             ->where('deleted', false)
-            ->where('status', Event::ACTIVE_STATUS);
+            ->where('status', Event::ACTIVE_STATUS)
+            ->get();
+
+        $subscriptions = EventSubscription::select()
+            ->where('club_code', getClubCode())
+            ->where('user_id', User::getAuthenticatedUserId())
+            ->with('event')
+            ->get();
+        
 
         $result = [
-            'events' => EventResource::collection($events),
-            'subscriptions' => [],
+            'events' => EventMobileResource::collection($events),
+            'subscriptions' => EventSubscriptionMobileResource::collection($subscriptions),
         ];
 
         return response()->json([ 'status' => 'success', 'data' => $result ]);

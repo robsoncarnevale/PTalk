@@ -16,4 +16,12 @@ class EventSubscription extends Model
 
     const ACTIVE_STATUS = 'active';
     const INACTIVE_STATUS = 'inactive';
+
+    /**
+     * Get event
+     */
+    public function event()
+    {
+        return $this->belongsTo('App\Models\Event');
+    }
 }
