@@ -35,7 +35,12 @@ class EventsController extends Controller
             ->where('deleted', false)
             ->where('status', Event::ACTIVE_STATUS);
 
-        return response()->json([ 'status' => 'success', 'data' => (new EventCollection($events)) ]);
+        $result = [
+            'events' => new EventCollection($events),
+            'subscriptions' => [],
+        ];
+
+        return response()->json([ 'status' => 'success', 'data' => $result ]);
     }
 
     /**
