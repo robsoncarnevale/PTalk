@@ -33,8 +33,7 @@ class EventsController extends Controller
         $events = Event::select()
             ->where('club_code', getClubCode())
             ->where('deleted', false)
-            ->where('status', Event::ACTIVE_STATUS)
-            ->jsonPaginate(20);
+            ->where('status', Event::ACTIVE_STATUS);
 
         return response()->json([ 'status' => 'success', 'data' => (new EventCollection($events)) ]);
     }
