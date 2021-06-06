@@ -22,6 +22,7 @@ class EventClassData extends JsonResource
             'vehicle_value' => $this->vehicle_value,
             'participant_value' => $this->participant_value,
             'companion_value' => $this->companion_value,
+            'member_class' => $this->member_class,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

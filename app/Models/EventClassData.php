@@ -34,6 +34,14 @@ class EventClassData extends Model
         return $this->hasOne('App\Models\Event');
     }
 
+    /**
+     * Get the event
+     */
+    public function member_class()
+    {
+        return $this->belongsTo('App\Models\MemberClass');
+    }
+
     ///////////////////////////////////
 
     function getStartSubscriptionDateAttribute($date)
