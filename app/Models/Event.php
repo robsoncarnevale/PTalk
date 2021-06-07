@@ -44,7 +44,7 @@ class Event extends Model
         'max_vehicles',
         'max_participants',
         'max_companions',
-        'status',
+        // 'status',
     ];
 
     protected $hidden = [

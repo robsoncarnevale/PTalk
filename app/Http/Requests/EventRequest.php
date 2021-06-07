@@ -4,6 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+use App\Models\Event;
+
 class EventRequest extends FormRequest
 {
     /**
@@ -47,35 +49,37 @@ class EventRequest extends FormRequest
     {
         return array_merge([
             'name' => 'required',
+            'description' => $this->status == Event::DRAFT_STATUS ? "nullable" : "required",
+            'meeting_point' => $this->status == Event::DRAFT_STATUS ? "nullable" : "required",
 
-            'max_vehicles' => 'integer|min:1|max:9999|nullable',
-            'max_participants' => 'integer|min:1|max:9999|nullable',
-            'max_companions' => 'integer|min:1|max:9999|nullable',
+            'max_vehicles' => 'integer|min:1|max:9999' . $this->status == Event::DRAFT_STATUS ? "|nullable" : "",
+            'max_participants' => 'integer|min:1|max:9999' . $this->status == Event::DRAFT_STATUS ? "|nullable" : "",
+            'max_companions' => 'integer|min:1|max:9999' . $this->status == Event::DRAFT_STATUS ? "|nullable" : "",
 
-            'start_time' => 'numeric|nullable',
-            'end_time' => 'numeric|nullable',
+            'start_time' => 'numeric' . $this->status == Event::DRAFT_STATUS ? "|nullable" : "",
+            'end_time' => 'numeric' . $this->status == Event::DRAFT_STATUS ? "|nullable" : "",
 
-            'date' => 'date_format:d/m/Y|nullable',
-            'date_limit' => 'date_format:d/m/Y|before:date|nullable',
+            'date' => 'date_format:d/m/Y' . $this->status == Event::DRAFT_STATUS ? "|nullable" : "",
+            'date_limit' => 'date_format:d/m/Y|before:date' . $this->status == Event::DRAFT_STATUS ? "|nullable" : "",
         ], $this->getClassValidation());
     }
 
     private function updateRules()
     {
-        
-
         return array_merge([
             'name' => 'required',
+            'description' => $this->status == Event::DRAFT_STATUS ? "nullable" : "required",
+            'meeting_point' => $this->status == Event::DRAFT_STATUS ? "nullable" : "required",
 
-            'max_vehicles' => 'integer|min:1|max:9999|nullable',
-            'max_participants' => 'integer|min:1|max:9999|nullable',
-            'max_companions' => 'integer|min:1|max:9999|nullable',
+            'max_vehicles' => 'integer|min:1|max:9999' . $this->status == Event::DRAFT_STATUS ? "|nullable" : "",
+            'max_participants' => 'integer|min:1|max:9999' . $this->status == Event::DRAFT_STATUS ? "|nullable" : "",
+            'max_companions' => 'integer|min:1|max:9999' . $this->status == Event::DRAFT_STATUS ? "|nullable" : "",
 
-            'start_time' => 'numeric|nullable',
-            'end_time' => 'numeric|nullable',
+            'start_time' => 'numeric' . $this->status == Event::DRAFT_STATUS ? "|nullable" : "",
+            'end_time' => 'numeric' . $this->status == Event::DRAFT_STATUS ? "|nullable" : "",
 
-            'date' => 'date_format:d/m/Y|nullable',
-            'date_limit' => 'date_format:d/m/Y|before:date|nullable',
+            'date' => 'date_format:d/m/Y' . $this->status == Event::DRAFT_STATUS ? "|nullable" : "",
+            'date_limit' => 'date_format:d/m/Y|before:date' . $this->status == Event::DRAFT_STATUS ? "|nullable" : "",
         ], $this->getClassValidation());
     }
 

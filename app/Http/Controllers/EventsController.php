@@ -68,6 +68,10 @@ class EventsController extends Controller
     
             $event->fill($request->all());
 
+            if ($request->has('status')) {
+                $event->status = $request->get('status');
+            }
+
             if (! empty($request->get('date'))) {
                 $event->date = dateBrToDatabase($request->date);
             } else $event->date = null;
@@ -124,6 +128,10 @@ class EventsController extends Controller
 
 
             $event->fill($request->all());
+
+            if ($request->has('status')) {
+                $event->status = $request->get('status');
+            }
 
             if (! empty($request->get('date'))) {
                 $event->date = dateBrToDatabase($request->date);
