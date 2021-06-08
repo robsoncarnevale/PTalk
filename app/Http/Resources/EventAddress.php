@@ -24,6 +24,8 @@ class EventAddress extends JsonResource
             'neighborhood' => $this->neighborhood,
             'street_address' => $this->street_address,
             'number' => $this->number,
+            'lat' => $this->lat,
+            'lon' => $this->lon,
             'complement' => $this->complement,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

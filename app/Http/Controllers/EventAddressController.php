@@ -42,6 +42,7 @@ class EventAddressController extends Controller
         $address->event_id = $event->id;
         
         $address->save();
+        $address->findLatLon();
 
         // Remove others address
         $check_others = EventAddress::select()
@@ -59,6 +60,7 @@ class EventAddressController extends Controller
 
         $address = $address->fill($request->all());
         $address->save();
+        $address->findLatLon();
 
         // Remove others address
         $check_others = EventAddress::select()
