@@ -68,6 +68,18 @@ class EventsController extends Controller
     
             $event->fill($request->all());
 
+            if ($request->has('max_vehicles')) {
+                $event->max_vehicles = preg_replace("#[^0-9]#is", "", $request->get('max_vehicles'));
+            }
+
+            if ($request->has('max_participants')) {
+                $event->max_participants = preg_replace("#[^0-9]#is", "", $request->get('max_participants'));
+            }
+
+            if ($request->has('max_companions')) {
+                $event->max_companions = preg_replace("#[^0-9]#is", "", $request->get('max_companions'));
+            }
+
             if ($request->has('status')) {
                 $event->status = $request->get('status');
             }
