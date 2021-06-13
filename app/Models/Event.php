@@ -98,9 +98,9 @@ class Event extends Model
 
         if ($upload_photo)
         {
-            if (! empty($this->cover_picture) && Storage::disk('images')->exists($this->cover_picture)) {
-                Storage::disk('images')->delete($this->cover_picture);
-            }
+            // if (! empty($this->cover_picture) && Storage::disk('images')->exists($this->cover_picture)) {
+            //     Storage::disk('images')->delete($this->cover_picture);
+            // }
             
             $this->cover_picture = $upload_photo;
         }
@@ -224,7 +224,10 @@ class Event extends Model
                     //     // 'created_at' => $actual_class_data[$i_actual_class_data]['created_at'],
                     //     // 'updated_at' => $actual_class_data[$i_actual_class_data]['updated_at'],
                     // ];
-    
+
+                    if (array_key_exists('start_subscription_date', $v_actual_class_data) && ! empty($v_actual_class_data['start_subscription_date'])) {
+                        $actual_class_data[$i_actual_class_data]['start_subscription_date'] = dateBrToDatabase($actual_class_data[$i_actual_class_data]['start_subscription_date']);
+                    }
     
                     if (array_key_exists($i_actual_class_data, $old_data['class'])) {
                         $diff_class[$i_actual_class_data] = array_diff($actual_class_data[$i_actual_class_data], $old_data['class'][$i_actual_class_data]);
@@ -260,6 +263,7 @@ class Event extends Model
             $history->save();
         } catch (\Exception $e) 
         {
+            throw $e;
             \Log::error("Erro ao salvar histórico: " . $e->getMessage());
         }
     }

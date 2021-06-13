@@ -65,18 +65,40 @@ class EventsController extends Controller
 
         try {
             $event = new Event();
-    
-            $event->fill($request->all());
+            $data = $request->all();
 
-            if ($request->has('max_vehicles')) {
+            foreach($data as $i_param => $param) {
+                if (substr($i_param, 0, 6) == 'class_') {
+                    $init_class = substr($i_param, 6);
+                    
+                    $class_param = substr($init_class, 0, strpos($init_class, '_'));
+                    $class_value = substr($init_class, strpos($init_class, '_')+1);
+                    
+                    if (! array_key_exists('class', $data)) {
+                        $data['class'] = array();
+                    }
+
+                    if (! array_key_exists($class_param, $data['class'])) {
+                        $data['class'][$class_param] = array();
+                    }
+
+                    $data['class'][$class_param][$class_value] = $param;
+
+                    unset($data[$i_param]);
+                }
+            }      
+    
+            $event->fill($data);
+
+            if ($request->has('max_vehicles') && ! empty($request->get('max_vehicles'))) {
                 $event->max_vehicles = preg_replace("#[^0-9]#is", "", $request->get('max_vehicles'));
             }
 
-            if ($request->has('max_participants')) {
+            if ($request->has('max_participants') && ! empty($request->get('max_participants'))) {
                 $event->max_participants = preg_replace("#[^0-9]#is", "", $request->get('max_participants'));
             }
 
-            if ($request->has('max_companions')) {
+            if ($request->has('max_companions') && ! empty($request->get('max_companions'))) {
                 $event->max_companions = preg_replace("#[^0-9]#is", "", $request->get('max_companions'));
             }
 
@@ -103,8 +125,8 @@ class EventsController extends Controller
             }
 
             $event->save();
-            $event->saveHistory(false, $request);
-            $event->saveClassData($request->get('class'));
+            $event->saveHistory(false, collect($data));
+            $event->saveClassData($data['class']);
 
             DB::commit();
         } catch (Exception $e) {
@@ -130,7 +152,30 @@ class EventsController extends Controller
             $old_data['event'] = $event->toArray();
             $old_data['event']['address'] = $event->address ? $event->address->toArray() : false;
 
-            if ($request->get('class')) {
+            $data = $request->all();
+
+            foreach($data as $i_param => $param) {
+                if (substr($i_param, 0, 6) == 'class_') {
+                    $init_class = substr($i_param, 6);
+                    
+                    $class_param = substr($init_class, 0, strpos($init_class, '_'));
+                    $class_value = substr($init_class, strpos($init_class, '_')+1);
+                    
+                    if (! array_key_exists('class', $data)) {
+                        $data['class'] = array();
+                    }
+
+                    if (! array_key_exists($class_param, $data['class'])) {
+                        $data['class'][$class_param] = array();
+                    }
+
+                    $data['class'][$class_param][$class_value] = $param;
+
+                    unset($data[$i_param]);
+                }
+            }
+
+            if (array_key_exists('class', $data)) {
                 $old_data['class'] = EventResource::mapClassData($event->class_data->toArray());
             
                 foreach($old_data['class'] as $i_old_data_class => $v_old_data_class) {
@@ -138,18 +183,17 @@ class EventsController extends Controller
                 }
             }
 
+            $event->fill($data);
 
-            $event->fill($request->all());
-
-            if ($request->has('max_vehicles')) {
+            if ($request->has('max_vehicles') && ! empty($request->get('max_vehicles'))) {
                 $event->max_vehicles = preg_replace("#[^0-9]#is", "", $request->get('max_vehicles'));
             }
 
-            if ($request->has('max_participants')) {
+            if ($request->has('max_participants') && ! empty($request->get('max_participants'))) {
                 $event->max_participants = preg_replace("#[^0-9]#is", "", $request->get('max_participants'));
             }
 
-            if ($request->has('max_companions')) {
+            if ($request->has('max_companions') && ! empty($request->get('max_companions'))) {
                 $event->max_companions = preg_replace("#[^0-9]#is", "", $request->get('max_companions'));
             }
 
@@ -181,13 +225,15 @@ class EventsController extends Controller
             }
 
             $event->save();
-            $event->saveHistory($old_data, $request);
-            $event->saveClassData($request->get('class'));
+            $event->saveHistory($old_data, collect($data));
+            $event->saveClassData($data['class']);
 
 
             DB::commit();
         } catch(Exception $e) {
             DB::rollback();
+
+            throw $e;
 
             return response()->json([ 'status' => 'error', 'message' => __('events.error-update', [ 'error' => $e->getMessage() ]) ]);
         }

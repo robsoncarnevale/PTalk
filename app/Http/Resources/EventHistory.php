@@ -55,6 +55,12 @@ class EventHistory extends JsonResource
                         $resume['event']['cover_picture'] = Event::getCoverPicture($resume['event']['cover_picture']);
                     }
                 }
+
+                if (array_key_exists('old_event', $resume)) {
+                    if (array_key_exists('cover_picture', $resume['old_event'])) {
+                        $resume['old_event']['cover_picture'] = Event::getCoverPicture($resume['old_event']['cover_picture']);
+                    }
+                }
             } catch(\Exception $e) {
                 return $resume;
             }
