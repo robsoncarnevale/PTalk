@@ -64,9 +64,42 @@ class UserAddressController extends Controller
         return (new \App\Http\Controllers\UserAddressController)->CreateMyAddress($request);
     }
 
-    public function UpdateMyAddress(Request $request, UserAddress $address)
+    public function UpdateMyAddress(Request $request)
     {
-        return (new \App\Http\Controllers\UserAddressController)->UpdateMyAddress($request, $address);
+        DB::beginTransaction()
+        
+        try {
+            $type = $request->get('type');
+
+            if (! $type) {
+                return response()->json([ 'status' => 'error', 'message' => 'Informe o tipo do endereço' ]);   
+            }
+
+            // Remove old address
+            UserAddress::select()
+                ->where('club_code', getClubCode())
+                ->where('user_id', User::getAuthenticatedUserId())
+                ->where('address_type', $type)
+                ->delete();
+
+            $address = new UserAddress();
+            
+            $address->fill($request->all());
+            $address->address_type = $type;
+
+            $address->save();
+
+            DB::commit();
+        } catch (\Exception $e){
+            DB::rollback();
+
+            return response()->json([ 'status' => 'error', 'message' => 'Erro ao atualizar endereço: ' + $e->getMessage() ]);
+        }
+
+        $address = $address->fill($request->all());
+        $address->save();
+
+        return response()->json([ 'status' => 'success', 'data' => new UserAddressResource($address) ]);
     }
 
     public function DeleteMyddress(Request $request, UserAddress $address)

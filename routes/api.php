@@ -191,9 +191,10 @@ Route::prefix('mobile')->group(function(){
         // Profile
         Route::get('/me', [ 'uses' => 'Mobile\MembersController@Me', 'as' => 'mobile.users.me' ]);
         // Route::post('/users/me', [ 'uses' => 'Mobile\MembersController@UpdateMyProfile', 'as' => 'mobile.users.me.update' ]);
-        Route::get('/users/me/address', [ 'uses' => 'Mobile\UserAddressController@ListMyAddresses', 'as' => 'users.me.address' ]);
-        Route::put('/users/me/address', [ 'uses' => 'Mobile\UserAddressController@CreateMyAddress', 'as' => 'users.me.address.create' ]);
-        Route::post('users/me/address/{address}', [ 'uses' => 'Mobile\UserAddressController@UpdateMyAddress', 'as' => 'users.me.address.update' ]);
+        Route::get('/users/me/address', [ 'uses' => 'Mobile\UserAddressController@ListMyAddresses', 'as' => 'mobile.users.me.address' ]);
+        Route::put('/users/me/address', [ 'uses' => 'Mobile\UserAddressController@CreateMyAddress', 'as' => 'mobile.users.me.address.create' ]);
+        // Route::post('users/me/address/{address}', [ 'uses' => 'Mobile\UserAddressController@UpdateMyAddress', 'as' => 'users.me.address.update' ]);
+        Route::post('users/me/address', [ 'uses' => 'Mobile\UserAddressController@UpdateMyAddress', 'as' => 'mobile.users.me.address.update' ]);
         Route::post('/profile/update', [ 'uses' => 'Mobile\MembersController@UpdateProfile', 'as' => 'mobile.profile.update' ]);
 
         // Users Address
