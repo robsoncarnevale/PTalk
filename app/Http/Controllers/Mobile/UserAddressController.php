@@ -76,8 +76,7 @@ class UserAddressController extends Controller
             }
 
             // Remove old address
-            UserAddress::select()
-                ->where('club_code', getClubCode())
+            UserAddress::where('club_code', getClubCode())
                 ->where('user_id', User::getAuthenticatedUserId())
                 ->where('address_type', $type)
                 ->delete();
