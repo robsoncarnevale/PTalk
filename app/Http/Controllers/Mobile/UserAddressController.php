@@ -86,6 +86,7 @@ class UserAddressController extends Controller
             
             $address->fill($request->all());
             $address->club_code = getClubCode();
+            $address->user_id = User::getAuthenticatedUserId();
             $address->address_type = $type;
 
             $address->save();
