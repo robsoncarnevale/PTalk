@@ -93,7 +93,7 @@ class UserAddressController extends Controller
         } catch (\Exception $e){
             DB::rollback();
 
-            return response()->json([ 'status' => 'error', 'message' => 'Erro ao atualizar endereço: ' + $e->getMessage() ]);
+            return response()->json([ 'status' => 'error', 'message' => 'Erro ao atualizar endereço: ' . $e->getMessage() ]);
         }
 
         $address = $address->fill($request->all());
