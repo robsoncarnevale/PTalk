@@ -66,7 +66,7 @@ class UserAddressController extends Controller
 
     public function UpdateMyAddress(Request $request)
     {
-        DB::beginTransaction()
+        DB::beginTransaction();
         
         try {
             $type = $request->get('type');
