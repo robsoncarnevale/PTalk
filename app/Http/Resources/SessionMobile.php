@@ -30,6 +30,7 @@ class SessionMobile extends JsonResource
         $resource['vehicles_count'] = \App\Models\Vehicle::where('user_id', $resource['id'])->where('deleted', false)->count();
         $resource['events_count'] = 0;
         $resource['club_code'] = $request->get('club_code');
+        $resource['member_class'] = $this->member_class;
         
         return [
             'id' => $resource['id'],
@@ -42,6 +43,8 @@ class SessionMobile extends JsonResource
             'company' => $resource['company'],
             'first_name' => $resource['first_name'],
             'last_name' => $resource['last_name'],
+            'member_class_id' => $resource['member_class']['id'],
+            'member_class' => $resource['member_class'],
             'privileges' => $resource['privileges'],
             'vehicles_count' => $resource['vehicles_count'],
             'events_count' => $resource['events_count'],

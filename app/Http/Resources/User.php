@@ -73,6 +73,10 @@ class User extends JsonResource
                 ->count();
         }
 
+        if (! array_key_exists('member_class', $resource)){
+            $resource['member_class'] = $this->member_class;
+        }
+
         return $resource;
 
     //     return [
