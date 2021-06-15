@@ -97,9 +97,6 @@ class UserAddressController extends Controller
             return response()->json([ 'status' => 'error', 'message' => 'Erro ao atualizar endereço: ' . $e->getMessage() ]);
         }
 
-        $address = $address->fill($request->all());
-        $address->save();
-
         return response()->json([ 'status' => 'success', 'data' => new UserAddressResource($address) ]);
     }
 
