@@ -149,6 +149,12 @@ return [
             'rule-name' => 'custom-message',
         ],
     ],
+    
+
+    // Custom messages
+    'event' => [
+        'date_limit_before' => 'A Data Limite deve ser menor que a Data do Evento',
+    ],
 
     /*
     |--------------------------------------------------------------------------

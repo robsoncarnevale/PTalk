@@ -151,6 +151,12 @@ return [
         ],
     ],
 
+
+    // Custom messages
+    'event' => [
+        'date_limit_before' => 'The Deadline must be less than the Event Date',
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Attributes

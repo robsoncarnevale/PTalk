@@ -99,4 +99,13 @@ class EventRequest extends FormRequest
 
         return $class_validation;
     }
+
+    //////////////q
+
+    public function messages()
+    {
+        return [
+            'date_limit.before' => __('validation.event.date_limit_before'),
+        ];
+    }
 }
