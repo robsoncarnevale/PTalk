@@ -210,7 +210,7 @@ class Event extends Model
                         }
                     }
                 }
-    
+
                 foreach($actual_class_data as $i_actual_class_data => $v_actual_class_data) {
                     // $actual_class_data[$i_actual_class_data] = $v_actual_class_data->toArray();
     
@@ -228,9 +228,20 @@ class Event extends Model
                     if (array_key_exists('start_subscription_date', $v_actual_class_data) && ! empty($v_actual_class_data['start_subscription_date'])) {
                         $actual_class_data[$i_actual_class_data]['start_subscription_date'] = dateBrToDatabase($actual_class_data[$i_actual_class_data]['start_subscription_date']);
                     }
-    
+
                     if (array_key_exists($i_actual_class_data, $old_data['class'])) {
-                        $diff_class[$i_actual_class_data] = array_diff($actual_class_data[$i_actual_class_data], $old_data['class'][$i_actual_class_data]);
+                        // $diff_class[$i_actual_class_data] = array_diff($actual_class_data[$i_actual_class_data], $old_data['class'][$i_actual_class_data]);
+                        
+                        $diff_class[$i_actual_class_data] = array();
+                        $old_diff_check = $old_data['class'][$i_actual_class_data];
+                        
+                        foreach($actual_class_data[$i_actual_class_data] as $k_diff => $v_diff) {
+                            if (array_key_exists($k_diff, $old_diff_check)) {
+                                if ($old_diff_check[$k_diff] != $v_diff) {
+                                    $diff_class[$i_actual_class_data][$k_diff] = $v_diff;
+                                }
+                            }
+                        }
                     }
                 }
                 
@@ -249,7 +260,7 @@ class Event extends Model
     
                     $diff_event = array_diff($actual_data_event, $old_data['event']);
                 }
-    
+
                 $history->resume = json_encode([
                     'event' => $diff_event,
                     'old_event' => $old_data['event'],
