@@ -242,6 +242,10 @@ class Event extends Model
                                 }
                             }
                         }
+
+                        if ($old_diff_check['active'] && $old_diff_check['active'] === true && ! array_key_exists('active', $actual_class_data[$i_actual_class_data])) {
+                            $diff_class[$i_actual_class_data]['active'] = 'false';
+                        }
                     }
                 }
                 
@@ -311,6 +315,7 @@ class Event extends Model
                 $event_class->member_class_id = $class->id;
 
                 $event_class->fill($class_data);
+                $event_class->active = array_key_exists('active', $class_data) && $class_data['active'];
 
                 if (! empty($class_data['start_subscription_date'])) {
                     $event_class->start_subscription_date = dateBrToDatabase($class_data['start_subscription_date']);

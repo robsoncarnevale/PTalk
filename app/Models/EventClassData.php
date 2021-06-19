@@ -20,6 +20,7 @@ class EventClassData extends Model
         'vehicle_value',
         'participant_value',
         'companion_value',
+        'active',
     ];
 
     protected $hidden = [
