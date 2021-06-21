@@ -228,6 +228,8 @@ Route::prefix('mobile')->group(function(){
         Route::get('/events/{event}', [ 'uses' => 'Mobile\EventsController@Get', 'as' => 'mobile.events.get' ]);
         Route::post('events/{event}/subscribe', [ 'uses' => 'EventsController@Subscribe', 'as' => 'mobile.events.subscribe' ]);
 
+        // Digital Bank Account
+        Route::get('/bank-account/my/extract', [ 'uses' => 'Mobile\BankAccountController@ExtractMyAccount', 'as' => 'bankaccount.my.extract' ]);
 
         // Refer member
         Route::post('/members/refer', [ 'uses' => 'Mobile\MembersController@CreateFromReference', 'as' => 'mobile.members.refer' ]);
