@@ -49,8 +49,6 @@ class EventsController extends Controller
     {
         $this->validateClub($event->club_code, 'event');
 
-        // $event->with('history');
-
         return response()->json([ 'status' => 'success', 'data' => (new EventResource($event)) ]);
     }
 

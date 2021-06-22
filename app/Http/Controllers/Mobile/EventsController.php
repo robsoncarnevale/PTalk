@@ -63,7 +63,11 @@ class EventsController extends Controller
      */
     public function Get(Event $event, EventRequest $request)
     {
-        return (new \App\Http\Controllers\EventsController())->Get($event, $request);
+        // return (new \App\Http\Controllers\EventsController())->Get($event, $request);
+        $this->validateClub($event->club_code, 'event');
+
+        return response()->json([ 'status' => 'success', 'data' => (new EventMobileResource($event)) ]);
+
     }
 
     /**

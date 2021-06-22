@@ -43,6 +43,7 @@ class EventMobile extends JsonResource
             'address' => $this->address ? new EventAddress($this->address) : false,
             'class_data' => $this->mapClassData(EventClassData::collection($this->class_data)),
             'has_subscripted' => $this->checkSubscripted(),
+            'subscription' => $this->getSubscription(),
             // 'history' => EventHistory::collection($this->whenLoaded('history')),
         ];
     }
@@ -79,6 +80,31 @@ class EventMobile extends JsonResource
         }
 
         return false;
+    }
+
+    private function getSubscription()
+    {
+        $subscriptions = EventSubscription::select()
+            ->where('club_code', getClubCode())
+            ->where('event_id', $this->id)
+            ->count();
+
+        $vehicles = EventSubscription::select()
+            ->where('club_code', getClubCode())
+            ->where('event_id', $this->id)
+            ->where('vehicle', true)
+            ->count();
+
+        $companions = EventSubscription::select()
+            ->where('club_code', getClubCode())
+            ->where('event_id', $this->id)
+            ->sum('companions');
+
+        return [
+            'participants' => $subscriptions,
+            'vehicles' => $vehicles,
+            'companions' => $companions,
+        ];
     }
 
     public static function getCoverPicture($photo)

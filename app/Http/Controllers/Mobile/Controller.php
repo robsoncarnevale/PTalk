@@ -34,4 +34,11 @@ class Controller extends BaseController
 
         return false;
     }
+
+    protected function validateClub($club_code, $attr_name)
+    {
+        \Illuminate\Support\Facades\Validator::make([ 'club_code' => $club_code ], [
+            'club_code' => new \App\Rules\ClubCodeValid($attr_name),
+        ])->validate();
+    }
 }
