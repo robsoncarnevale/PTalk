@@ -22,6 +22,10 @@ return [
         'without_balance' => 'Insufficient balance for enrollment in the :value of the :name event',
         'already-subscribted' => 'You are already registered for the :name event',
 
+        'max-participants' => 'Participant limit already reached',
+        'max-vehicles' => 'Vehicle limit already reached',
+        'max-companions' => 'Number of companions informed exceeds the allowed limit',
+
         'generic' => 'An error occurred while registering for the :name event -: error',
     ],
 

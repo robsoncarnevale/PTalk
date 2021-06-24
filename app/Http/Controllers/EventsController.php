@@ -421,6 +421,55 @@ class EventsController extends Controller
             return response()->json([ 'status' => 'error', 'message' => __('events.error-subscribe-event.status', [ 'name' => $event->name ]) ]);
         }
 
+        // Get max spaces
+        $max_participants = $event->max_participants;
+        $max_companions = $event->max_companions;
+        $max_vehicles = $event->max_vehicles;
+
+        $subscript_vehicle = $request->get('vehicle');
+
+        if ($subscript_vehicle === true || $subscript_vehicle == 'true' || $subscript_vehicle == 1) {
+            $subscript_vehicle = true;
+        } else $subscript_vehicle = false;
+        
+        // Check if have space
+        $subscriptions = EventSubscription::select()
+            ->where('club_code', getClubCode())
+            ->where('event_id', $this->id)
+            ->where('status', EventSubscription::ACTIVE_STATUS)
+            ->count();
+
+        $vehicles = EventSubscription::select()
+            ->where('club_code', getClubCode())
+            ->where('event_id', $this->id)
+            ->where('status', EventSubscription::ACTIVE_STATUS)
+            ->where('vehicle', true)
+            ->count();
+
+        $companions = EventSubscription::select()
+            ->where('club_code', getClubCode())
+            ->where('event_id', $this->id)
+            ->where('status', EventSubscription::ACTIVE_STATUS)
+            ->sum('companions');
+
+        // Check participants
+        if($subscriptions+1 > $max_participants) {
+            return response()->json([ 'status' => 'error', 'message' => __('events.error-subscribe-event.max-participants') ]);
+        }
+
+        // Check companions
+        if($companions + (int) $request->get('companions') > $max_companions) {
+            return response()->json([ 'status' => 'error', 'message' => __('events.error-subscribe-event.max-companions') ]);
+        }
+
+        // Check vehicles
+        if ($subscript_vehicle) {
+            if($vehicles+1 > $max_vehicles) {
+                return response()->json([ 'status' => 'error', 'message' => __('events.error-subscribe-event.max-vehicles') ]);
+            }
+        }
+
+
         $user =  User::getAuthenticatedUser();
         $member_class = $user->member_class;
         $bank_account = $user->bank_account;
@@ -489,6 +538,7 @@ class EventsController extends Controller
             $event_subscription->event_id = $event->id;
             $event_subscription->user_id = User::getAuthenticatedUserId();
             $event_subscription->status = EventSubscription::ACTIVE_STATUS;
+            $event_subscription->vehicle = $subscript_vehicle;
             $event_subscription->companions = (int) $request->get('companions');
             $event_subscription->amount = $launch->amount;
             

@@ -22,6 +22,10 @@ return [
         'without_balance' => 'Saldo insuficiente para inscrição no valor de :value no evento :name',
         'already-subscribted' => 'Você já está inscrito no evento :name',
 
+        'max-participants' => 'Limite de participantes já atingido',
+        'max-vehicles' => 'Limite de veículos já atingido',
+        'max-companions' => 'Quantidade de acompanhantes informado ultrapassa o limite permitido',
+
         'generic' => 'Ocorreu um erro ao se inscrever no evento :name - :error',
     ],
 
