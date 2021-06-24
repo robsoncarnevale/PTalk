@@ -435,20 +435,20 @@ class EventsController extends Controller
         // Check if have space
         $subscriptions = EventSubscription::select()
             ->where('club_code', getClubCode())
-            ->where('event_id', $this->id)
+            ->where('event_id', $event->id)
             ->where('status', EventSubscription::ACTIVE_STATUS)
             ->count();
 
         $vehicles = EventSubscription::select()
             ->where('club_code', getClubCode())
-            ->where('event_id', $this->id)
+            ->where('event_id', $event->id)
             ->where('status', EventSubscription::ACTIVE_STATUS)
             ->where('vehicle', true)
             ->count();
 
         $companions = EventSubscription::select()
             ->where('club_code', getClubCode())
-            ->where('event_id', $this->id)
+            ->where('event_id', $event->id)
             ->where('status', EventSubscription::ACTIVE_STATUS)
             ->sum('companions');
 
