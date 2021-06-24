@@ -489,6 +489,7 @@ class EventsController extends Controller
             $event_subscription->event_id = $event->id;
             $event_subscription->user_id = User::getAuthenticatedUserId();
             $event_subscription->status = EventSubscription::ACTIVE_STATUS;
+            $event->companions = (int) $request->get('companions');
             
             $event_subscription->save();
 
