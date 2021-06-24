@@ -101,10 +101,16 @@ class Event extends JsonResource
             ->where('event_id', $this->id)
             ->sum('companions');
 
+        $amount = EventSubscription::select()
+            ->where('club_code', getClubCode())
+            ->where('event_id', $this->id)
+            ->sum('amount');
+
         return [
             'participants' => $subscriptions,
             'vehicles' => $vehicles,
             'companions' => $companions,
+            'amount' => $amount,
         ];
     }
 
