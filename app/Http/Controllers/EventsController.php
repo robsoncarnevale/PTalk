@@ -445,16 +445,16 @@ class EventsController extends Controller
         $price = 0;
         
         // Participant price
-        $price += $member_params->participant_value;
+        $price += (float) $member_params->participant_value;
 
         // Vehicle price
         if ($request->vehicle === true || $request->vehicle === 1 || $request->vehicle === '1') {
-            $price += $member_params->vehicle_value;
+            $price += (float) $member_params->vehicle_value;
         }
 
         // Companions price
         if ((int) $request->companions > 0) {
-            $price += $member_params->companion_value * (int) $request->companions;
+            $price += (float) $member_params->companion_value * (int) $request->companions;
         } 
 
         $price = floatval($price);
