@@ -59,7 +59,7 @@ class ClubController extends Controller
             ->where('club_code', getClubCode())
             ->where('deleted', false)
             ->whereIn('status', [Event::ACTIVE_STATUS, Event::CLOSED_STATUS])
-            ->where('date', '<=', date('Y-m-d'))
+            ->where('date', '>=', date('Y-m-d'))
             ->sum('id');
 
         $status = [
