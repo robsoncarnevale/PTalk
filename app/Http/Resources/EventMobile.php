@@ -87,22 +87,26 @@ class EventMobile extends JsonResource
         $subscriptions = EventSubscription::select()
             ->where('club_code', getClubCode())
             ->where('event_id', $this->id)
+            ->where('status', EventSubscription::ACTIVE_STATUS)
             ->count();
 
         $vehicles = EventSubscription::select()
             ->where('club_code', getClubCode())
             ->where('event_id', $this->id)
+            ->where('status', EventSubscription::ACTIVE_STATUS)
             ->where('vehicle', true)
             ->count();
 
         $companions = EventSubscription::select()
             ->where('club_code', getClubCode())
             ->where('event_id', $this->id)
+            ->where('status', EventSubscription::ACTIVE_STATUS)
             ->sum('companions');
 
         $amount = EventSubscription::select()
             ->where('club_code', getClubCode())
             ->where('event_id', $this->id)
+            ->where('status', EventSubscription::ACTIVE_STATUS)
             ->sum('amount');
 
         return [
