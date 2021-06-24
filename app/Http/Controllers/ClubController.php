@@ -55,12 +55,12 @@ class ClubController extends Controller
             ->where('deleted', false)
             ->count();
 
-        $next_events = Event::select()
+        $next_events = (int) Event::select('id')
             ->where('club_code', getClubCode())
             ->where('deleted', false)
             ->whereIn('status', [Event::ACTIVE_STATUS, Event::CLOSED_STATUS])
             ->where('date', '>=', date('Y-m-d'))
-            ->sum('id');
+            ->count();
 
         $status = [
             'vehicles'  =>  $vehicles_count,
