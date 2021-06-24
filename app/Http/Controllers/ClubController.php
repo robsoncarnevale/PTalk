@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\Club;
+use App\Models\Event;
 use App\Models\Vehicle;
 use App\Models\User;
 
@@ -54,10 +55,17 @@ class ClubController extends Controller
             ->where('deleted', false)
             ->count();
 
+        $next_events = Event::select()
+            ->where('club_code', getClubCode())
+            ->where('deleted', false)
+            ->whereIn('status', [Event::ACTIVE_STATUS, Event::CLOSED_STATUS])
+            ->where('date', '<=', date('Y-m-d'))
+            ->sum('id');
+
         $status = [
             'vehicles'  =>  $vehicles_count,
             'members'   =>  $members_count,
-            'next_events'   =>  0,
+            'next_events'   =>  $next_events,
         ];
 
         if ($status['vehicles'] < 1)
