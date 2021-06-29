@@ -32,6 +32,14 @@
         }
     }
 
+    if (! function_exists('getClubCodeEnv'))
+    {
+        function getClubCodeEnv()
+        {
+            return env('CLUB_CODE');
+        }
+    }
+
     /////////////////////////////////////////////////////////
 
      /**
