@@ -73,6 +73,14 @@ class User extends JsonResource
                 ->count();
         }
 
+        if (! array_key_exists('events_count', $resource)){
+            $resource['events_count'] = \App\Models\EventSubscription::select()
+                ->where('club_code', getClubCode())
+                ->where('status', \App\Models\EventSubscription::ACTIVE_STATUS)
+                ->where('user_id', \App\Models\User::getAuthenticatedUserId())
+                ->count();
+        }
+
         if (! array_key_exists('member_class', $resource)){
             $resource['member_class'] = $this->member_class;
         }
