@@ -87,6 +87,7 @@ class EventsController extends Controller
             }      
     
             $event->fill($data);
+            $event->status = Event::DRAFT_STATUS;
 
             if ($request->has('max_vehicles') && ! empty($request->get('max_vehicles'))) {
                 $event->max_vehicles = preg_replace("#[^0-9]#is", "", $request->get('max_vehicles'));
@@ -115,7 +116,6 @@ class EventsController extends Controller
             $event->club_code = getClubCode();
             $event->name = ucwords($event->name);
             $event->created_by = User::getAuthenticatedUserId();
-            $event->status = Event::DRAFT_STATUS;
 
             // Photo upload
             if ($request->has('cover_picture')) {
@@ -212,9 +212,9 @@ class EventsController extends Controller
             // Photo remove and upload
             if ($request->has('remove_cover_picture') && $request->get('remove_cover_picture') == 'true')
             {
-                if (! empty($event->cover_picture) && Storage::disk('images')->exists($event->cover_picture)) {
-                    Storage::disk('images')->delete($event->cover_picture);
-                }
+                // if (! empty($event->cover_picture) && Storage::disk('images')->exists($event->cover_picture)) {
+                //     Storage::disk('images')->delete($event->cover_picture);
+                // }
 
                 $event->cover_picture = null;
             } else if ($request->has('cover_picture'))
