@@ -29,6 +29,13 @@ return [
         'generic' => 'An error occurred while registering for the :name event -: error',
     ],
 
+    'success-cancel-event' => ':event event successfully canceled',
+    'error-cancel-event' => [
+        'status' => ':name event must be active to be canceled',
+        'generic' => 'An error occurred while canceling :name event - :error',
+    ],
+
+
     'fields' => [
         'name' => 'Name',
         'cover_picture' => 'Event Cover',
