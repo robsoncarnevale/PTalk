@@ -44,6 +44,7 @@ class Event extends JsonResource
             'class_data' => $this->mapClassData(EventClassData::collection($this->class_data)),
             'history' => $this->mapHistory(EventHistory::collection($this->history->sortByDesc('created_at'))),
             'has_subscripted' => $this->checkSubscripted(),
+            'my_subscription' => $this->mySubscription(),
             'subscription' => $this->getSubscription(),
             // 'history' => EventHistory::collection($this->whenLoaded('history')),
         ];
@@ -81,6 +82,17 @@ class Event extends JsonResource
         }
 
         return false;
+    }
+
+    private function mySubscription()
+    {
+        $subscription = EventSubscription::select()
+            ->where('club_code', getClubCode())
+            ->where('user_id', User::getAuthenticatedUserId())
+            ->where('event_id', $this->id)
+            ->first();
+
+        return $subscription;
     }
 
     private function getSubscription()

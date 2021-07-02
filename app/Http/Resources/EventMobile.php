@@ -43,6 +43,7 @@ class EventMobile extends JsonResource
             'address' => $this->address ? new EventAddress($this->address) : false,
             'class_data' => $this->mapClassData(EventClassData::collection($this->class_data)),
             'has_subscripted' => $this->checkSubscripted(),
+            'my_subscription' => $this->mySubscription(),
             'subscription' => $this->getSubscription(),
             // 'history' => EventHistory::collection($this->whenLoaded('history')),
         ];
@@ -80,6 +81,17 @@ class EventMobile extends JsonResource
         }
 
         return false;
+    }
+
+    private function mySubscription()
+    {
+        $subscription = EventSubscription::select()
+            ->where('club_code', getClubCode())
+            ->where('user_id', User::getAuthenticatedUserId())
+            ->where('event_id', $this->id)
+            ->first();
+
+        return $subscription;
     }
 
     private function getSubscription()
