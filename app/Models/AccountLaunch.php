@@ -21,6 +21,7 @@ class AccountLaunch extends Model
     const DEBIT_DESCRIPTION = 'debit';
     const CREDIT_DESCRIPTION = 'credit';
     const EVENT_SUBSCRIBE_DESCRIPTION = 'event_subscribe';
+    const EVENT_CANCEL_DESCRIPTION = 'event_cancel';
 
     const MANUAL_MODE = 'manual';
     const AUTOMATIC_MODE = 'automatic';

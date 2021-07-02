@@ -24,4 +24,12 @@ class EventSubscription extends Model
     {
         return $this->belongsTo('App\Models\Event');
     }
+
+    /**
+     * Get user
+     */
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User');
+    }
 }

@@ -28,6 +28,12 @@ return [
 
         'generic' => 'Ocorreu um erro ao se inscrever no evento :name - :error',
     ],
+    
+    'success-cancel-event' => 'Evento :name cancelado com sucesso',
+    'error-cancel-event' => [
+        'status' => 'Evento :name precisa estar ativo para ser cancelado',
+        'generic' => 'Ocorreu um erro ao cancelar o evento :name - :error',
+    ],
 
     'fields' => [
         'name' => 'Nome',

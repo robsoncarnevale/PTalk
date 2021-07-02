@@ -384,20 +384,6 @@ class EventsController extends Controller
     }
 
     /**
-     * Start event
-     * 
-     * @param \App\Models\Event $event
-     * @author Davi Souto
-     * @since 20/05/2021
-     */
-    public function Cancel(Event $event)
-    {
-        $this->validateClub($event->club_code, 'event');
-
-        return response()->json([ 'status' => 'success', 'data' => (new EventResource($event)), 'message' => __('events.success-cancel-event', [ 'name' => $event->name ]) ]);
-    }
-
-    /**
      * Subscribe in event
      * 
      * @author Davi Souto
@@ -552,5 +538,63 @@ class EventsController extends Controller
         }
         
         return response()->json([ 'status' => 'success', 'data' => (new EventResource($event)), 'message' => __('events.success-subscribe-event', [ 'name' => $event->name ]) ]);
+    }
+
+    /**
+     * Cancel event
+     * 
+     * @author Davi Souto
+     * @since 02/07/2021
+     */
+    public function Cancel(Event $event, Request $request)
+    {
+        $this->validateClub($event->club_code, 'event');
+
+        if ($event->status != Event::ACTIVE_STATUS) {
+            return response()->json([ 'status' => 'error', 'message' => __('events.error-cancel-event.status', [ 'name' => $event->name ]) ]);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $event->status = Event::CANCELLED_STATUS;
+            $event->save();
+
+            $subscriptions = EventSubscription::select()
+                ->where('club_code', getClubCode())
+                ->where('event_id', $event->id)
+                ->get();
+
+            foreach($subscriptions as $subscription) {
+                $subscription->status = EventSubscription::INACTIVE_STATUS;
+                $subscription->save();
+
+                $bank_account = $subscription->user->bank_account;
+
+                // Launch Credit
+                $launch = new AccountLaunch();
+                $launch->club_code = getClubCode();
+                $launch->account_number = $bank_account->account_number;
+                $launch->created_by = User::getAuthenticatedUserId();
+                $launch->amount = $subscription->amount;
+                $launch->type = AccountLaunch::CREDIT_TYPE;
+                $launch->description = AccountLaunch::EVENT_CANCEL_DESCRIPTION;
+                $launch->mode = AccountLaunch::AUTOMATIC_MODE;
+                $launch->event_id = $event->id;
+                $launch->save();
+
+                // Add balance on user bank account
+                $bank_account->balance += $launch->amount;
+                $bank_account->save();
+            }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            return response()->json([ 'status' => 'error', 'message' => __('events.error-cancel-event.generic', [ 'name' => $event->name, 'error' => $e->getMessage() ]) ]);
+        }
+
+        return response()->json([ 'status' => 'success', 'data' => (new EventResource($event)), 'message' => __('events.success-cancel-event', [ 'name' => $event->name ]) ]);
     }
 }
