@@ -38,6 +38,7 @@ class EventsController extends Controller
             ->where('club_code', getClubCode())
             ->where('deleted', false)
             ->where('status', Event::ACTIVE_STATUS)
+            ->orderBy('date', 'desc')
             ->get();
 
         $subscriptions = EventSubscription::select()
