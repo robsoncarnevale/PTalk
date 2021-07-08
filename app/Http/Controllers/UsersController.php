@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Mail;
 
 use App\Models\User;
 use App\Models\Vehicle;
+use App\Models\PrivilegeGroup;
 
 use App\Http\Resources\Profile as ProfileResource;
 use App\Http\Resources\UserHistory as UserHistoryResource;
@@ -597,5 +598,24 @@ class UsersController extends Controller
         }
 
         return response()->json([ 'status' => 'success', 'data' => (new UserHistoryResource($user)) ]);
+    }
+
+    public function ChangeType(Request $request, User $user, $type)
+    {
+        $this->validateClub($user->club_code, 'user');
+
+        if (! in_array($type, [ 'admin', 'member'])) {
+            return response()->json([ 'status' => 'error', 'message' => __('administrators.type-undefined') ]);
+        }
+
+        $user->type = $type;
+        $user->privilege_id = PrivilegeGroup::select('id')
+            ->where('type', $type)
+            ->first()
+            ->id;
+
+        $user->save();
+
+        return response()->json([ 'status' => 'success', 'message' => __('administrators.success-change-type') ]);
     }
 }

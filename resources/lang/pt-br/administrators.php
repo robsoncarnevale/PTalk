@@ -5,6 +5,7 @@ return [
 
     'success-update'    =>  'Administrador atualizado com sucesso',
     'success-create'    =>  'Administrador criado com sucesso',
+    'success-change-type' => 'Tipo alterado com sucesso',
 
     'error-create'  =>  'Erro ao criar administrador - :error',
     'error-update'  =>  "Erro ao atualizar administrador - :error",

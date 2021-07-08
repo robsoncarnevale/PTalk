@@ -52,6 +52,7 @@ Route::group([ 'middleware' => 'authorized' ], function(){
     Route::get('/users/profile/{user_id}', [ 'uses' => 'UsersController@ViewProfile', 'as' => 'users.profile.view' ])->where(['user_id' => '[0-9]+']);
     Route::get('/users/history/{user_id}', [ 'uses' => 'UsersController@GetHistory', 'as' => 'users.history' ])->where(['user_id' => '[0-9]+']);
     Route::get('/users/members/history-approval', [ 'uses' => 'MemberUsersController@HistoryApproval', 'as' => 'users.members.history-approval' ]);
+    Route::post('/users/change-type/{user}/{type}', [ 'uses' => 'UsersController@ChangeType', 'as' => 'users.change-type']);
     // Admin User
     Route::get('/users/administrators', [ 'uses' => 'AdminUsersController@List', 'as' => 'users.administrators.list' ]);
     Route::get('/users/administrators/{user_id}', [ 'uses' => 'AdminUsersController@Get', 'as' => 'users.administrators.get' ])->where(['user_id' => '[0-9]+']);

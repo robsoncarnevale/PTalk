@@ -220,6 +220,15 @@ class MemberUsersController extends Controller
             $user->refused_reason = $request->get('refused_reason');
         }
 
+        if ($request->has('member_class')) {
+            $member_class = MemberClass::select()
+                ->where('club_code', getClubCode())
+                ->where('label', $request->get('member_class'))
+                ->first();
+
+            $user->member_class_id = $member_class->id;
+        }
+
         $user->save();
         $user->saveApprovalHistory();
 
