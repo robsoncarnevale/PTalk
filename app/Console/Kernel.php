@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->call(\App\Console\Commands\CheckEventFinished::class)->daily();
+        $schedule->call(\App\Console\Commands\CheckEventFinished::class)->hourly();
     }
 
     /**

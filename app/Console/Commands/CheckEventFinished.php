@@ -39,6 +39,8 @@ class CheckEventFinished extends Command
      */
     public function handle()
     {
+        \Log::info("Checando eventos finalizados...");
+
         $events = Event::select()
             ->where('club_code', getClubCodeEnv())
             ->where('status', Event::ACTIVE_STATUS)
