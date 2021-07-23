@@ -137,6 +137,7 @@ Route::group([ 'middleware' => 'authorized' ], function(){
     Route::post('events/{event}/start', [ 'uses' => 'EventsController@Start', 'as' => 'events.start' ]);
     Route::post('events/{event}/cancel', [ 'uses' => 'EventsController@Cancel', 'as' => 'events.cancel' ]);
     Route::post('events/{event}/subscribe', [ 'uses' => 'EventsController@Subscribe', 'as' => 'events.subscribe' ]);
+    Route::get('events/{event}/members', [ 'uses' => 'EventsController@Members', 'as' => 'events.members' ]);
     // Events Address
     Route::put('/events/{event}/address', [ 'uses' => 'EventAddressController@Create', 'as' => 'events.address.create' ]);
     Route::post('events/{event}/address/{address}', [ 'uses' => 'EventAddressController@Update', 'as' => 'events.address.update' ]);

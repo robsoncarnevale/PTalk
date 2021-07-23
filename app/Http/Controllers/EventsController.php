@@ -14,6 +14,7 @@ use App\Models\MemberClass;
 use App\Models\User;
 
 use App\Http\Resources\Event as EventResource;
+use App\Http\Resources\EventMember as EventMemberResource;
 use App\Http\Resources\EventCollection;
 
 use DB;
@@ -596,5 +597,17 @@ class EventsController extends Controller
         }
 
         return response()->json([ 'status' => 'success', 'data' => (new EventResource($event)), 'message' => __('events.success-cancel-event', [ 'name' => $event->name ]) ]);
+    }
+
+    public function Members(Event $event, Request $request)
+    {
+        $this->validateClub($event->club_code, 'event');
+
+        $members = EventSubscription::select()
+            ->where('club_code', getClubCode())
+            ->where('status', EventSubscription::ACTIVE_STATUS)
+            ->get();
+
+        return response()->json([ 'status' => 'success', 'data' => EventMemberResource::collection($members) ]);
     }
 }

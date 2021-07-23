@@ -5,6 +5,8 @@ namespace App\Console;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
+use Log;
+
 class Kernel extends ConsoleKernel
 {
     /**
@@ -24,8 +26,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        // Log::info("Passei na schedule");
         // $schedule->command('inspire')->hourly();
-        $schedule->call(\App\Console\Commands\CheckEventFinished::class)->hourly();
+        $schedule->command('refresh:events')->hourly();
     }
 
     /**
