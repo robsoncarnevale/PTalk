@@ -278,6 +278,24 @@ class UsersController extends Controller
             if ($request->has('photo'))
                 $user->upload($request->file('photo'));
 
+            if ($request->has('status'))
+            {
+                $user->status = $request->get('status');
+
+                if ($request->has('status_reason'))
+                    $user->status_reason = $request->get('status_reason');
+
+                if ($user->status == User::SUSPENDED_STATUS && $request->has('suspended_time'))
+                {
+                    $user->suspended_time = dateBrToDatabase(substr($request->get('suspended_time'), 0, 10));
+                } else {
+                    $user->suspended_time = null;
+                }
+
+                if ($user->status == User::ACTIVE_STATUS)
+                    $user->status_reason = null;
+            }
+
             $user->save();
             $user->saveStatusHistory();
             $user->createBankAccount();
@@ -384,7 +402,7 @@ class UsersController extends Controller
 
                 if ($user->status == User::SUSPENDED_STATUS && $request->has('suspended_time'))
                 {
-                    $user->suspended_time = $request->get('suspended_time');
+                    $user->suspended_time = dateBrToDatabase(substr($request->get('suspended_time'), 0, 10));
                 } else {
                     $user->suspended_time = null;
                 }
