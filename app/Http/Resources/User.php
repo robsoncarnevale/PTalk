@@ -85,6 +85,10 @@ class User extends JsonResource
             $resource['member_class'] = $this->member_class;
         }
 
+        if (! array_key_exists('suspended_time_br', $resource)) {
+            $resource['suspended_time_br'] = $this->suspended_time_br;
+        }
+
         return $resource;
 
     //     return [

@@ -563,4 +563,9 @@ class User extends Authenticatable implements JWTSubject
     
         return $phone; // return number without format
     }
+
+    public function getSuspendedTimeBrAttribute()
+    {
+        return dateDatabaseToBr(substr($this->suspended_time, 0, 10));
+    }
 }

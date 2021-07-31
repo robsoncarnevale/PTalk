@@ -21,7 +21,7 @@ class UserHistoryApproval extends JsonResource
             'user' => $this->getUser(),
             'approval_status' => $this->approval_status,
             'reason' => $this->reason,
-            'created_by' => $this->get_created_by,
+            'created_by' => $this->getCreatedBy($this->get_created_by),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_at_formatted' => $this->created_at_formatted,
@@ -34,6 +34,17 @@ class UserHistoryApproval extends JsonResource
 
         $user['phone_formatted'] = $this->formatPhone($user['phone']);
         $user['display_name'] = $this->displayName($user);
+        $user['photo'] = UserPhoto::get($user['photo']);
+
+        return $user;
+    }
+
+    private function getCreatedBy($user){
+        if ($user) {
+            $user = $user->toArray();
+            
+            $user['photo'] = UserPhoto::get($user['photo']);
+        }
 
         return $user;
     }
