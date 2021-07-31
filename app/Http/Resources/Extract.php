@@ -52,7 +52,7 @@ class Extract extends JsonResource
             ->with('get_created_by')
             ->with('event')
             ->where('account_number', $this->account_number)
-            ->whereBetween('created_at', [ dateBrToDatabase(substr($first_date, 0, 10)), dateBrToDatabase(substr($last_date, 0, 10)) ])
+            ->whereBetween('created_at', [ dateBrToDatabase(substr($first_date, 0, 10)) . ' 00:00:00', dateBrToDatabase(substr($last_date, 0, 10)) . ' 23:59:59' ])
             ->orderBy('created_at', 'desc')
             ->get();
 
