@@ -8,6 +8,8 @@ use App\Http\Requests\SubscribeEventRequest;
 
 
 use App\Models\AccountLaunch;
+use App\Models\ClubBankAccount;
+use App\Models\ClubLaunch;
 use App\Models\Event;
 use App\Models\EventSubscription;
 use App\Models\MemberClass;
@@ -500,6 +502,8 @@ class EventsController extends Controller
             return response()->json([ 'status' => 'error', 'message' => __('events.error-subscribe-event.without_balance', [ 'name' => $event->name, 'value' => 'R$' . number_format($price, 2, ',', '.') ]) ]);
         }
 
+        $club_account = ClubBankAccount::Get();
+
         DB::beginTransaction();
 
         try {
@@ -518,6 +522,21 @@ class EventsController extends Controller
             // Discount price on user bank account
             $bank_account->balance -= $launch->amount;
             $bank_account->save();
+
+            // Launch credit on club account
+            $club_launch = new ClubLaunch();
+            $club_launch->club_code = getClubCode();
+            $club_launch->created_by = User::getAuthenticatedUserId();
+            $club_launch->amount = $launch->amount;
+            $club_launch->type = ClubLaunch::CREDIT_TYPE;
+            $club_launch->description = ClubLaunch::EVENT_SUBSCRIBE_USER_DESCRIPTION;
+            $club_launch->mode = ClubLaunch::AUTOMATIC_MODE;
+            $club_launch->user_description = '-';
+            $club_launch->save();
+
+            // Add amount on club account
+            $club_account->balance += $launch->amount;
+            $club_account->save();
 
             // Create event subscription
             $event_subscription = new EventSubscription();

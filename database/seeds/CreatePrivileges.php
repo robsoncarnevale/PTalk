@@ -123,6 +123,9 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'blacklist.create',                   'name' => 'Create Blacklist', 'description' => '', 'add_member' => false ],      
             [ 'action' => 'blacklist.update',                   'name' => 'Update Blacklist', 'description' => '', 'add_member' => false ],     
 
+            [ 'action' => 'config.data',                        'name' => 'Config Get Data', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'config.save',                        'name' => 'Save Config Data', 'description' => '', 'add_member' => false ],
+
             [ 'action' => 'bankaccount.list',                  'name' => 'List All Bank Accounts', 'description' => '', 'add_member' => false ],
             [ 'action' => 'bankaccount.extract',               'name' => 'Extract of User Bank Account', 'description' => '', 'add_member' => false ],
             [ 'action' => 'bankaccount.my.extract',            'name' => 'Extract of My Bank Account', 'description' => '', 'add_member' => true ],
@@ -130,6 +133,10 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'bankaccount.launch.debit',          'name' => 'Launch Debit on Bank Account', 'description' => '', 'add_member' => false ],
             [ 'action' => 'bankaccount.launch.credit',         'name' => 'Launch Credit on Bank Account', 'description' => '', 'add_member' => false ],
 
+            [ 'action' => 'club.bankaccount.extract',           'name' => 'Extract of Club Bank Account', 'description' => '', 'add_member' => false ],      
+            [ 'action' => 'club.bankaccount.launch.debit',      'name' => 'Launch Debit on Club Bank Account', 'description' => '', 'add_member' => false ],        
+            [ 'action' => 'club.bankaccount.launch.credit',     'name' => 'Launch Credit on Club Bank Account', 'description' => '', 'add_member' => false ],         
+            [ 'action' => 'club.bankaccount.data',              'name' => 'Get Club Bank Account Data', 'description' => '', 'add_member' => false ],
 
             [ 'action' => 'club.status',                        'name' => 'Read club status', 'description' => '', 'add_member' => true ],
         ],

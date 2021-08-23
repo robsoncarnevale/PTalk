@@ -8,6 +8,9 @@ use DB;
 
 use App\Models\AccountLaunch;
 use App\Models\BankAccount;
+use App\Models\ClubBankAccount;
+use App\Models\ClubLaunch;
+use App\Models\Config;
 use App\Models\User;
 
 use App\Http\Resources\BankAccount as BankAccountResource;
@@ -147,6 +150,8 @@ class BankAccountController extends Controller
             return response()->json([ 'status' => 'error', 'message' => __('bank_account.not-found') ], 404);
         }
 
+        $club_account = ClubBankAccount::Get();
+
         DB::beginTransaction();
 
         try {
@@ -163,6 +168,19 @@ class BankAccountController extends Controller
 
             $bank_account->balance -= $request->get('value');
             $bank_account->save();
+
+            $club_launch = new ClubLaunch();
+            $club_launch->club_code = getClubCode();
+            $club_launch->created_by = User::getAuthenticatedUserId();
+            $club_launch->amount = $request->get('value');
+            $club_launch->type = ClubLaunch::CREDIT_TYPE;
+            $club_launch->description = ClubLaunch::USER_DEBIT_DESCRIPTION;
+            $club_launch->mode = ClubLaunch::AUTOMATIC_MODE;
+            $club_launch->user_description = '-';
+            $club_launch->save();
+
+            $club_account->balance += $request->get('value');
+            $club_account->save();
 
             DB::commit();
         } catch (\Exception $e) {
@@ -190,9 +208,13 @@ class BankAccountController extends Controller
             return response()->json([ 'status' => 'error', 'message' => __('bank_account.not-found') ], 404);
         }
 
+        $club_account = ClubBankAccount::Get();
+
         DB::beginTransaction();
 
         try {
+            $config = Config::Get();
+
             $launch = new AccountLaunch();
             $launch->club_code = getClubCode();
             $launch->account_number = $bank_account->account_number;
@@ -206,6 +228,25 @@ class BankAccountController extends Controller
 
             $bank_account->balance += $request->get('value');
             $bank_account->save();
+
+            $club_launch = new ClubLaunch();
+            $club_launch->club_code = getClubCode();
+            $club_launch->created_by = User::getAuthenticatedUserId();
+            $club_launch->amount = $request->get('value');
+            $club_launch->type = ClubLaunch::DEBIT_TYPE;
+            $club_launch->description = ClubLaunch::USER_CREDIT_DESCRIPTION;
+            $club_launch->mode = ClubLaunch::AUTOMATIC_MODE;
+            $club_launch->user_description = '-';
+            $club_launch->save();
+
+            $club_account->balance -= $request->get('value');
+            $club_account->save();
+
+            if (! $config->allow_negative_balance && $club_account->balance < 0) {
+                DB::rollback();
+
+                return response()->json([ 'status' => 'error', 'message' => __('bank_account.error-negative-balance-2') ]);
+            }
 
             DB::commit();
         } catch (\Exception $e) {

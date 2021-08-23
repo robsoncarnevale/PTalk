@@ -151,11 +151,22 @@ Route::group([ 'middleware' => 'authorized' ], function(){
     Route::put('/bank-account/launch/{bank_account}/debit', [ 'uses' => 'BankAccountController@LaunchDebit', 'as' => 'bankaccount.launch.debit' ])->where(['bank_account' => '[0-9]+']);
     Route::put('/bank-account/launch/{bank_account}/credit', [ 'uses' => 'BankAccountController@LaunchCredit', 'as' => 'bankaccount.launch.credit' ])->where(['bank_account' => '[0-9]+']);
 
+    // Club Bank Account
+    Route::get('/club/bank-account/extract', [ 'uses' => 'ClubBankAccountController@ExtractAccount', 'as' => 'club.bankaccount.my.extract' ]);
+    Route::put('/club/bank-account/launch/debit', [ 'uses' => 'ClubBankAccountController@LaunchDebit', 'as' => 'club.bankaccount.launch.debit' ])->where(['bank_account' => '[0-9]+']);
+    Route::put('/club/bank-account/launch/credit', [ 'uses' => 'ClubBankAccountController@LaunchCredit', 'as' => 'club.bankaccount.launch.credit' ])->where(['bank_account' => '[0-9]+']);
+    Route::get('/club/bank-account/data', [ 'uses' => 'ClubBankAccountController@GetData', 'as' => 'club.bankaccount.data' ])->where(['bank_account' => '[0-9]+']);
+
+
     // Blacklist
     Route::get('/blacklist', [ 'uses' => 'BlacklistController@List', 'as' => 'blacklist.list' ]);
     Route::get('/blacklist/{blacklist_id}', [ 'uses' => 'BlacklistController@Get', 'as' => 'blacklist.get' ])->where(['blacklist_id' => '[0-9]+']);
     Route::put('/blacklist', [ 'uses' => 'BlacklistController@Create', 'as' => 'blacklist.create' ]);
     Route::post('/blacklist/{blacklist}', [ 'uses' => 'BlacklistController@Update', 'as' => 'blacklist.update' ]);
+
+    // Config
+    Route::get('/config', [ 'uses' => 'ConfigController@GetData', 'as' => 'config.data' ]);
+    Route::post('/config', [ 'uses' => 'ConfigController@Save', 'as' => 'config.save' ]);
 
     // Club
     Route::get('/club/status', [ 'uses' => 'ClubController@GetStatus', 'as' => 'club.status' ]);
