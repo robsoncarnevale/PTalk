@@ -152,7 +152,7 @@ Route::group([ 'middleware' => 'authorized' ], function(){
     Route::put('/bank-account/launch/{bank_account}/credit', [ 'uses' => 'BankAccountController@LaunchCredit', 'as' => 'bankaccount.launch.credit' ])->where(['bank_account' => '[0-9]+']);
 
     // Club Bank Account
-    Route::get('/club/bank-account/extract', [ 'uses' => 'ClubBankAccountController@ExtractAccount', 'as' => 'club.bankaccount.my.extract' ]);
+    Route::get('/club/bank-account/extract', [ 'uses' => 'ClubBankAccountController@ExtractAccount', 'as' => 'club.bankaccount.extract' ]);
     Route::put('/club/bank-account/launch/debit', [ 'uses' => 'ClubBankAccountController@LaunchDebit', 'as' => 'club.bankaccount.launch.debit' ])->where(['bank_account' => '[0-9]+']);
     Route::put('/club/bank-account/launch/credit', [ 'uses' => 'ClubBankAccountController@LaunchCredit', 'as' => 'club.bankaccount.launch.credit' ])->where(['bank_account' => '[0-9]+']);
     Route::get('/club/bank-account/data', [ 'uses' => 'ClubBankAccountController@GetData', 'as' => 'club.bankaccount.data' ])->where(['bank_account' => '[0-9]+']);
