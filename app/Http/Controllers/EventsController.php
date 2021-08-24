@@ -398,6 +398,7 @@ class EventsController extends Controller
             ->where('club_code', getClubCode())
             ->where('user_id', User::getAuthenticatedUserId())
             ->where('event_id', $event->id)
+            ->where('status', EventSubscription::ACTIVE_STATUS)
             ->first();
         
         // Check if you are already registered for the event
@@ -561,6 +562,27 @@ class EventsController extends Controller
     }
 
     /**
+     * Unsubscribe on event
+     * 
+     * @author Davi Souto
+     * @since 24/08/2021
+     */
+    public function Unsubscribe(Event $event, Request $request)
+    {
+        $check_subscription = EventSubscription::select()
+            ->where('club_code', getClubCode())
+            ->where('user_id', User::getAuthenticatedUserId())
+            ->where('event_id', $event->id)
+            ->where('status', EventSubscription::ACTIVE_STATUS)
+            ->first();
+    
+        // Check if you are already registered for the event
+        if (! $check_subscription){
+            return response()->json([ 'status' => 'error', 'message' => __('events.error-unsubscribe-event.not-follow', [ 'name' => $event->name ]) ]);
+        }
+    }
+
+    /**
      * Cancel event
      * 
      * @author Davi Souto
@@ -585,9 +607,12 @@ class EventsController extends Controller
                 ->where('event_id', $event->id)
                 ->get();
 
+            $club_account = ClubBankAccount::Get();
+            $amount = 0;
+
             foreach($subscriptions as $subscription) {
-                $subscription->status = EventSubscription::INACTIVE_STATUS;
-                $subscription->save();
+                // $subscription->status = EventSubscription::INACTIVE_STATUS;
+                // $subscription->save();
 
                 $bank_account = $subscription->user->bank_account;
 
@@ -606,7 +631,24 @@ class EventsController extends Controller
                 // Add balance on user bank account
                 $bank_account->balance += $launch->amount;
                 $bank_account->save();
+
+                $amount += $launch->amount;
             }
+
+            // Launch debit on club account
+            $club_launch = new ClubLaunch();
+            $club_launch->club_code = getClubCode();
+            $club_launch->created_by = User::getAuthenticatedUserId();
+            $club_launch->amount = $amount;
+            $club_launch->type = ClubLaunch::DEBIT_TYPE;
+            $club_launch->description = ClubLaunch::EVENT_CANCEL_USER_DESCRIPTION;
+            $club_launch->mode = ClubLaunch::AUTOMATIC_MODE;
+            $club_launch->user_description = '-';
+            $club_launch->save();
+
+            // Remove amount on club account
+            $club_account->balance -= $amount;
+            $club_account->save();
 
             DB::commit();
         } catch (\Exception $e) {
@@ -624,6 +666,7 @@ class EventsController extends Controller
 
         $members = EventSubscription::select()
             ->where('club_code', getClubCode())
+            ->where('event_id', $event->id)
             ->where('status', EventSubscription::ACTIVE_STATUS)
             ->get();
 

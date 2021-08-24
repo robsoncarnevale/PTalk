@@ -23,6 +23,7 @@ class AccountLaunch extends Model
     const EVENT_SUBSCRIBE_DESCRIPTION = 'event_subscribe';
     const EVENT_SUBSCRIBE_USER_DESCRIPTION = 'event_subscribe_user';
     const EVENT_CANCEL_DESCRIPTION = 'event_cancel';
+    const EVENT_CANCEL_USER_DESCRIPTION = 'event_cancel_user';
     const USER_DEBIT_DESCRIPTION = 'user_debit';
     const USER_CREDIT_DESCRIPTION = 'user_credit';
 
