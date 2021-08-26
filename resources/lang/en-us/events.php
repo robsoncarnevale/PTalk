@@ -29,6 +29,10 @@ return [
         'generic' => 'An error occurred while registering for the :name event -: error',
     ],
 
+    'error-unsubscribe-event' => [
+        'not-found' => 'Subscription not found',
+    ],
+
     'success-cancel-event' => ':event event successfully canceled',
     'error-cancel-event' => [
         'status' => ':name event must be active to be canceled',

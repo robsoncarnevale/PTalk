@@ -28,6 +28,10 @@ return [
 
         'generic' => 'Ocorreu um erro ao se inscrever no evento :name - :error',
     ],
+
+    'error-unsubscribe-event' => [
+        'not-found' => 'Inscrição não encontrada',
+    ],
     
     'success-cancel-event' => 'Evento :name cancelado com sucesso',
     'error-cancel-event' => [

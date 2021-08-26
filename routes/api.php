@@ -137,6 +137,7 @@ Route::group([ 'middleware' => 'authorized' ], function(){
     Route::post('events/{event}/start', [ 'uses' => 'EventsController@Start', 'as' => 'events.start' ]);
     Route::post('events/{event}/cancel', [ 'uses' => 'EventsController@Cancel', 'as' => 'events.cancel' ]);
     Route::post('events/{event}/subscribe', [ 'uses' => 'EventsController@Subscribe', 'as' => 'events.subscribe' ]);
+    Route::post('events/{event}/unsubscribe', [ 'uses' => 'EventsController@Unsubscribe', 'as' => 'events.unsubscribe' ]);
     Route::get('events/{event}/members', [ 'uses' => 'EventsController@Members', 'as' => 'events.members' ]);
     // Events Address
     Route::put('/events/{event}/address', [ 'uses' => 'EventAddressController@Create', 'as' => 'events.address.create' ]);
@@ -239,7 +240,8 @@ Route::prefix('mobile')->group(function(){
         // Events
         Route::get('/events', [ 'uses' => 'Mobile\EventsController@List', 'as' => 'mobile.events.list' ]);
         Route::get('/events/{event}', [ 'uses' => 'Mobile\EventsController@Get', 'as' => 'mobile.events.get' ]);
-        Route::post('events/{event}/subscribe', [ 'uses' => 'EventsController@Subscribe', 'as' => 'mobile.events.subscribe' ]);
+        Route::post('events/{event}/subscribe', [ 'uses' => 'Mobile\EventsController@Subscribe', 'as' => 'mobile.events.subscribe' ]);
+        Route::post('events/{event}/unsubscribe', [ 'uses' => 'Mobile\EventsController@Unsubscribe', 'as' => 'mobile.events.subscribe' ]);
 
         // Digital Bank Account
         Route::get('/bank-account/my/extract', [ 'uses' => 'Mobile\BankAccountController@ExtractMyAccount', 'as' => 'bankaccount.my.extract' ]);

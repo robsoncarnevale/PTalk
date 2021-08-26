@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\EventRequest;
 use App\Http\Requests\SubscribeEventRequest;
+use App\Http\Requests\UnsubscribeEventRequest;
 
 
 use App\Models\AccountLaunch;
@@ -234,8 +235,6 @@ class EventsController extends Controller
         } catch(Exception $e) {
             DB::rollback();
 
-            throw $e;
-
             return response()->json([ 'status' => 'error', 'message' => __('events.error-update', [ 'error' => $e->getMessage() ]) ]);
         }
 
@@ -394,6 +393,8 @@ class EventsController extends Controller
      */
     public function Subscribe(Event $event, SubscribeEventRequest $request)
     {
+        $this->validateClub($event->club_code, 'event');
+
         $check_subscription = EventSubscription::select()
             ->where('club_code', getClubCode())
             ->where('user_id', User::getAuthenticatedUserId())
@@ -567,9 +568,11 @@ class EventsController extends Controller
      * @author Davi Souto
      * @since 24/08/2021
      */
-    public function Unsubscribe(Event $event, Request $request)
+    public function Unsubscribe(Event $event, UnsubscribeEventRequest $request)
     {
-        $check_subscription = EventSubscription::select()
+        $this->validateClub($event->club_code, 'event');
+
+        $subscription = EventSubscription::select()
             ->where('club_code', getClubCode())
             ->where('user_id', User::getAuthenticatedUserId())
             ->where('event_id', $event->id)
@@ -577,9 +580,61 @@ class EventsController extends Controller
             ->first();
     
         // Check if you are already registered for the event
-        if (! $check_subscription){
-            return response()->json([ 'status' => 'error', 'message' => __('events.error-unsubscribe-event.not-follow', [ 'name' => $event->name ]) ]);
+        if (! $subscription){
+            return response()->json([ 'status' => 'error', 'message' => __('events.error-unsubscribe-event.not-found', [ 'name' => $event->name ]) ]);
         }
+        
+        $club_account = ClubBankAccount::Get();
+
+        DB::beginTransaction();
+
+        try {
+            $subscription->status = EventSubscription::INACTIVE_STATUS;
+            $subscription->reason = $request->get('reason');
+            $subscription->save();
+    
+            $bank_account = $subscription->user->bank_account;
+    
+            // Launch Credit
+            $launch = new AccountLaunch();
+            $launch->club_code = getClubCode();
+            $launch->account_number = $bank_account->account_number;
+            $launch->created_by = User::getAuthenticatedUserId();
+            $launch->amount = $subscription->amount;
+            $launch->type = AccountLaunch::CREDIT_TYPE;
+            $launch->description = AccountLaunch::EVENT_UNSUBSCRIBE_DESCRIPTION;
+            $launch->mode = AccountLaunch::AUTOMATIC_MODE;
+            $launch->event_id = $event->id;
+            $launch->save();
+    
+            // Discount price on user bank account
+            $bank_account->balance += $launch->amount;
+            $bank_account->save();
+    
+            // Launch debit on club account
+            $club_launch = new ClubLaunch();
+            $club_launch->club_code = getClubCode();
+            $club_launch->created_by = User::getAuthenticatedUserId();
+            $club_launch->amount = $launch->amount;
+            $club_launch->type = ClubLaunch::DEBIT_TYPE;
+            $club_launch->description = ClubLaunch::EVENT_UNSUBSCRIBE_USER_DESCRIPTION;
+            $club_launch->mode = ClubLaunch::AUTOMATIC_MODE;
+            $club_launch->user_description = '-';
+            $club_launch->save();
+    
+            // Add amount on club account
+            $club_account->balance -= $launch->amount;
+            $club_account->save();
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            return response()->json([ 'status' => 'error', 'message' => __('events.error-unsubscribe-event.generic') ]);
+        }
+
+
+        return response()->json([ 'status' => 'success', 'data' => $subscription ]);
     }
 
     /**

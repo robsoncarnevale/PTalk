@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Models\AccountLaunch;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class Extract extends JsonResource
@@ -62,7 +63,10 @@ class Extract extends JsonResource
             if (! empty($this_extract['get_created_by'])) {
                 $extract[$i_extract]['get_created_by']['photo_url'] = UserPhoto::get($this_extract['get_created_by']['photo']);
             }
+
+            $extract[$i_extract]['created_at_formatted'] = (new Carbon($this_extract['created_at']))->format('d/m/Y H:i:s');
         }
+
 
         return $extract;
     }

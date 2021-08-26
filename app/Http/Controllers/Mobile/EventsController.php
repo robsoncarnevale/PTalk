@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Mobile;
 use Illuminate\Http\Request;
 use App\Http\Requests\EventRequest;
 use App\Http\Requests\SubscribeEventRequest;
+use App\Http\Requests\UnsubscribeEventRequest;
 
 use App\Models\Event;
 use App\Models\User;
@@ -79,6 +80,17 @@ class EventsController extends Controller
      */
     public function Subscribe(Event $event, SubscribeEventRequest $request)
     {
-        return (new \App\Http\Controllers\EventsController())->Subscrive($event, $request);
+        return (new \App\Http\Controllers\EventsController())->Subscribe($event, $request);
+    }
+
+    /**
+     * Unsubscribe in event
+     * 
+     * @author Davi Souto
+     * @since 24/08/2021
+     */
+    public function Unsubscribe(Event $event, UnsubscribeEventRequest $request)
+    {
+        return (new \App\Http\Controllers\EventsController())->Unsubscribe($event, $request);
     }
 }

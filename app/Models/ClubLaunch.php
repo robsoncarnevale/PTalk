@@ -23,6 +23,7 @@ class ClubLaunch extends Model
     const USER_DEBIT_DESCRIPTION = 'user_debit';
     const USER_CREDIT_DESCRIPTION = 'user_credit';
     const EVENT_SUBSCRIBE_USER_DESCRIPTION = 'event_subscribe_user';
+    const EVENT_UNSUBSCRIBE_USER_DESCRIPTION = 'event_unsubscribe_user';
     const EVENT_CANCEL_USER_DESCRIPTION = 'event_cancel_user';
 
     const MANUAL_MODE = 'manual';
