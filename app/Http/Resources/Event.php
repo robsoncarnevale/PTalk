@@ -75,6 +75,7 @@ class Event extends JsonResource
             ->where('club_code', getClubCode())
             ->where('user_id', User::getAuthenticatedUserId())
             ->where('event_id', $this->id)
+            ->where('status', EventSubscription::ACTIVE_STATUS)
             ->first();
 
         if ($check_subscription) {
@@ -90,6 +91,7 @@ class Event extends JsonResource
             ->where('club_code', getClubCode())
             ->where('user_id', User::getAuthenticatedUserId())
             ->where('event_id', $this->id)
+            ->where('status', EventSubscription::ACTIVE_STATUS)
             ->first();
 
         return $subscription;
