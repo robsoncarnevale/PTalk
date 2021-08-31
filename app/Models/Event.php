@@ -378,7 +378,7 @@ class Event extends Model
 
     function getUnsubscribeDateLimitBrAttribute()
     {
-        if ($this->date_limit) {
+        if ($this->unsubscribe_date_limit) {
             return (new Carbon($this->unsubscribe_date_limit))->format('d/m/Y');
         }
         

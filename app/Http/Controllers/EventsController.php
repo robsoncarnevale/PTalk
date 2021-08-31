@@ -38,7 +38,7 @@ class EventsController extends Controller
         $events = Event::select()
             ->where('club_code', getClubCode())
             ->where('deleted', false)
-            ->orderBy('id')
+            ->orderBy('id', 'desc')
             ->jsonPaginate(20);
 
         return response()->json([ 'status' => 'success', 'data' => (new EventCollection($events)) ]);
@@ -111,6 +111,10 @@ class EventsController extends Controller
 
             if ($request->has('retention_value')) {
                 $event->retention_value = str_replace(",", ".", preg_replace("/[\.]/is", "", $request->get('retention_value')));
+            
+                if (empty($event->retention_value)) {
+                    $event->retention_value = 0.00;
+                }
             }
 
             if (! empty($request->get('date'))) {
@@ -213,6 +217,10 @@ class EventsController extends Controller
 
             if ($request->has('retention_value')) {
                 $event->retention_value = str_replace(",", ".", preg_replace("/[\.]/is", "", $request->get('retention_value')));
+            
+                if (empty($event->retention_value)) {
+                    $event->retention_value = 0.00;
+                }
             }
 
             if (! empty($request->get('date'))) {
