@@ -109,6 +109,10 @@ class EventsController extends Controller
                 $event->status = $request->get('status');
             }
 
+            if ($request->has('retention_value')) {
+                $event->retention_value = str_replace(",", ".", preg_replace("/[\.]/is", "", $request->get('retention_value')));
+            }
+
             if (! empty($request->get('date'))) {
                 $event->date = dateBrToDatabase($request->date);
             } else $event->date = null;
@@ -116,6 +120,10 @@ class EventsController extends Controller
             if (! empty($request->get('date_limit'))) {
                 $event->date_limit = dateBrToDatabase($request->date_limit);
             } else $event->date_limit = null;
+
+            if (! empty($request->get('unsubscribe_date_limit'))) {
+                $event->unsubscribe_date_limit = dateBrToDatabase($request->unsubscribe_date_limit);
+            } else $event->unsubscribe_date_limit = null;
 
             $event->club_code = getClubCode();
             $event->name = ucwords($event->name);
@@ -203,12 +211,20 @@ class EventsController extends Controller
                 $event->status = $request->get('status');
             }
 
+            if ($request->has('retention_value')) {
+                $event->retention_value = str_replace(",", ".", preg_replace("/[\.]/is", "", $request->get('retention_value')));
+            }
+
             if (! empty($request->get('date'))) {
                 $event->date = dateBrToDatabase($request->date);
             }
 
             if (! empty($request->get('date_limit'))) {
                 $event->date_limit = dateBrToDatabase($request->date_limit);
+            }
+
+            if (! empty($request->get('unsubscribe_date_limit'))) {
+                $event->unsubscribe_date_limit = dateBrToDatabase($request->unsubscribe_date_limit);
             }
 
             $event->name = ucwords($event->name);

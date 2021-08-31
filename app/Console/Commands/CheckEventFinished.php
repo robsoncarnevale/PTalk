@@ -45,7 +45,7 @@ class CheckEventFinished extends Command
             ->where('club_code', getClubCodeEnv())
             ->where('status', Event::ACTIVE_STATUS)
             ->where('deleted', false)
-            ->where('date', '<=', date('Y-m-d 23:59:59', strtotime('-2 days')))
+            ->where('date', '<=', date('Y-m-d 23:59:59', strtotime('-1 days')))
             ->get();
 
         foreach($events as $event) {

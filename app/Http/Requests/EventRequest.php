@@ -61,6 +61,7 @@ class EventRequest extends FormRequest
 
             'date' => 'date_format:d/m/Y' . $this->status == Event::DRAFT_STATUS ? "|nullable" : "",
             'date_limit' => 'date_format:d/m/Y|before:date' . ($this->status == Event::DRAFT_STATUS ? "|nullable" : ""),
+            'unsubscribe_date_limit' => 'date_format:d/m/Y|before_or_equal:date' . ($this->status == Event::DRAFT_STATUS ? "|nullable" : ""),
         ], $this->getClassValidation());
     }
 
@@ -80,6 +81,7 @@ class EventRequest extends FormRequest
 
             'date' => 'date_format:d/m/Y' . $this->status == Event::DRAFT_STATUS ? "|nullable" : "",
             'date_limit' => 'date_format:d/m/Y|before:date' . ($this->status == Event::DRAFT_STATUS ? "|nullable" : ""),
+            'unsubscribe_date_limit' => 'date_format:d/m/Y|before_or_equal:date' . ($this->status == Event::DRAFT_STATUS ? "|nullable" : ""),
         ], $this->getClassValidation());
     }
 

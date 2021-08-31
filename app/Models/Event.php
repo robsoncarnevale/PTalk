@@ -44,6 +44,8 @@ class Event extends Model
         'max_vehicles',
         'max_participants',
         'max_companions',
+        'unsubscribe_date_limit',
+        'retention_value',
         // 'status',
     ];
 
@@ -360,6 +362,24 @@ class Event extends Model
     {
         if ($this->date_limit) {
             return (new Carbon($this->date_limit))->format('d/m/Y');
+        }
+        
+        return null;
+    }
+
+    function getUnsubscribeDateLimitAttribute($date)
+    {
+        if ($date) {
+            return (new Carbon($date))->format('Y-m-d');
+        }
+        
+        return null;
+    }
+
+    function getUnsubscribeDateLimitBrAttribute()
+    {
+        if ($this->date_limit) {
+            return (new Carbon($this->unsubscribe_date_limit))->format('d/m/Y');
         }
         
         return null;
