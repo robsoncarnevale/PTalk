@@ -31,6 +31,7 @@ return [
 
     'error-unsubscribe-event' => [
         'not-found' => 'Subscription not found',
+        'unsubscribe_date_limit' => 'Cancellation deadline is until :date',
     ],
 
     'success-cancel-event' => ':event event successfully canceled',

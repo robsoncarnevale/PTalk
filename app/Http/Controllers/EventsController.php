@@ -599,12 +599,26 @@ class EventsController extends Controller
         if (! $subscription){
             return response()->json([ 'status' => 'error', 'message' => __('events.error-unsubscribe-event.not-found', [ 'name' => $event->name ]) ]);
         }
+
+        $date_actual = strtotime(date('Y-m-d H:i:s'));
+        $date_limit = strtotime($event->unsubscribe_date_limit . ' 00:00:00');
+
+        if ($date_actual < $date_limit) {
+            return response()->json([ 'status' => 'error', 'message' => __('events.error-unsubscribe-event.unsubscribe_date_limit', [ 'date' => date('d/m/Y', $date_subscript) ]) ]);
+        }
         
         $club_account = ClubBankAccount::Get();
 
         DB::beginTransaction();
 
         try {
+            $value = (float) $subscription->amount;
+            $value -= (float) $event->retention_value;
+
+            if ($value < 0) {
+                $value = 0;
+            }
+
             $subscription->status = EventSubscription::INACTIVE_STATUS;
             $subscription->reason = $request->get('reason');
             $subscription->save();
@@ -616,7 +630,7 @@ class EventsController extends Controller
             $launch->club_code = getClubCode();
             $launch->account_number = $bank_account->account_number;
             $launch->created_by = User::getAuthenticatedUserId();
-            $launch->amount = $subscription->amount;
+            $launch->amount = $value;
             $launch->type = AccountLaunch::CREDIT_TYPE;
             $launch->description = AccountLaunch::EVENT_UNSUBSCRIBE_DESCRIPTION;
             $launch->mode = AccountLaunch::AUTOMATIC_MODE;
