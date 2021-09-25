@@ -1,17 +1,19 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 
 use App\Models\User;
 use App\Models\PrivilegeGroup;
 
 /** 
- * Seeder Create Admin User
+ * Seeder Create Member User
  *
  * @author Davi Souto
  * @since 15/06/2020
  */
-class CreateAdminUser extends Seeder
+class CreateMemberUser extends Seeder
 {
     /**
      * @var string
@@ -30,27 +32,28 @@ class CreateAdminUser extends Seeder
      */
     public function run()
     {
-        // if (User::select('id')->where('type', 'admin')->count() > 0)
+        // if (User::select('id')->where('type', 'member')->count() > 0)
         //     return;
 
         $this->club_code = DatabaseSeeder::$club_code;
 
-        // admin@porschetalk.com
-        $this->email = "admin@" . strtolower(preg_replace("#[^a-zA-Z0-9]#is", "", $this->club_code)) . ".com";
+        // member@porschetalk.com
+        $this->email = "member@" . strtolower(preg_replace("#[^a-zA-Z0-9]#is", "", $this->club_code)) . ".com";
 
         $user = new User();
 
         $user->club_code = $this->club_code;
-        $user->name = "Administrador";
-        $user->email =  $this->email;
-        $user->password = Hash::make('123456');
-        $user->type = 'admin';
+        $user->name = "Membro";
+        $user->email = $this->email;
+        $user->password = \Hash::make('123456');
+        $user->type = 'member';
         $user->approval_status = 'approved';
 
-        $user->privilege_id = PrivilegeGroup::select('id')->where('type', 'admin')->first()->id;
+        $user->privilege_id = PrivilegeGroup::select('id')->where('type', 'member')->first()->id;
         $user->document_cpf = "12345678900";
-        $user->cell_phone = "1122223333";
+        // $user->cell_phone = "1122223333";
 
         $user->save();
     }
 }
+
