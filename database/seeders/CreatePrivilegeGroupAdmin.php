@@ -1,17 +1,19 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 
 use App\Models\Club;
 use App\Models\PrivilegeGroup;
 
 /** 
- * Seeder Create Privilege Group Member
+ * Seeder Create Privilege Group Admin
  *
  * @author Davi Souto
  * @since 15/06/2020
  */
-class CreatePrivilegeGroupMember extends Seeder
+class CreatePrivilegeGroupAdmin extends Seeder
 {
     /**
      * Run the database seeds.
@@ -22,9 +24,9 @@ class CreatePrivilegeGroupMember extends Seeder
     {
         $privilege_group = new PrivilegeGroup();
 
-        $privilege_group->name = "Membro";
+        $privilege_group->name = "Administrador";
         $privilege_group->club_code = Club::select('code')->first()['code'];
-        $privilege_group->type = 'member';
+        $privilege_group->type = 'admin';
 
         $privilege_group->save();
     }

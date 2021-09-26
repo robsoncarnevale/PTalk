@@ -15,7 +15,7 @@ class CreateTableHasPrivileges extends Migration
     {
         Schema::create('has_privileges', function (Blueprint $table) {
             $table->id();
-            $table->integer('privilege_group_id')->nullable(false);
+            $table->unsignedBigInteger('privilege_group_id')->nullable(false);
             $table->string('privilege_action')->nullable(false);
             $table->timestamps();
 

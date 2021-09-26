@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 
 use App\Models\User;
@@ -40,13 +42,13 @@ class CreateMemberUserWaitingApproval extends Seeder
         $user->club_code = $this->club_code;
         $user->name = "Membro Novo";
         $user->email = $this->email;
-        $user->password = Hash::make('123456');
+        $user->password = \Hash::make('123456');
         $user->type = 'member';
         $user->approval_status = 'waiting';
 
         $user->privilege_id = PrivilegeGroup::select('id')->where('type', 'member')->first()->id;
         $user->document_cpf = "12345678999";
-        $user->cell_phone = "1122224444";
+        // $user->cell_phone = "1122224444";
 
         $user->save();
     }
