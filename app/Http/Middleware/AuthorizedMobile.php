@@ -23,7 +23,7 @@ class AuthorizedMobile extends Middleware
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle($request, Closure $next, ...$guards)
     {
         try {
           $explode_token = explode(".", $request->header('Authorization'));
