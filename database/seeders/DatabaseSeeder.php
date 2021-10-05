@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -88,7 +90,7 @@ class DatabaseSeeder extends Seeder
      */
     private function createClub()
     {
-        if (App\Models\Club::where('code', self::$club_code)->count() < 1)
+        if (\App\Models\Club::where('code', self::$club_code)->count() < 1)
             return $this->call(CreateClub::class);
     }
 
@@ -102,7 +104,7 @@ class DatabaseSeeder extends Seeder
      */
     private function createAdminPrivilegeGroup()
     {
-        if (! App\Models\PrivilegeGroup::select('id')->where('type', 'admin')->where('club_code', self::$club_code)->first())
+        if (! \App\Models\PrivilegeGroup::select('id')->where('type', 'admin')->where('club_code', self::$club_code)->first())
             return $this->call(CreatePrivilegeGroupAdmin::class);
     }
 
@@ -114,7 +116,7 @@ class DatabaseSeeder extends Seeder
      */
     private function createMemberPrivilegeGroup()
     {
-        if (! App\Models\PrivilegeGroup::select('id')->where('type', 'member')->where('club_code', self::$club_code)->first())
+        if (! \App\Models\PrivilegeGroup::select('id')->where('type', 'member')->where('club_code', self::$club_code)->first())
             return $this->call(CreatePrivilegeGroupMember::class);
     }
 
@@ -128,7 +130,7 @@ class DatabaseSeeder extends Seeder
      */
     private function createCarBrand()
     {
-        if (App\Models\CarBrand::select('id')->where('club_code', self::$club_code)->count() < 1)
+        if (\App\Models\CarBrand::select('id')->where('club_code', self::$club_code)->count() < 1)
             return $this->call(CreateCarBrand::class);
     }
 
@@ -140,7 +142,7 @@ class DatabaseSeeder extends Seeder
      */
     private function createCarColor()
     {
-        if (App\Models\CarColor::select('id')->where('club_code', self::$club_code)->count() < 1)
+        if (\App\Models\CarColor::select('id')->where('club_code', self::$club_code)->count() < 1)
             return $this->call(CreateCarColor::class);
     }
 
@@ -152,7 +154,7 @@ class DatabaseSeeder extends Seeder
      */
     private function createCarModel()
     {
-        if (App\Models\CarModel::select('id')->where('club_code', self::$club_code)->count() < 1)
+        if (\App\Models\CarModel::select('id')->where('club_code', self::$club_code)->count() < 1)
             return $this->call(CreateCarModel::class);
     }
 
@@ -177,7 +179,7 @@ class DatabaseSeeder extends Seeder
      */
     private function createAdminUser()
     {
-        if (App\Models\User::select('id')->where('club_code', self::$club_code)->where('type', 'admin')->where('approval_status', 'approved')->count() < 1)
+        if (\App\Models\User::select('id')->where('club_code', self::$club_code)->where('type', 'admin')->where('approval_status', 'approved')->count() < 1)
             return $this->call(CreateAdminUser::class);
     }
 
@@ -189,7 +191,7 @@ class DatabaseSeeder extends Seeder
      */
     private function createMemberUser()
     {
-        if (App\Models\User::select('id')->where('club_code', self::$club_code)->where('type', 'member')->where('approval_status', 'approved')->count() < 1)
+        if (\App\Models\User::select('id')->where('club_code', self::$club_code)->where('type', 'member')->where('approval_status', 'approved')->count() < 1)
             return $this->call(CreateMemberUser::class);
     }
 
@@ -201,7 +203,7 @@ class DatabaseSeeder extends Seeder
      */
     private function createMemberUserWaitingApproval()
     {
-        if (App\Models\User::select('id')->where('club_code', self::$club_code)->where('type', 'member')->where('approval_status', 'waiting')->count() < 1)
+        if (\App\Models\User::select('id')->where('club_code', self::$club_code)->where('type', 'member')->where('approval_status', 'waiting')->count() < 1)
             return $this->call(CreateMemberUserWaitingApproval::class);
     }
 

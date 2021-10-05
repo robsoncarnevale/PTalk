@@ -20,7 +20,7 @@ class CreateFieldsOnTableUsers extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->integer('privilege_id')->nullable(false);
+            $table->unsignedBigInteger('privilege_id')->nullable(false);
 
             $table->string('photo')->nullable(true);
             $table->string('document_cpf', 11)->nullable(false);
