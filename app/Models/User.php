@@ -112,14 +112,6 @@ class User extends Authenticatable implements JWTSubject
     ///////////////////////
 
     /**
-     * privilege_id => privileges_groups.id
-     */
-    public function privilege_group()
-    {
-        return $this->hasOne('App\Models\PrivilegeGroup', 'id', 'privilege_id');
-    }
-
-    /**
      * vehicles.user_id => user.id
      */
     public function vehicles()
@@ -180,6 +172,11 @@ class User extends Authenticatable implements JWTSubject
     public function status_history()
     {
         return $this->hasMany('App\Models\UserStatusHistory');
+    }
+
+    public function privileges()
+    {
+        return $this->belongsToMany('App\Models\Privilege', 'user_privileges');
     }
 
     ///////////////////////

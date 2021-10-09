@@ -38,7 +38,7 @@ class CreateAdminUser extends Seeder
         $this->club_code = DatabaseSeeder::$club_code;
 
         // admin@porschetalk.com
-        $this->email = "admin@" . strtolower(preg_replace("#[^a-zA-Z0-9]#is", "", $this->club_code)) . ".com";
+        $this->email = "admin@i4motors.com.br";
 
         $user = new User();
 
@@ -48,8 +48,6 @@ class CreateAdminUser extends Seeder
         $user->password = \Hash::make('123456');
         $user->type = 'admin';
         $user->approval_status = 'approved';
-
-        $user->privilege_id = PrivilegeGroup::select('id')->where('type', 'admin')->first()->id;
         $user->document_cpf = "12345678900";
         // $user->cell_phone = "1122223333";
 
