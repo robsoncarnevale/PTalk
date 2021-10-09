@@ -9,8 +9,6 @@ use Illuminate\Routing\Controller as BaseController;
 // use Illuminate\Validation\Validator;
 use Illuminate\Http\Request;
 
-use App\Models\HasPrivilege;
-
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
@@ -113,12 +111,7 @@ class Controller extends BaseController
 
         if ($session)
         {
-            $permissions = HasPrivilege::select('privilege_action')
-                ->where('privilege_group_id', $session->privilege_id)
-                ->get()
-                ->pluck('privilege_action')
-                ->toArray();
-
+            $permissions = auth()->user()->privileges->pluck('action')->toArray();
 
             if ($permissions && in_array($privilege, $permissions))
                 $authorized = true;

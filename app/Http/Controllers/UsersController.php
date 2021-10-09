@@ -69,8 +69,6 @@ class UsersController extends Controller
     private static function List(Request $request, $type = 'member', $per_page = 25)
     {
         $users = User::select()
-            // ->with('privilege_group')
-            ->with('privilege_group:id,name')
             ->with('member_class')
             ->withCount(['vehicles' => function($q){
                 $q->where('deleted', false);
@@ -135,8 +133,6 @@ class UsersController extends Controller
     public function ListAll(Request $request)
     {
         $users = User::select()
-            // ->with('privilege_group')
-            ->with('privilege_group:id,name')
             ->with('member_class')
             ->where('club_code', getClubCode())
             ->where('deleted', false)
