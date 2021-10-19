@@ -53,12 +53,14 @@ Route::group([ 'middleware' => 'authorized' ], function(){
     Route::get('/users/history/{user_id}', [ 'uses' => 'UsersController@GetHistory', 'as' => 'users.history' ])->where(['user_id' => '[0-9]+']);
     Route::get('/users/members/history-approval', [ 'uses' => 'MemberUsersController@HistoryApproval', 'as' => 'users.members.history-approval' ]);
     Route::post('/users/change-type/{user}/{type}', [ 'uses' => 'UsersController@ChangeType', 'as' => 'users.change-type']);
+
     // Admin User
     Route::get('/users/administrators', [ 'uses' => 'AdminUsersController@List', 'as' => 'users.administrators.list' ]);
     Route::get('/users/administrators/{user_id}', [ 'uses' => 'AdminUsersController@Get', 'as' => 'users.administrators.get' ])->where(['user_id' => '[0-9]+']);
     Route::put('/users/administrators', [ 'uses' => 'AdminUsersController@Create', 'as' => 'users.administrators.create' ]);
     Route::post('users/administrators/{user_id}', [ 'uses' => 'AdminUsersController@Update', 'as' => 'users.administrators.update' ])->where(['user_id' => '[0-9]+']);
     Route::delete('/users/administrators/{user_id}', [ 'uses' => 'AdminUsersController@Delete', 'as' => 'users.administrators.delete' ])->where(['user_id' => '[0-9]+']);
+    
     // Member User
     Route::get('/users/members', [ 'uses' => 'MemberUsersController@List', 'as' => 'users.members.list' ]);
     Route::get('/users/members/{user_id}', [ 'uses' => 'MemberUsersController@Get', 'as' => 'users.members.get' ])->where(['user_id' => '[0-9]+']);
@@ -173,6 +175,10 @@ Route::group([ 'middleware' => 'authorized' ], function(){
     Route::get('/club/status', [ 'uses' => 'ClubController@GetStatus', 'as' => 'club.status' ]);
     Route::get('/club/data', [ 'uses' => 'ClubController@GetData', 'as' => 'club.data' ]);
     Route::get('/club/available-data', [ 'uses' => 'ClubController@GetAvailableData', 'as' => 'club.available-data' ]);
+
+    /* GENERIC ROUTES */
+
+    Route::get('/statuses', ['uses' => 'StatusController@List', 'as' => 'statuses.list']);
 });
 
 
