@@ -70,10 +70,7 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'users.address.update.my',            'name' => 'Update My Address', 'description' => '', 'add_member' => true ],
             [ 'action' => 'users.address.delete.my',            'name' => 'Delete My Address', 'description' => '', 'add_member' => true ],
 
-            [ 'action' => 'privileges.groups.list',             'name' => 'List Privileges', 'description' => '', 'add_member' => false ],
-            [ 'action' => 'privileges.groups.get',              'name' => 'Read Privilege', 'description' => '', 'add_member' => false ],
-            [ 'action' => 'privileges.groups.admins.list',      'name' => 'List Admins Privileges', 'description' => '', 'add_member' => false ],
-            [ 'action' => 'privileges.groups.members.list',     'name' => 'List Members Privileges', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'privileges.list', 'name' => 'List Permissions', 'description' => '', 'add_member' => false ],
             
             // [ 'action' => 'car.brands.list',                    'name' => 'List car brands', 'description' => '', 'add_member' => false ],
             // [ 'action' => 'car.brands.get',                     'name' => 'Read car brands', 'description' => '', 'add_member' => false ],

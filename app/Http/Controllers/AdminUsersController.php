@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Models\User;
 use App\Models\Vehicle;
 
+use App\Http\Resources\AdministratorsResource;
+
 use DB;
 use Exception;
 
@@ -76,6 +78,13 @@ class AdminUsersController extends Controller
      */
     public function Get(Request $request, $user_id)
     {
-        return UsersController::Get($request, $user_id, 'admin');
+        $user = User::where('id', $user_id)
+                    ->where('type', 'admin')
+                    ->first();
+
+        if(!$user)
+            return response()->json(['status' => 'error', 'message' => __('auth.user-not-found')], 404);
+
+        return new AdministratorsResource($user);
     }
 }

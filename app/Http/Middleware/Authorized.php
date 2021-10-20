@@ -27,15 +27,7 @@ class Authorized extends BaseMiddleware
     {
         try
         {
-            $user = JWTAuth::parseToken()->authenticate();
-
-            if(isset($request->header()['accept-language']))
-            {
-                $lang = $request->header()['accept-language'];
-
-                if(isset($lang[0]))
-                    app('translator')->setlocale($lang[0]);
-            }            
+            $user = JWTAuth::parseToken()->authenticate();        
         }
         catch(Exception $e)
         {
