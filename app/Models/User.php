@@ -46,6 +46,8 @@ class User extends Authenticatable implements JWTSubject
         'document_cpf',
         'document_rg',
         'indicated_by',
+        'status',
+        'phone'
         // 'photo',
     ];
 

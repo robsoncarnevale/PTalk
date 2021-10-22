@@ -3,6 +3,8 @@
 return [
     'not-found' =>  'Administrator not found',
 
+    'invalid-permission' => 'Invalid permissions!',
+
     'success-update'    =>  'Administrator updated successfully',
     'success-create'    =>  'Administrator created successfully',
     'success-change-type' => 'Type successfully changed',

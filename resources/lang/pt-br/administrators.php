@@ -3,6 +3,8 @@
 return [
     'not-found' =>  'Usuário não encontrado',
 
+    'invalid-permission' => 'Permissões inválidas!',
+
     'success-update'    =>  'Administrador atualizado com sucesso',
     'success-create'    =>  'Administrador criado com sucesso',
     'success-change-type' => 'Tipo alterado com sucesso',

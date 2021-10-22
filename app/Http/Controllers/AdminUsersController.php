@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Mail;
 
 use App\Models\User;
 use App\Models\Vehicle;
+use App\Models\Privilege;
 
 use App\Http\Resources\AdministratorsResource;
 
@@ -29,17 +30,71 @@ class AdminUsersController extends Controller
 
     public function Create(UserRequest $request)
     {
-        return UsersController::Create($request, 'admin');
+        //
     }
 
     public function Update(UserRequest $request, $user_id)
     {
-        return UsersController::Update($request, $user_id, 'admin');
-    }
+        DB::beginTransaction();
 
-    public function Delete(Request $request, $user_id)
-    {
-        return UsersController::Delete($request, $user_id, 'admin');
+        try
+        {
+            $logged = auth()->user();
+
+            $user = User::where('id', $user_id)
+                        ->where('type', 'admin')
+                        ->first();
+
+            if(!$user)
+                throw new \Exception(__('auth.user-not-found'));
+
+            $update = $user->update($request->only(
+                'name',
+                'nickname',
+                'status',
+                'email',
+                'phone'
+            ));
+
+            if(!$update)
+                throw new \Exception(__('general.generic.error.update'));
+
+            /* Regra que só permite alterar permissões de outros usuário e não do próprio. */
+
+            if(isset($request->privileges) && $logged->id == $user->id)
+            {
+                $privileges = Privilege::whereIn('id', $request->privileges)->get();
+
+                if($privileges->count() < count($request->privileges))
+                    throw new \Exception(__('administrators.invalid-permission'));
+
+                DB::table('user_privileges')
+                    ->where('user_id', $user->id)
+                    ->delete();
+
+                $permitted = $logged->privileges->pluck('id')->toArray();
+
+                foreach($request->privileges as $privilege)
+                {
+                    if(!in_array($privilege, $permitted))
+                        continue;
+
+                    // DB::table('user_privileges')
+                    //     ->insert([
+                    //         'user_id' => $user->id,
+                    //         'privilege_id' => $privilege
+                    //     ]);
+                }
+            }
+
+            return response()->json(['status' => 'success', 'message' => __('general.generic.success.update', ['attribute' => 'Usuário'])]);
+        }
+        catch(\Exception $e)
+        {
+            DB::rollback();
+
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
     }
 
     public function Get(Request $request, $user_id)
