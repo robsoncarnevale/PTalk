@@ -53,7 +53,8 @@ class AdminUsersController extends Controller
                 'nickname',
                 'status',
                 'email',
-                'phone'
+                'phone',
+                'document_cpf'
             ));
 
             if(!$update)
@@ -61,7 +62,7 @@ class AdminUsersController extends Controller
 
             /* Regra que só permite alterar permissões de outros usuário e não do próprio. */
 
-            if(isset($request->privileges) && $logged->id == $user->id)
+            if(isset($request->privileges) && $logged->id != $user->id)
             {
                 $privileges = Privilege::whereIn('id', $request->privileges)->get();
 
@@ -79,13 +80,15 @@ class AdminUsersController extends Controller
                     if(!in_array($privilege, $permitted))
                         continue;
 
-                    // DB::table('user_privileges')
-                    //     ->insert([
-                    //         'user_id' => $user->id,
-                    //         'privilege_id' => $privilege
-                    //     ]);
+                    DB::table('user_privileges')
+                        ->insert([
+                            'user_id' => $user->id,
+                            'privilege_id' => $privilege
+                        ]);
                 }
             }
+
+            DB::commit();
 
             return response()->json(['status' => 'success', 'message' => __('general.generic.success.update', ['attribute' => 'Usuário'])]);
         }
