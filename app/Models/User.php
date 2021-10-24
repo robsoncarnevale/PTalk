@@ -47,7 +47,8 @@ class User extends Authenticatable implements JWTSubject
         'document_rg',
         'indicated_by',
         'status',
-        'phone'
+        'phone',
+        'club_code'
         // 'photo',
     ];
 

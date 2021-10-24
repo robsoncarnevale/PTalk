@@ -14,5 +14,6 @@ return [
 
     'error-phone-already-registered' => "Phone already registered",
     'error-email-already-registered' => "E-mail already registered",
-    'error-indicator-not-found' => 'Indicator not found'
+    'error-indicator-not-found' => 'Indicator not found',
+    'error-cpf-already-registered' => "CPF already registered"
 ];
