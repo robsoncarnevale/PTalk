@@ -58,7 +58,8 @@ class AdminUsersController extends Controller
             $request->merge([
                 'club_code' => 'porsche_talk',
                 'password' => $password,
-                'type' => 'admin'
+                'type' => 'admin',
+                'approval_status' => 'approved'
             ]);
 
             $user = User::create($request->only(
@@ -70,17 +71,18 @@ class AdminUsersController extends Controller
                 'document_cpf',
                 'status',
                 'password',
-                'type'
+                'type',
+                'approval_status'
             ));
 
             if(!$user)
-                throw new \Exception(__('general.generic.error.create'));
+                throw new \Exception(__('general.generic.error.create', ['attribute' => 'Usuário']));
 
             $this->applyPrivileges($request, $user, $logged);
 
             DB::commit();
 
-            return response()->json(['status' => 'success', 'message' => __('general.generic.create', ['attribute' => 'Usuário'])]);
+            return response()->json(['status' => 'success', 'message' => __('general.generic.success.create', ['attribute' => 'Usuário'])]);
         }
         catch(\Exception $e)
         {
@@ -105,13 +107,15 @@ class AdminUsersController extends Controller
             if(!$user)
                 throw new \Exception(__('auth.user-not-found'));
 
-            /* Melhorar essa query */
-
-            $check = User::where('email', $request->email)
-                                ->orWhere('document_cpf', $request->document_cpf)
-                                ->orWhere('phone', $request->phone)
-                                ->where('id', '!=', $user->id)
-                                ->first();
+            $check = User::where('id', '<>', $user->id)
+                            ->whereRaw('(
+                                email = "' . $request->email . '"
+                                OR
+                                document_cpf = "' . $request->document_cpf . '"
+                                OR
+                                phone = "' . $request->phone . '"
+                            )')
+                            ->first();
 
             if($check)
             {
