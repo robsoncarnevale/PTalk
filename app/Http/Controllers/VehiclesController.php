@@ -278,6 +278,11 @@ class VehiclesController extends Controller
      */
     public function CreateMyVehicle(MyVehicleRequest $request)
     {
+        $user = auth()->user();
+
+        if($user->type == 'admin')
+            return response()->json(['status' => 'error', 'message' => __('vehicles.error-create-administrator')]);
+
         $vehicle = new Vehicle();
 
         $vehicle->fill($request->all());

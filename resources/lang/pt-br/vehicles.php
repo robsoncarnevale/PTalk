@@ -9,4 +9,6 @@ return [
     'success-delete' => 'Veículo removido com sucesso',
 
     'carplate-already-registered' => 'Placa já registrada em outro veículo',
+
+    'error-create-administrator' => 'Administrador não pode ter carros!'
 ];
