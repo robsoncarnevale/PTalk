@@ -255,7 +255,6 @@ class UsersController extends Controller
             $user->approval_status_date = date('Y-m-d H:i:s');
 
             $user->password = Hash::make('123456');
-            $user->privilege_id = $request->get('privilege_id');
             $user->status = User::ACTIVE_STATUS;
 
             $user->new_password_token = md5(uniqid(rand(), true));
