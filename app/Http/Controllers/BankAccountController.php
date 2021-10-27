@@ -108,7 +108,7 @@ class BankAccountController extends Controller
      */
     function ExtractMyAccount(Request $request)
     {
-        $user = auth()->user();
+        $user = User::find(User::getAuthenticatedUserId());
 
         if($user->type == 'admin')
             return response()->json(['status' => 'error', 'message' => __('bank_account.error-extract-administrator')], 403);
