@@ -203,8 +203,6 @@ class MembersController extends Controller
             if ($request->has('company')) $user->company = $request->get('company');
             if ($request->has('company_activities')) $user->company_activities = $request->get('company_activities');
 
-            $user->getMobilePrivilege();
-
             $user->save();
 
             // Create Vehicle

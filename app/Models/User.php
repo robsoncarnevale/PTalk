@@ -216,21 +216,6 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
-     * 
-     */
-    public function getMobilePrivilege()
-    {
-        $privilege = PrivilegeGroup::select('id')
-            ->where('type', User::TYPE_MEMBER)
-            ->where('name', 'Membro')
-            ->first();
-
-        $this->privilege_id = $privilege['id'];
-
-        return $this;
-    }
-
-    /**
      * Returns clean access code if previously generated
      * 
      * @return string
