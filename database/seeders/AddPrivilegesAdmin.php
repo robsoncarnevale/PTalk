@@ -47,6 +47,8 @@ class AddPrivilegesAdmin extends Seeder
 
         foreach($this->privileges as $privilege)
         {
+            echo "Added privilege to " . $user->name . " \033[35m" . $privilege->action . "\033[0m " . PHP_EOL;
+
             DB::table('user_privileges')->insert([
                 'user_id' => $user->id,
                 'privilege_id' => $privilege->id,

@@ -35,11 +35,11 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'users.me.address.create',            'name' => 'Create My Address', 'description' => '', 'add_member' => true ],
             [ 'action' => 'users.me.address.update',            'name' => 'Update My Address', 'description' => '', 'add_member' => true ],
 
-            [ 'action' => 'users.administrators.list', 'name' => 'List administrators', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'users.administrators.list',          'name' => 'List administrators', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.administrators.update',        'name' => 'Read Administrator', 'description' => '', 'add_member' => false ],
-            [ 'action' => 'users.administrators.save',        'name' => 'Update Administrator', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'users.administrators.save',          'name' => 'Update Administrator', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.administrators.create',        'name' => 'Create Administrator', 'description' => '', 'add_member' => false ],
-            [ 'action' => 'users.administrators.store',        'name' => 'Salvar Administrator', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'users.administrators.store',         'name' => 'Salvar Administrator', 'description' => '', 'add_member' => false ],
 
             [ 'action' => 'users.profile.view',                 'name' => 'View User Profile', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.history',                      'name' => 'View User History', 'description' => '', 'add_member' => false ],
@@ -51,7 +51,7 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'users.members.delete',               'name' => 'Delete Member', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.members.approval-status.set',  'name' => 'Set Member Approval Status', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.change-type',                  'name' => 'Change User Type', 'description' => '', 'add_member' => false ],
-            
+            [ 'action' => 'users.members.waiting-approval',     'name' => 'List members awaiting approval', 'description' => '', 'add_member' => false ],
 
             [ 'action' => 'users.classes.list',                 'name' => 'List Members Classes', 'description' => '', 'add_member' => true ],
             [ 'action' => 'users.classes.get',                  'name' => 'Get Members Class', 'description' => '', 'add_member' => true ],
