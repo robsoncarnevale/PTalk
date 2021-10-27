@@ -34,7 +34,7 @@ class AddPrivilegesAdmin extends Seeder
         $this->club_code = DatabaseSeeder::$club_code;
         $this->privileges = Privilege::all();
 
-        $user = User::where('email', 'admin@i4motors.com.br')
+        $user = User::where('email', 'admin@4clubes.com.br')
                     ->where('type', 'admin')
                     ->first();
 
