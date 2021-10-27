@@ -8,4 +8,6 @@ return [
     ],
 
     'unauthorized'  =>  'You don\'t have permission to perform this action',
+
+    'failed-create' => 'Failed to create permissions!'
 ];

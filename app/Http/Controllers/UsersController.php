@@ -294,6 +294,7 @@ class UsersController extends Controller
             $user->save();
             $user->saveStatusHistory();
             $user->createBankAccount();
+            $user->applyPrivilegesMember();
 
             // Create Vehicle
             // if ($request->has('vehicle'))
@@ -307,21 +308,28 @@ class UsersController extends Controller
             //     $user['vehicle'] = $vehicle;
             // }
 
-            DB::commit();
-
             try
             {
-                Mail::to($user->email)
-                    ->send(new \App\Mail\RegisterMail($user));
-            } catch(\Exception $e) {
-
+                Mail::to($user->email)->send(new \App\Mail\RegisterMail($user));
+            }
+            catch(\Exception $e)
+            {
+                DB::rollback();
+                return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
             }
 
-            return response()->json([ 'status' => 'success', 'data' => (new UserResource($user)), 'message' => __(self::$type_name . '.success-create') ]);
-        } catch (Exception $e) {
-            DB::rollback();
+            DB::commit();
 
-            return response()->json([ 'status' => 'error', 'message' => __(self::$type_name . '.error-create', [ 'error' => $e->getMessage() ]) ]);
+            return response()->json([
+                'status' => 'success',
+                'data' => (new UserResource($user)),
+                'message' => __(self::$type_name . '.success-create')
+            ], 200);
+        }
+        catch(Exception $e)
+        {
+            DB::rollback();
+            return response()->json(['status' => 'error', 'message' => $e->getMessage(), 500]);
         }
 
     }

@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Privilege;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -553,5 +554,56 @@ class User extends Authenticatable implements JWTSubject
     public function getSuspendedTimeBrAttribute()
     {
         return dateDatabaseToBr(substr($this->suspended_time, 0, 10));
+    }
+
+    public function applyPrivilegesMember()
+    {
+        $privileges = [
+
+            /* Users */
+
+            'users.me',
+            'users.me.update',
+            'users.me.address',
+            'users.me.address.create',
+            'users.me.address.update',
+
+            /* Vehicles */
+
+            'vehicles.my-vehicles.list',
+            'vehicles.my-vehicles.get',
+            'vehicles.my-vehicles.create',
+            'vehicles.my-vehicles.update',
+            'vehicles.my-vehicles.delete',
+            'vehicles.my-vehicles.photo.upload',
+            'vehicles.my-vehicles.photo.delete',
+
+            /* Events */
+
+            'events.list',
+            'events.get',
+            'events.subscribe',
+            'events.unsubscribe',
+            'events.print',
+
+            /* Bank Account */
+
+            'bankaccount.my.extract'
+        ];
+
+        $privileges = Privilege::whereIn('action', $privileges)->get();
+
+        $body = [];
+
+        foreach($privileges as $privilege)
+            $body[] = [
+                'user_id' => $this->id,
+                'privilege_id' => $privilege->id
+            ];
+
+        $create = \DB::table('user_privileges')->insert($body);
+
+        if(!$create)
+            throw new \Exception(__('privileges.failed-create'));
     }
 }
