@@ -22,12 +22,9 @@ class SessionMobile extends JsonResource
 
         $resource['first_name'] = $explode_name[0];
         $resource['last_name'] =  (count($explode_name) > 1) ? end($explode_name) : '';
-        $resource['privileges'] = \App\Models\HasPrivilege::select('privilege_action')
-            ->where('privilege_group_id', $resource['privilege_id'])
-            ->get()
-            ->pluck('privilege_action');
+        $resource['privileges'] = $this->privileges->pluck('action');
 
-        $resource['vehicles_count'] = \App\Models\Vehicle::where('user_id', $resource['id'])->where('deleted', false)->count();
+        $resource['vehicles_count'] = $this->vehicles->where('deleted', false)->count();
         $resource['events_count'] = 0;
         $resource['club_code'] = $request->get('club_code');
         $resource['member_class'] = $this->member_class;
@@ -39,7 +36,6 @@ class SessionMobile extends JsonResource
             'email' => $resource['email'],
             'photo' => $resource['photo'],
             'photo_url' => UserPhoto::get($this->photo),
-            'privilege_id' => $resource['privilege_id'],
             'company' => $resource['company'],
             'first_name' => $resource['first_name'],
             'last_name' => $resource['last_name'],
