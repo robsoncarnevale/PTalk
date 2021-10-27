@@ -38,7 +38,7 @@ class CreateAdminUser extends Seeder
         $this->club_code = DatabaseSeeder::$club_code;
 
         // admin@porschetalk.com
-        $this->email = "admin@i4motors.com.br";
+        $this->email = "admin@4clubes.com.br";
 
         $user = new User();
 
