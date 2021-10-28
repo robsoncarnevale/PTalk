@@ -50,17 +50,31 @@ class MembersClassesSeeder extends Seeder
         
         foreach($this->classes as $class)
         {
-            if (! MemberClass::select()->where('club_code', $this->club_code)->where('label', $class['label'])->first())
+            $memberClass = MemberClass::where('label', $class['label'])->first();
+
+            if(!$memberClass)
             {
                 $add_class = new MemberClass();
                 $add_class->club_code = $this->club_code;
                 $add_class->name = $class['name'];
                 $add_class->label = $class['label'];
+                $add_class->description = $class['description'];
+                $add_class->color = $class['color'];
 
                 if (array_key_exists('default', $class) && $class['default'] === true)
                     $add_class->default = true;
 
                 $add_class->save();
+            }
+            else
+            {
+                $memberClass->update([
+                    'club_code' => $this->club_code,
+                    'name' => $class['name'],
+                    'label' => $class['label'],
+                    'description' => $class['description'],
+                    'color' => $class['color']
+                ]);
             }
         }
         
