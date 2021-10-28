@@ -40,6 +40,7 @@ class Extract extends JsonResource
     {
         $first_date = $request->get('init', date('Y-m-01 00:00:00'));
         $last_date = $request->get('finish', date('Y-m-t 23:59:59'));
+        $type = $request->get('type');
 
         if (strlen($first_date) <= 10) {
             $first_date = $first_date . " 00:00:00";
@@ -54,8 +55,12 @@ class Extract extends JsonResource
             ->with('event')
             ->where('account_number', $this->account_number)
             ->whereBetween('created_at', [ dateBrToDatabase(substr($first_date, 0, 10)) . ' 00:00:00', dateBrToDatabase(substr($last_date, 0, 10)) . ' 23:59:59' ])
-            ->orderBy('created_at', 'desc')
-            ->get();
+            ->orderBy('created_at', 'desc');
+
+        if($type && $type != 'all')
+            $extract->where('type', $type);
+
+        $extract = $extract->get();
 
         $extract = $extract->toArray();
 
