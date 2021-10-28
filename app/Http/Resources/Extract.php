@@ -38,8 +38,8 @@ class Extract extends JsonResource
 
     private function getExtract(\Illuminate\Http\Request $request)
     {
-        $first_date = $request->get('init', date('Y-m-01 00:00:00'));
-        $last_date = $request->get('finish', date('Y-m-t 23:59:59'));
+        $first_date = $request->get('init', date('01/m/Y 00:00:00'));
+        $last_date = $request->get('finish', date('d-m-Y 23:59:59'));
         $type = $request->get('type');
 
         if (strlen($first_date) <= 10) {
