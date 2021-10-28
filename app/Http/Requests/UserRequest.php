@@ -52,7 +52,6 @@ class UserRequest extends FormRequest
             'name'  =>  'required',
             'phone'  =>  'required|min:8|max:11',
             'email'  =>  'required|email',
-            'privilege_id'  =>  'required|integer',
             'nickname' => 'max:20',
         ];
     }
@@ -63,7 +62,6 @@ class UserRequest extends FormRequest
             'document_cpf'  =>  [ 'size:11', new \App\Rules\ValidCpf() ],
             'phone'  =>  'min:8|max:11',
             'email'  =>  'email',
-            'privilege_id'  =>  'integer',
             'nickname' => 'max:20',
         ];
     }

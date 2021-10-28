@@ -21,6 +21,8 @@ class MembersClassesController extends Controller
 {
     protected $only_admin = false;
 
+    protected $ignore_routes = ['users.classes.list'];
+
     /**
      * List
      *

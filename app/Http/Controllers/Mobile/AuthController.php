@@ -105,6 +105,7 @@ class AuthController extends Controller
             ->where('deleted', false)
             ->where('phone', $phone)
             ->where('club_code', $request->get('club_code'))
+            ->where('type', 'member')
             ->first();
 
         if (! $user)

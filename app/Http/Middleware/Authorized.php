@@ -25,9 +25,12 @@ class Authorized extends BaseMiddleware
      */
     public function handle($request, Closure $next)
     {
-        try {
-            $user = JWTAuth::parseToken()->authenticate();
-        } catch (Exception $e) {
+        try
+        {
+            $user = JWTAuth::parseToken()->authenticate();        
+        }
+        catch(Exception $e)
+        {
             return response()->json([ 'status' => 'error', 'message' => "Unauthorized", 'code' => 401 ], 401);
         }
 

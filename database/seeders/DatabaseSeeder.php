@@ -25,14 +25,8 @@ class DatabaseSeeder extends Seeder
         // Create club
         $this->createClub();
 
-        // Create default privilege groups
-        $this->createAdminPrivilegeGroup();
-        $this->createMemberPrivilegeGroup();
-
         // Create default users
         $this->createAdminUser();
-        $this->createMemberUser();
-        $this->createMemberUserWaitingApproval();
 
         // Create default vehicle data
         $this->createCarBrand();
@@ -43,7 +37,6 @@ class DatabaseSeeder extends Seeder
         // Create privileges
         $this->createPrivileges();
         $this->addPrivilegesAdmin();
-        $this->addPrivilegesMember();
 
         // Create members classes
         $this->createMembersClases();
@@ -92,32 +85,6 @@ class DatabaseSeeder extends Seeder
     {
         if (\App\Models\Club::where('code', self::$club_code)->count() < 1)
             return $this->call(CreateClub::class);
-    }
-
-    ////////////////////////////////////////
-
-    /**
-     * Create admin privilege group
-     *
-     * @author Davi Souto
-     * @since 15/06/2020
-     */
-    private function createAdminPrivilegeGroup()
-    {
-        if (! \App\Models\PrivilegeGroup::select('id')->where('type', 'admin')->where('club_code', self::$club_code)->first())
-            return $this->call(CreatePrivilegeGroupAdmin::class);
-    }
-
-    /**
-     * Create member privilege group
-     *
-     * @author Davi Souto
-     * @since 15/06/2020
-     */
-    private function createMemberPrivilegeGroup()
-    {
-        if (! \App\Models\PrivilegeGroup::select('id')->where('type', 'member')->where('club_code', self::$club_code)->first())
-            return $this->call(CreatePrivilegeGroupMember::class);
     }
 
     ////////////////////////////////////////
@@ -183,30 +150,6 @@ class DatabaseSeeder extends Seeder
             return $this->call(CreateAdminUser::class);
     }
 
-    /**
-     * Create default member user
-     *
-     * @author Davi Souto
-     * @since 15/06/2020
-     */
-    private function createMemberUser()
-    {
-        if (\App\Models\User::select('id')->where('club_code', self::$club_code)->where('type', 'member')->where('approval_status', 'approved')->count() < 1)
-            return $this->call(CreateMemberUser::class);
-    }
-
-/**
-     * Create member user waiting approval
-     *
-     * @author Davi Souto
-     * @since 18/06/2020
-     */
-    private function createMemberUserWaitingApproval()
-    {
-        if (\App\Models\User::select('id')->where('club_code', self::$club_code)->where('type', 'member')->where('approval_status', 'waiting')->count() < 1)
-            return $this->call(CreateMemberUserWaitingApproval::class);
-    }
-
     ////////////////////////////////////////
 
     /**
@@ -229,17 +172,6 @@ class DatabaseSeeder extends Seeder
     public function addPrivilegesAdmin()
     {
         return $this->call(AddPrivilegesAdmin::class);
-    }
-
-    /**
-     * Add privilege actions to member privilege group
-     *
-     * @author Davi Souto
-     * @since 16/06/2020
-     */
-    public function addPrivilegesMember()
-    {
-        return $this->call(AddPrivilegesMember::class);
     }
 
     /////////////////////////

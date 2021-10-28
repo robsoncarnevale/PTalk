@@ -21,10 +21,7 @@ class Session extends JsonResource
 
         $resource['first_name'] = $explode_name[0];
         $resource['last_name'] =  (count($explode_name) > 1) ? end($explode_name) : '';
-        $resource['privileges'] = \App\Models\HasPrivilege::select('privilege_action')
-            ->where('privilege_group_id', $resource['privilege_id'])
-            ->get()
-            ->pluck('privilege_action');
+        $resource['privileges'] = auth()->user()->privileges->pluck('action');
 
         $resource['member_class'] = $this->member_class;
         
@@ -36,7 +33,6 @@ class Session extends JsonResource
             'type' => $resource['type'],
             'photo' => $resource['photo'],
             'photo_url' => UserPhoto::get($this->photo),
-            'privilege_id' => $resource['privilege_id'],
             'first_name' => $resource['first_name'],
             'last_name' => $resource['last_name'],
             'member_class' => $resource['member_class'],

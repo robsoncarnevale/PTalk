@@ -13,8 +13,4 @@ use Illuminate\Database\Eloquent\Model;
 class Privilege extends Model
 {
     protected $table = 'privileges';
-
-    // protected $primaryKey = null;
-    protected $primaryKey = 'action';
-    public $incrementing = false;
 }

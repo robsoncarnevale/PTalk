@@ -69,8 +69,6 @@ class UsersController extends Controller
     private static function List(Request $request, $type = 'member', $per_page = 25)
     {
         $users = User::select()
-            // ->with('privilege_group')
-            ->with('privilege_group:id,name')
             ->with('member_class')
             ->withCount(['vehicles' => function($q){
                 $q->where('deleted', false);
@@ -135,8 +133,6 @@ class UsersController extends Controller
     public function ListAll(Request $request)
     {
         $users = User::select()
-            // ->with('privilege_group')
-            ->with('privilege_group:id,name')
             ->with('member_class')
             ->where('club_code', getClubCode())
             ->where('deleted', false)
@@ -259,7 +255,6 @@ class UsersController extends Controller
             $user->approval_status_date = date('Y-m-d H:i:s');
 
             $user->password = Hash::make('123456');
-            $user->privilege_id = $request->get('privilege_id');
             $user->status = User::ACTIVE_STATUS;
 
             $user->new_password_token = md5(uniqid(rand(), true));
@@ -299,6 +294,7 @@ class UsersController extends Controller
             $user->save();
             $user->saveStatusHistory();
             $user->createBankAccount();
+            $user->applyPrivilegesMember();
 
             // Create Vehicle
             // if ($request->has('vehicle'))
@@ -312,21 +308,28 @@ class UsersController extends Controller
             //     $user['vehicle'] = $vehicle;
             // }
 
-            DB::commit();
-
             try
             {
-                Mail::to($user->email)
-                    ->send(new \App\Mail\RegisterMail($user));
-            } catch(\Exception $e) {
-
+                Mail::to($user->email)->send(new \App\Mail\RegisterMail($user));
+            }
+            catch(\Exception $e)
+            {
+                DB::rollback();
+                return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
             }
 
-            return response()->json([ 'status' => 'success', 'data' => (new UserResource($user)), 'message' => __(self::$type_name . '.success-create') ]);
-        } catch (Exception $e) {
-            DB::rollback();
+            DB::commit();
 
-            return response()->json([ 'status' => 'error', 'message' => __(self::$type_name . '.error-create', [ 'error' => $e->getMessage() ]) ]);
+            return response()->json([
+                'status' => 'success',
+                'data' => (new UserResource($user)),
+                'message' => __(self::$type_name . '.success-create')
+            ], 200);
+        }
+        catch(Exception $e)
+        {
+            DB::rollback();
+            return response()->json(['status' => 'error', 'message' => $e->getMessage(), 500]);
         }
 
     }

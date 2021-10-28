@@ -20,7 +20,6 @@ class CreateFieldsOnTableUsers extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->unsignedBigInteger('privilege_id')->nullable(false);
 
             $table->string('photo')->nullable(true);
             $table->string('document_cpf', 11)->nullable(false);
@@ -43,7 +42,6 @@ class CreateFieldsOnTableUsers extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('privilege_id');
 
             $table->dropColumn('photo');
             $table->dropColumn('document_cpf');

@@ -21,7 +21,7 @@ class Profile extends JsonResource
         $resource['first_name'] = $explode_name[0];
         $resource['last_name'] =  (count($explode_name) > 1) ? end($explode_name) : '';
 
-        return [
+        $data = [
             'id' => $this->id,
             'name' => $this->name,
             'nickname' => $this->nickname,
@@ -43,10 +43,12 @@ class Profile extends JsonResource
             'type' => $this->type,
             'member_class' => $this->member_class,
             'privilege_group' => $this->privilege_group,
-            'vehicles' => MemberVehicle::collection($this->vehicles),
-            'bank_account' => [
-                'id' => $this->bank_account->id,
-            ]
+            'vehicles' => MemberVehicle::collection($this->vehicles)
         ];
+
+        if($this->bank_account)
+            $data['bank_account'] = $this->bank_account->id;
+
+        return $data;
     }
 }

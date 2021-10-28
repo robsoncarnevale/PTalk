@@ -9,4 +9,6 @@ return [
     'success-delete'    =>  'Vehicle removed successfully',
 
     'carplate-already-registered' => 'License plate already registered in another vehicle',
+
+    'error-create-administrator' => 'Administrator cannot have cars!'
 ];

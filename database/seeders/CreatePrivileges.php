@@ -35,22 +35,23 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'users.me.address.create',            'name' => 'Create My Address', 'description' => '', 'add_member' => true ],
             [ 'action' => 'users.me.address.update',            'name' => 'Update My Address', 'description' => '', 'add_member' => true ],
 
+            [ 'action' => 'users.administrators.list',          'name' => 'List administrators', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'users.administrators.update',        'name' => 'Read Administrator', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'users.administrators.save',          'name' => 'Update Administrator', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'users.administrators.create',        'name' => 'Create Administrator', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'users.administrators.store',         'name' => 'Salvar Administrator', 'description' => '', 'add_member' => false ],
 
             [ 'action' => 'users.profile.view',                 'name' => 'View User Profile', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.history',                      'name' => 'View User History', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.members.history-approval',     'name' => 'User History Approval', 'description' => '', 'add_member' => false ],
-            [ 'action' => 'users.administrators.get',           'name' => 'Read Administrator', 'description' => '', 'add_member' => false ],
-            [ 'action' => 'users.administrators.update',        'name' => 'Update Administrator', 'description' => '', 'add_member' => false ],
-            [ 'action' => 'users.administrators.delete',        'name' => 'Delete Administrator', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.members.list',                 'name' => 'List Members', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.members.get',                  'name' => 'Read Member', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.members.create',               'name' => 'Create Member', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.members.update',               'name' => 'Update Member', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.members.delete',               'name' => 'Delete Member', 'description' => '', 'add_member' => false ],
-            [ 'action' => 'users.members.view-all',             'name' => 'List all members and administrators', 'description' => '', 'add_member' => false ], 
             [ 'action' => 'users.members.approval-status.set',  'name' => 'Set Member Approval Status', 'description' => '', 'add_member' => false ],
             [ 'action' => 'users.change-type',                  'name' => 'Change User Type', 'description' => '', 'add_member' => false ],
-            
+            [ 'action' => 'users.members.waiting-approval',     'name' => 'List members awaiting approval', 'description' => '', 'add_member' => false ],
 
             [ 'action' => 'users.classes.list',                 'name' => 'List Members Classes', 'description' => '', 'add_member' => true ],
             [ 'action' => 'users.classes.get',                  'name' => 'Get Members Class', 'description' => '', 'add_member' => true ],
@@ -70,10 +71,7 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'users.address.update.my',            'name' => 'Update My Address', 'description' => '', 'add_member' => true ],
             [ 'action' => 'users.address.delete.my',            'name' => 'Delete My Address', 'description' => '', 'add_member' => true ],
 
-            [ 'action' => 'privileges.groups.list',             'name' => 'List Privileges', 'description' => '', 'add_member' => false ],
-            [ 'action' => 'privileges.groups.get',              'name' => 'Read Privilege', 'description' => '', 'add_member' => false ],
-            [ 'action' => 'privileges.groups.admins.list',      'name' => 'List Admins Privileges', 'description' => '', 'add_member' => false ],
-            [ 'action' => 'privileges.groups.members.list',     'name' => 'List Members Privileges', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'privileges.list', 'name' => 'List Permissions', 'description' => '', 'add_member' => false ],
             
             // [ 'action' => 'car.brands.list',                    'name' => 'List car brands', 'description' => '', 'add_member' => false ],
             // [ 'action' => 'car.brands.get',                     'name' => 'Read car brands', 'description' => '', 'add_member' => false ],

@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Privilege;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -46,7 +47,11 @@ class User extends Authenticatable implements JWTSubject
         'document_cpf',
         'document_rg',
         'indicated_by',
-        // 'photo',
+        'status',
+        'phone',
+        'club_code',
+        'type',
+        'approval_status'
     ];
 
 
@@ -112,14 +117,6 @@ class User extends Authenticatable implements JWTSubject
     ///////////////////////
 
     /**
-     * privilege_id => privileges_groups.id
-     */
-    public function privilege_group()
-    {
-        return $this->hasOne('App\Models\PrivilegeGroup', 'id', 'privilege_id');
-    }
-
-    /**
      * vehicles.user_id => user.id
      */
     public function vehicles()
@@ -182,6 +179,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany('App\Models\UserStatusHistory');
     }
 
+    public function privileges()
+    {
+        return $this->belongsToMany('App\Models\Privilege', 'user_privileges');
+    }
+
     ///////////////////////
 
     /**
@@ -210,21 +212,6 @@ class User extends Authenticatable implements JWTSubject
     public function generatePassword($password)
     {
         $this->password = Hash::make($password);
-
-        return $this;
-    }
-
-    /**
-     * 
-     */
-    public function getMobilePrivilege()
-    {
-        $privilege = PrivilegeGroup::select('id')
-            ->where('type', User::TYPE_MEMBER)
-            ->where('name', 'Membro')
-            ->first();
-
-        $this->privilege_id = $privilege['id'];
 
         return $this;
     }
@@ -567,5 +554,56 @@ class User extends Authenticatable implements JWTSubject
     public function getSuspendedTimeBrAttribute()
     {
         return dateDatabaseToBr(substr($this->suspended_time, 0, 10));
+    }
+
+    public function applyPrivilegesMember()
+    {
+        $privileges = [
+
+            /* Users */
+
+            'users.me',
+            'users.me.update',
+            'users.me.address',
+            'users.me.address.create',
+            'users.me.address.update',
+
+            /* Vehicles */
+
+            'vehicles.my-vehicles.list',
+            'vehicles.my-vehicles.get',
+            'vehicles.my-vehicles.create',
+            'vehicles.my-vehicles.update',
+            'vehicles.my-vehicles.delete',
+            'vehicles.my-vehicles.photo.upload',
+            'vehicles.my-vehicles.photo.delete',
+
+            /* Events */
+
+            'events.list',
+            'events.get',
+            'events.subscribe',
+            'events.unsubscribe',
+            'events.print',
+
+            /* Bank Account */
+
+            'bankaccount.my.extract'
+        ];
+
+        $privileges = Privilege::whereIn('action', $privileges)->get();
+
+        $body = [];
+
+        foreach($privileges as $privilege)
+            $body[] = [
+                'user_id' => $this->id,
+                'privilege_id' => $privilege->id
+            ];
+
+        $create = \DB::table('user_privileges')->insert($body);
+
+        if(!$create)
+            throw new \Exception(__('privileges.failed-create'));
     }
 }
