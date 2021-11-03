@@ -17,7 +17,7 @@
       try {
         $client = new \Aws\Sns\SnsClient([
           'version' => '2010-03-31',
-          'region' => 'us-east-1',
+          'region' => env('AWS_DEFAULT_REGION'),
           'credentials' => new \Aws\Credentials\Credentials(
             env('AWS_ACCESS_KEY_ID'),
             env('AWS_SECRET_ACCESS_KEY')
