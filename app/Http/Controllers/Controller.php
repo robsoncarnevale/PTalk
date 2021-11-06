@@ -8,6 +8,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 // use Illuminate\Validation\Validator;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class Controller extends BaseController
 {
@@ -101,17 +102,14 @@ class Controller extends BaseController
     public function isAuthorized($privilege)
     {
         $authorized = false;
-        $session = auth()->guard()->user();
+        $session = User::find(User::getAuthenticatedUserId());
 
-        if (strpos($privilege, 'mobile.') === 0) {
+        if(strpos($privilege, 'mobile.') === 0)
             $privilege = substr($privilege, 7);
 
-            $session = \App\Models\User::getMobileSession();
-        }
-
-        if ($session)
+        if($session)
         {
-            $permissions = auth()->user()->privileges->pluck('action')->toArray();
+            $permissions = $session->privileges->pluck('action')->toArray();
 
             if ($permissions && in_array($privilege, $permissions))
                 $authorized = true;
