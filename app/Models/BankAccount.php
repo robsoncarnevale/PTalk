@@ -13,10 +13,20 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BankAccount extends Model
 {
-    const ACTIVE_STATUS = 'active';
-    const INACTIVE_STATUS = 'inactive';
-    const BLOCKED_STATUS = 'blocked';
-
     protected $fillable = [
+        'account_number',
+        'balance',
+        'bank_account_type_id',
+        'status_id'
     ];
+
+    public function type()
+    {
+        return $this->hasOne(BankAccountType::class, 'id', 'bank_account_type_id');
+    }
+
+    public function status()
+    {
+        return $this->hasOne(Status::class, 'id', 'status_id');
+    }
 }

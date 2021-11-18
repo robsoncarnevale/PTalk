@@ -40,6 +40,15 @@ class DatabaseSeeder extends Seeder
 
         // Create members classes
         $this->createMembersClases();
+
+        //Create Bank Account Types
+        $this->createBankAccountTypes();
+
+        //Create Statuses
+        $this->createStatuses();
+
+        //Create Club Bank Account
+        $this->createClubBankAccount();
     }
 
     ////////////////////////////////////////
@@ -185,5 +194,20 @@ class DatabaseSeeder extends Seeder
     private function createMembersClases()
     {
         return $this->call(MembersClassesSeeder::class);
+    }
+
+    private function createBankAccountTypes()
+    {
+        return $this->call(CreateBankAccountTypesSeeder::class);
+    }
+
+    private function createStatuses()
+    {
+        return $this->call(CreateStatusesTableSeeder::class);
+    }
+
+    private function createClubBankAccount()
+    {
+        return $this->call(CreateClubBankAccountTableSeeder::class);
     }
 }
