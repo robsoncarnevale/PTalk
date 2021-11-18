@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateClubBankAccountTable extends Migration
+class CreateBankAccountHistoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateClubBankAccountTable extends Migration
      */
     public function up()
     {
-        Schema::create('club_bank_account', function (Blueprint $table) {
+        Schema::create('bank_account_histories', function (Blueprint $table) {
             $table->id();
-            $table->string("club_code", 20)->nullable(false);
-            $table->decimal('balance', 12, 2)->nullable(false)->default(0.00);
+            $table->unsignedBigInteger('bank_account_id');
+            $table->longText('data');
             $table->timestamps();
 
-            $table->foreign('club_code')->references('code')->on('clubs');
+            $table->foreign('bank_account_id')->references('id')->on('bank_accounts')->onDelete('cascade');
         });
     }
 
@@ -30,6 +30,6 @@ class CreateClubBankAccountTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('club_bank_account');
+        Schema::dropIfExists('bank_account_histories');
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddIndexToAccountLaunch extends Migration
+class CreateBankAccountTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class AddIndexToAccountLaunch extends Migration
      */
     public function up()
     {
-        Schema::table('account_launch', function (Blueprint $table) {
-            $table->index([ 'account_number', 'created_at' ]);
+        Schema::create('bank_account_types', function (Blueprint $table) {
+            $table->id();
+            $table->string('description');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +27,6 @@ class AddIndexToAccountLaunch extends Migration
      */
     public function down()
     {
-        Schema::table('account_launch', function (Blueprint $table) {
-            $table->dropIndex([ 'account_number', 'created_at' ]);
-        });
+        Schema::dropIfExists('bank_account_types');
     }
 }

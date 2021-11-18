@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddTypeToAccountLaunch extends Migration
+class CreateStatusesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class AddTypeToAccountLaunch extends Migration
      */
     public function up()
     {
-        Schema::table('account_launch', function (Blueprint $table) {
-            $table->string('type', 12)->nullable(false)->default(\App\Models\AccountLaunch::CREDIT_TYPE);
+        Schema::create('statuses', function (Blueprint $table) {
+            $table->id();
+            $table->string('description');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +27,6 @@ class AddTypeToAccountLaunch extends Migration
      */
     public function down()
     {
-        Schema::table('account_launch', function (Blueprint $table) {
-            $table->dropColumn('type');
-        });
+        Schema::dropIfExists('statuses');
     }
 }

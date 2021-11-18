@@ -13,24 +13,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BankAccount extends Model
 {
-    protected $table = 'bank_account';
-
     const ACTIVE_STATUS = 'active';
     const INACTIVE_STATUS = 'inactive';
     const BLOCKED_STATUS = 'blocked';
 
     protected $fillable = [
     ];
-
-    protected $hidden = [
-        'club_code',
-    ];
-
-    /**
-     * Get the user class
-     */
-    public function user()
-    {
-        return $this->belongsTo('App\Models\User');
-    }
 }
