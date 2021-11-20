@@ -150,20 +150,9 @@ Route::group(['middleware' => 'preset'], function(){
         Route::post('events/{event}/address/{address}', [ 'uses' => 'EventAddressController@Update', 'as' => 'events.address.update' ]);
         Route::delete('/events/{event}/{address}', [ 'uses' => 'EventAddressController@Delete', 'as' => 'events.address.delete' ]);
 
-        // Digital Bank Account
-        Route::get('/bank-account/list', [ 'uses' => 'BankAccountController@List', 'as' => 'bankaccount.list' ]);
-        Route::get('/bank-account/extract/{bank_account}', [ 'uses' => 'BankAccountController@Extract', 'as' => 'bankaccount.extract' ]);
-        Route::get('/bank-account/my/extract', [ 'uses' => 'BankAccountController@ExtractMyAccount', 'as' => 'bankaccount.my.extract' ]);
-        Route::get('/bank-account/find/{bank_account}', [ 'uses' => 'BankAccountController@Find', 'as' => 'bankaccount.find' ])->where(['bank_account' => '[0-9]+']);
-        Route::put('/bank-account/launch/{bank_account}/debit', [ 'uses' => 'BankAccountController@LaunchDebit', 'as' => 'bankaccount.launch.debit' ])->where(['bank_account' => '[0-9]+']);
-        Route::put('/bank-account/launch/{bank_account}/credit', [ 'uses' => 'BankAccountController@LaunchCredit', 'as' => 'bankaccount.launch.credit' ])->where(['bank_account' => '[0-9]+']);
+        /* BANK ACCOUNTS */
 
-        // Club Bank Account
-        Route::get('/club/bank-account/extract', [ 'uses' => 'ClubBankAccountController@ExtractAccount', 'as' => 'club.bankaccount.extract' ]);
-        Route::put('/club/bank-account/launch/debit', [ 'uses' => 'ClubBankAccountController@LaunchDebit', 'as' => 'club.bankaccount.launch.debit' ])->where(['bank_account' => '[0-9]+']);
-        Route::put('/club/bank-account/launch/credit', [ 'uses' => 'ClubBankAccountController@LaunchCredit', 'as' => 'club.bankaccount.launch.credit' ])->where(['bank_account' => '[0-9]+']);
-        Route::get('/club/bank-account/data', [ 'uses' => 'ClubBankAccountController@GetData', 'as' => 'club.bankaccount.data' ])->where(['bank_account' => '[0-9]+']);
-
+        Route::get('/bank-accounts', ['uses' => 'BankAccountController@index', 'as' => 'bank-accounts.index']);
 
         // Blacklist
         Route::get('/blacklist', [ 'uses' => 'BlacklistController@List', 'as' => 'blacklist.list' ]);

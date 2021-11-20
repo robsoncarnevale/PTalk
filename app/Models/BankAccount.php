@@ -4,13 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * 
- * BanckAccunt Model
- *
- * @author Davi Souto
- * @since 26/11/2020
- */
 class BankAccount extends Model
 {
     protected $fillable = [
@@ -28,5 +21,10 @@ class BankAccount extends Model
     public function status()
     {
         return $this->hasOne(Status::class, 'id', 'status_id');
+    }
+
+    public function through()
+    {
+        return $this->hasOne(BankAccountUser::class, 'bank_account_id', 'id');
     }
 }

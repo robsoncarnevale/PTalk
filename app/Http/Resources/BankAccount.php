@@ -10,25 +10,33 @@ class BankAccount extends JsonResource
      * Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return array
+     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
     public function toArray($request)
     {
-        return [
-            "id" => $this->id,
-            "uuid" => $this->uuid,
-            "user" => $this->userToArray($this->user),
-            "account_number" => $this->account_number,
-            "account_holder" => $this->account_holder,
-            "balance" => $this->balance,
-            "status" => $this->status,
-            "created_at" => $this->created_at,
-            "updated_at" => $this->updated_at,
-        ];
-    }
+        // $data = parent::toArray($request);
 
-    private function userToArray($user)
-    {
-        return array_merge($user->toArray(), [ 'member_class' => $user->member_class ]);
+        $data = [
+            'id' => $this->id,
+            'account_number' => $this->account_number,
+            'balance' => (float) $this->balance,
+            'type' => [
+                'id' => $this->type->id,
+                'description' => __('bank_account.type.' . $this->type->description)
+            ],
+            'status' => [
+                'id' => $this->status_id,
+                'description' => __('status.' . $this->status->description)
+            ]
+        ];
+
+        if($this->through)
+            $data['user'] = [
+                'id' => $this->through->user_id,
+                'name' => $this->through->user->name,
+                'photo' => $this->through->user->photo
+            ];
+
+        return $data;
     }
 }

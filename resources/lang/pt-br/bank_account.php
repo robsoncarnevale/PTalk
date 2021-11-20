@@ -1,6 +1,12 @@
 <?php
 
 return [
+
+    'type' => [
+        'club' => 'Clube',
+        'member' => 'Membro'
+    ],
+
     'not-found' =>  'Conta não encontrada',
 
     'error-launch-credit' => 'Ocorreu um erro ao finalizar o lançamento!',

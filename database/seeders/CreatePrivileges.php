@@ -128,6 +128,8 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'config.data',                        'name' => 'Config Get Data', 'description' => '', 'add_member' => false ],
             [ 'action' => 'config.save',                        'name' => 'Save Config Data', 'description' => '', 'add_member' => false ],
 
+            [ 'action' => 'bank-accounts.index',                'name' => 'List All Bank Accounts', 'description' => '', 'add_member' => false ],
+
             // [ 'action' => 'bankaccount.list',                  'name' => 'List All Bank Accounts', 'description' => '', 'add_member' => false ],
             // [ 'action' => 'bankaccount.extract',               'name' => 'Extract of User Bank Account', 'description' => '', 'add_member' => false ],
             // [ 'action' => 'bankaccount.my.extract',            'name' => 'Extract of My Bank Account', 'description' => '', 'add_member' => true ],
