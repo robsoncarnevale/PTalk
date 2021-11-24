@@ -32,4 +32,45 @@ class BankAccountController extends Controller
             'paginator' => $accounts['paginator']
         ];
     }
+
+    public function my()
+    {
+        try
+        {
+            $user = auth()->user();
+
+            if(!$user)
+                $user = User::getMobileSession();
+
+            if(!$user->bank && !isset($user->bank->account))
+                throw new \Exception('Você não possuí uma conta bancária!');
+
+            $account = $user->bank->account;
+
+            //
+
+            return [
+                'status' => 'success',
+                'detail' => [
+                    'id' => $account->id,
+                    'account_number' => $account->account_number,
+                    'account_holder' => $user->name,
+                    'balance' => (float) $account->balance
+                ],
+                'resume' => [
+                    'credit' => 0,
+                    'debit' => 0
+                ],
+                'data' => [],
+                'paginator' => []
+            ];
+        }
+        catch(\Exception $e)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

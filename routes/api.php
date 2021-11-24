@@ -153,6 +153,7 @@ Route::group(['middleware' => 'preset'], function(){
         /* BANK ACCOUNTS */
 
         Route::get('/bank-accounts', ['uses' => 'BankAccountController@index', 'as' => 'bank-accounts.index']);
+        Route::get('/bank-accounts/my', ['uses' => 'BankAccountController@my', 'as' => 'bank-accounts.my']);
 
         // Blacklist
         Route::get('/blacklist', [ 'uses' => 'BlacklistController@List', 'as' => 'blacklist.list' ]);

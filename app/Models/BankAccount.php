@@ -27,4 +27,9 @@ class BankAccount extends Model
     {
         return $this->hasOne(BankAccountUser::class, 'bank_account_id', 'id');
     }
+
+    public function history()
+    {
+        return $this->hasMany(BankAccountHistory::class, 'bank_account_id', 'id');
+    }
 }

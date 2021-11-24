@@ -7,7 +7,7 @@ return [
         ]
     ],
 
-    'unauthorized'  =>  'Você não tem permição para efetuar essa ação',
+    'unauthorized'  =>  'Você não tem permissão para efetuar essa ação',
 
     'failed-create' => 'Falha na criação as permissões!'
 ];

@@ -150,9 +150,9 @@ class User extends Authenticatable implements JWTSubject
     /**
      * Get the bank account
      */
-    public function bank_account()
+    public function bank()
     {
-        return $this->hasOne('App\Models\BankAccount');
+        return $this->hasOne('App\Models\BankAccountUser');
     }
 
     /**
