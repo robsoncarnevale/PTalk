@@ -9,12 +9,14 @@ use App\Models\User;
 use App\Models\Status;
 use App\Http\Resources\BankAccount as BankAccountResource;
 use DB;
+use App\Models\BankAccountHistory;
+use App\Http\Resources\BankAccountHistory as BankAccountHistoryResource;
 
 class BankAccountController extends Controller
 {
     protected $only_admin = false;
 
-    public function index()
+    public function index(Request $request)
     {
         $accounts = BankAccount::orderBy('id', 'desc')
                                 ->orderBy('bank_account_type_id', 'asc')
@@ -33,37 +35,16 @@ class BankAccountController extends Controller
         ];
     }
 
-    public function my()
+    public function my(Request $request)
     {
         try
         {
-            $user = auth()->user();
-
-            if(!$user)
-                $user = User::getMobileSession();
+            $user = User::find(User::getAuthenticatedUserId());
 
             if(!$user->bank && !isset($user->bank->account))
                 throw new \Exception('Você não possuí uma conta bancária!');
 
-            $account = $user->bank->account;
-
-            //
-
-            return [
-                'status' => 'success',
-                'detail' => [
-                    'id' => $account->id,
-                    'account_number' => $account->account_number,
-                    'account_holder' => $user->name,
-                    'balance' => (float) $account->balance
-                ],
-                'resume' => [
-                    'credit' => 0,
-                    'debit' => 0
-                ],
-                'data' => [],
-                'paginator' => []
-            ];
+            return $this->getBankAccountHistory($user->bank->account);
         }
         catch(\Exception $e)
         {
@@ -72,5 +53,45 @@ class BankAccountController extends Controller
                 'message' => $e->getMessage()
             ], 500);
         }
+    }
+
+    private function getBankAccountHistory(BankAccount $account)
+    {
+        $history = BankAccountHistory::where('bank_account_id', $account->id)
+                                        ->orderBy('id', 'desc')
+                                        ->jsonPaginate(10);
+
+        $credit = \DB::select('
+            SELECT SUM(CAST(JSON_EXTRACT(`data`, "$.amount") AS DECIMAL(12, 2))) AS `total`
+            FROM bank_account_histories
+            WHERE JSON_EXTRACT(`data`, "$.operation_type") = "credit"
+            AND bank_account_id = ' . $account->id
+        );
+
+        $debit = \DB::select('
+            SELECT SUM(CAST(JSON_EXTRACT(`data`, "$.amount") AS DECIMAL(12, 2))) AS `total`
+            FROM bank_account_histories
+            WHERE JSON_EXTRACT(`data`, "$.operation_type") = "debit"
+            AND bank_account_id = ' . $account->id
+        );
+
+        $credit = !isset($credit[0]) ? 0 : $credit[0]->total ;
+        $debit = !isset($debit[0]) ? 0 : $debit[0]->total ;
+
+        return [
+            'status' => 'success',
+            'detail' => [
+                'id' => $account->id,
+                'account_number' => $account->account_number,
+                'account_holder' => $account->through?->user?->name,
+                'balance' => (float) $account->balance
+            ],
+            'resume' => [
+                'credit' => is_null($credit) ? 0 : (float) $credit ,
+                'debit' => is_null($debit) ? 0 : (float) $debit
+            ],
+            'data' => BankAccountHistoryResource::collection($history['data']),
+            'paginator' => $history['paginator']
+        ];
     }
 }

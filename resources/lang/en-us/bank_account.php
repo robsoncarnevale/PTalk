@@ -7,6 +7,20 @@ return [
         'member' => 'Member'
     ],
 
+    'history' => [
+        'data' => [
+            'operation' => [
+                'transfer' => 'Transfer',
+                'charge' => 'Load Account',
+                'discount' => 'Discount'
+            ],
+            'operation_type' => [
+                'credit' => 'Credit',
+                'debit' => 'Debit'
+            ]
+        ]
+    ],
+
     'not-found' =>  'Account not found',
 
     'error-launch-credit' => 'An error occurred while finalizing the release',

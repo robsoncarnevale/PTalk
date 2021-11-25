@@ -18,6 +18,24 @@ class BankAccountHistory extends Model
 
     public function json()
     {
-        return json_decode($this->data);
+        /*
+        {
+            'user' => {
+                'id',
+                'name',
+                'email',
+                'document_cpf',
+                'document_rg',
+                'created_at',
+                'updated_at'
+            },
+            'operation' => 'transfer|charge|discount',
+            'operation_type' => 'credit|debit',
+            'amount' => (float),
+            'description'
+        }
+        */
+
+        return json_decode($this->data, true);
     }
 }

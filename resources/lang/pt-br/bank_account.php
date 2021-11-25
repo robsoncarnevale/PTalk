@@ -7,6 +7,20 @@ return [
         'member' => 'Membro'
     ],
 
+    'history' => [
+        'data' => [
+            'operation' => [
+                'transfer' => 'Transferência',
+                'charge' => 'Carregar Conta',
+                'discount' => 'Desconto'
+            ],
+            'operation_type' => [
+                'credit' => 'Crédito',
+                'debit' => 'Débito'
+            ]
+        ]
+    ],
+
     'not-found' =>  'Conta não encontrada',
 
     'error-launch-credit' => 'Ocorreu um erro ao finalizar o lançamento!',
