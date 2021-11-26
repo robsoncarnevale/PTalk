@@ -44,11 +44,33 @@ class BankAccountController extends Controller
             $user = User::find(User::getAuthenticatedUserId());
 
             if(!$user->bank && !isset($user->bank->account))
-                throw new \Exception('Você não possuí uma conta bancária!');
+                throw new \Exception(__('bank_account.errors.no-have-account'));
 
             $this->request = $request;
 
             return $this->getBankAccountHistory($user->bank->account);
+        }
+        catch(\Exception $e)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function show(Request $request, $id)
+    {
+        try
+        {
+            $account = BankAccount::where('bank_account_type_id', 2)
+                                    ->where('id', $id)
+                                    ->get();
+
+            if(!$account)
+                throw new \Exception(__('bank_account.errors.bank-account-not-found'));
+
+            //
         }
         catch(\Exception $e)
         {
