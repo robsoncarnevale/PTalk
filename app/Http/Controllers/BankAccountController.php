@@ -67,7 +67,15 @@ class BankAccountController extends Controller
         $deadline = 30;
 
         if($this->request->get('deadline'))
+        {
             $deadline = (int) $this->request->get('deadline');
+
+            if($deadline > 90)
+                $deadline = 90;
+
+            if($deadline < 30)
+                $deadline = 30;
+        }
 
         $start = Carbon::now()->subDays($deadline)->format('Y-m-d 00:00:00');
         $end = Carbon::now()->format('Y-m-d 23:59:59');
