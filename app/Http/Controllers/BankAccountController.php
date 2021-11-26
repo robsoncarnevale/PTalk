@@ -11,10 +11,12 @@ use App\Http\Resources\BankAccount as BankAccountResource;
 use DB;
 use App\Models\BankAccountHistory;
 use App\Http\Resources\BankAccountHistory as BankAccountHistoryResource;
+use Carbon\Carbon;
 
 class BankAccountController extends Controller
 {
     protected $only_admin = false;
+    protected Request $request;
 
     public function index(Request $request)
     {
@@ -44,6 +46,8 @@ class BankAccountController extends Controller
             if(!$user->bank && !isset($user->bank->account))
                 throw new \Exception('Você não possuí uma conta bancária!');
 
+            $this->request = $request;
+
             return $this->getBankAccountHistory($user->bank->account);
         }
         catch(\Exception $e)
@@ -55,9 +59,31 @@ class BankAccountController extends Controller
         }
     }
 
+    private function getDate()
+    {
+        if(!$this->request)
+            return null;
+
+        $deadline = 30;
+
+        if($this->request->get('deadline'))
+            $deadline = (int) $this->request->get('deadline');
+
+        $start = Carbon::now()->subDays($deadline)->format('Y-m-d 00:00:00');
+        $end = Carbon::now()->format('Y-m-d 23:59:59');
+
+        return (object) [
+            'start' => $start,
+            'end' => $end
+        ];
+    }
+
     private function getBankAccountHistory(BankAccount $account)
     {
+        $deadline = $this->getDate();
+
         $history = BankAccountHistory::where('bank_account_id', $account->id)
+                                        ->whereBetween('created_at', [$deadline->start, $deadline->end])
                                         ->orderBy('id', 'desc')
                                         ->jsonPaginate(10);
 
@@ -65,6 +91,8 @@ class BankAccountController extends Controller
             SELECT SUM(CAST(JSON_EXTRACT(`data`, "$.amount") AS DECIMAL(12, 2))) AS `total`
             FROM bank_account_histories
             WHERE JSON_EXTRACT(`data`, "$.operation_type") = "credit"
+            AND created_at >= "' . $deadline->start . '"
+            AND created_at <= "' . $deadline->end . '"
             AND bank_account_id = ' . $account->id
         );
 
@@ -72,6 +100,8 @@ class BankAccountController extends Controller
             SELECT SUM(CAST(JSON_EXTRACT(`data`, "$.amount") AS DECIMAL(12, 2))) AS `total`
             FROM bank_account_histories
             WHERE JSON_EXTRACT(`data`, "$.operation_type") = "debit"
+            AND created_at >= "' . $deadline->start . '"
+            AND created_at <= "' . $deadline->end . '"
             AND bank_account_id = ' . $account->id
         );
 
