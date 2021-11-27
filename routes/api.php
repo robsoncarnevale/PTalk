@@ -154,7 +154,8 @@ Route::group(['middleware' => 'preset'], function(){
 
         Route::get('/bank-accounts', ['uses' => 'BankAccountController@index', 'as' => 'bank-accounts.index']);
         Route::get('/bank-accounts/my', ['uses' => 'BankAccountController@my', 'as' => 'bank-accounts.my']);
-        Route::get('/bank-accounts/{id}/extract', ['uses' => 'BankAccountController@show', '' => 'bank-accounts.extract']);
+        Route::get('/bank-accounts/{id}/extract', ['uses' => 'BankAccountController@show', 'as' => 'bank-accounts.extract']);
+        Route::get('/bank-accounts/club', ['uses' => 'BankAccountController@club', 'as' => 'bank-accounts.club.extract']);
 
         // Blacklist
         Route::get('/blacklist', [ 'uses' => 'BlacklistController@List', 'as' => 'blacklist.list' ]);

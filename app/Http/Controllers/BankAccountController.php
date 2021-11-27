@@ -63,14 +63,38 @@ class BankAccountController extends Controller
     {
         try
         {
-            $account = BankAccount::where('bank_account_type_id', 2)
+            $account = BankAccount::where('bank_account_type_id', 2) //member
                                     ->where('id', $id)
-                                    ->get();
+                                    ->first();
 
             if(!$account)
                 throw new \Exception(__('bank_account.errors.bank-account-not-found'));
 
-            //
+            $this->request = $request;
+
+            return $this->getBankAccountHistory($account);
+        }
+        catch(\Exception $e)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function club(Request $request)
+    {
+        try
+        {
+            $account = BankAccount::where('bank_account_type_id', 1)->first();
+
+            if(!$account)
+                throw new \Exception(__('bank_account.errors.bank-account-not-found'));
+
+            $this->request = $request;
+
+            return $this->getBankAccountHistory($account);
         }
         catch(\Exception $e)
         {
@@ -120,18 +144,18 @@ class BankAccountController extends Controller
         $credit = \DB::select('
             SELECT SUM(CAST(JSON_EXTRACT(`data`, "$.amount") AS DECIMAL(12, 2))) AS `total`
             FROM bank_account_histories
-            WHERE JSON_EXTRACT(`data`, "$.operation_type") = "credit"
-            AND created_at >= "' . $deadline->start . '"
+            WHERE created_at >= "' . $deadline->start . '"
             AND created_at <= "' . $deadline->end . '"
+            AND JSON_EXTRACT(`data`, "$.operation_type") = "credit"
             AND bank_account_id = ' . $account->id
         );
 
         $debit = \DB::select('
             SELECT SUM(CAST(JSON_EXTRACT(`data`, "$.amount") AS DECIMAL(12, 2))) AS `total`
             FROM bank_account_histories
-            WHERE JSON_EXTRACT(`data`, "$.operation_type") = "debit"
-            AND created_at >= "' . $deadline->start . '"
+            WHERE created_at >= "' . $deadline->start . '"
             AND created_at <= "' . $deadline->end . '"
+            AND JSON_EXTRACT(`data`, "$.operation_type") = "debit"
             AND bank_account_id = ' . $account->id
         );
 
