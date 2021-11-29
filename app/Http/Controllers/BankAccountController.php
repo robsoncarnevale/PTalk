@@ -105,6 +105,8 @@ class BankAccountController extends Controller
         }
     }
 
+    /* FUNCTIONS PRIVATE */
+
     private function getDate()
     {
         if(!$this->request)
