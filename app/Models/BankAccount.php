@@ -9,7 +9,15 @@ class BankAccount extends Model
 {
     use Filterable;
 
+    const ACTIVE = 1;
+    const BLOCKED = 2;
+    const INACTIVE = 3;
+
+    const CLUB = 1;
+    const MEMBER = 2;
+
     protected $fillable = [
+        'uuid',
         'account_number',
         'balance',
         'bank_account_type_id',

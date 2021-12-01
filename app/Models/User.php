@@ -10,6 +10,8 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Privilege;
+use App\Models\BankAccountUser;
+use App\Models\BankAccount;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -344,24 +346,28 @@ class User extends Authenticatable implements JWTSubject
      */
     public function createBankAccount()
     {
-        $check = \App\Models\BankAccount::select()
-            ->where('user_id', $this->id)
-            ->first();
-
-        if ($check) {
+        if($this->through)
             return false;
-        }
 
-        $bank_account = new \App\Models\BankAccount();
-        $bank_account->club_code = $this->club_code;
-        $bank_account->user_id = $this->id;
-        $bank_account->account_number = preg_replace("#[^0-9]*#", "", $this->phone);
-        $bank_account->account_holder = $this->name;
-        $bank_account->balance = 0.00;
-        $bank_account->status = \App\Models\BankAccount::ACTIVE_STATUS;
-        $bank_account->save();
+        $bank_account = BankAccount::create([
+            'uuid' => \Ramsey\Uuid\Uuid::uuid4(),
+            'account_number' => preg_replace("#[^0-9]*#", "", $this->phone),
+            'bank_account_type_id' => BankAccount::MEMBER,
+            'status_id' => BankAccount::ACTIVE
+        ]);
 
-        return $bank_account;
+        if(!$bank_account)
+            return false;
+
+        $relation = BankAccountUser::create([
+            'bank_account_id' => $bank_account->id,
+            'user_id' => $this->id
+        ]);
+
+        if(!$relation)
+            return false;
+
+        return true;
     }
 
     /**
