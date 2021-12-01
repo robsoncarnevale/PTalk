@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Filterable\Filterable;
 
 class BankAccount extends Model
 {
+    use Filterable;
+
     protected $fillable = [
         'account_number',
         'balance',

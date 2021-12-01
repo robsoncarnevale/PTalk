@@ -20,7 +20,8 @@ class BankAccountController extends Controller
 
     public function index(Request $request)
     {
-        $accounts = BankAccount::orderBy('id', 'desc')
+        $accounts = BankAccount::filter($request)
+                                ->orderBy('id', 'desc')
                                 ->orderBy('bank_account_type_id', 'asc')
                                 ->jsonPaginate(20);
 
