@@ -106,6 +106,21 @@ class BankAccountController extends Controller
         }
     }
 
+    public function transfer(Request $request)
+    {
+        try
+        {
+            //
+        }
+        catch(\Exception $e)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     /* FUNCTIONS PRIVATE */
 
     private function getDate()

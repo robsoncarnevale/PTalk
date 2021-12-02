@@ -152,10 +152,15 @@ Route::group(['middleware' => 'preset'], function(){
 
         /* BANK ACCOUNTS */
 
-        Route::get('/bank-accounts', ['uses' => 'BankAccountController@index', 'as' => 'bank-accounts.index']);
-        Route::get('/bank-accounts/my', ['uses' => 'BankAccountController@my', 'as' => 'bank-accounts.my']);
-        Route::get('/bank-accounts/{id}/extract', ['uses' => 'BankAccountController@show', 'as' => 'bank-accounts.extract']);
-        Route::get('/bank-accounts/club', ['uses' => 'BankAccountController@club', 'as' => 'bank-accounts.club.extract']);
+        Route::group(['prefix' => 'bank-accounts'], function(){
+
+            Route::get('/', ['uses' => 'BankAccountController@index', 'as' => 'bank-accounts.index']);
+            Route::get('/my', ['uses' => 'BankAccountController@my', 'as' => 'bank-accounts.my']);
+            Route::get('/{id}/extract', ['uses' => 'BankAccountController@show', 'as' => 'bank-accounts.extract']);
+            Route::get('/club', ['uses' => 'BankAccountController@club', 'as' => 'bank-accounts.club.extract']);
+            Route::post('/transfers', ['uses' => 'BankAccountController@transfer', 'as' => 'bank-accounts.transfers.store']);
+
+        });
 
         // Blacklist
         Route::get('/blacklist', [ 'uses' => 'BlacklistController@List', 'as' => 'blacklist.list' ]);
