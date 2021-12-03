@@ -23,7 +23,7 @@ return [
 
     'not-found' =>  'Account not found',
 
-    'error-launch-credit' => 'An error occurred while finalizing the release',
+    'error-transfer' => 'An error occurred while finalizing the transfer',
     'error-launch-debit' => 'An error occurred while finalizing the release',
     'error-negative-balance' => 'Club account negative balance is not allowed',
     'error-negative-balance-2' => 'There is not enough balance in the Club Account! To launch the entry, first enter credits in the Club Account.',
@@ -32,6 +32,7 @@ return [
 
     'errors' => [
         'no-have-account' => 'You don\'t have a bank account!',
-        'bank-account-not-found' => 'Bank account not found!'
+        'bank-account-not-found' => 'Bank account not found!',
+        'member-not-have-account' => 'Member does not have an account or is inactive/blocked!'
     ]
 ];

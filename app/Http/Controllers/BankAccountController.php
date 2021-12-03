@@ -108,12 +108,26 @@ class BankAccountController extends Controller
 
     public function transfer(Request $request)
     {
+        DB::beginTransaction();
+
         try
         {
+            $account = BankAccount::where('account_number', $request->account_number)->first();
+
+            if(!$account)
+                throw new \Exception(__('bank_account.errors.bank-account-not-found'));
+
+            $transfer = $account->transfer($request->amount, $request->description);
+
+            if(!$transfer)
+                throw new \Exception(__('bank_account.error-transfer'));
+
             //
         }
         catch(\Exception $e)
         {
+            DB::rollback();
+
             return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage()

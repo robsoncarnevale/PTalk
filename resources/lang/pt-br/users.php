@@ -8,6 +8,8 @@ return [
 		'suspended' => 'Suspenso',
 		'blocked' => 'Bloqueado',
 		'banned' => 'Banido'
-	]
+	],
+
+	'not-found' => 'Usuário não localizado'
 
 ];
