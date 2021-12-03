@@ -45,47 +45,65 @@ class BankAccount extends Model
         return $this->hasMany(BankAccountHistory::class, 'bank_account_id', 'id');
     }
 
-    public function scopeTransfer($query, $amount)
+    public function scopeTransfer($query, float $amount, $description)
     {
+        if($amount < 1)
+            throw new \Exception(__('bank_account.errors.min-transfer'));
+
         $user = User::find(User::getAuthenticatedUserId());
 
         if(!$user)
             throw new \Exception(__('users.not-found'));
 
-        $origin = BankAccount::where('bank_account_type_id', BankAccount::CLUB)->first();
+        if($user->type == User::TYPE_ADMIN)
+            $origin = BankAccount::where('bank_account_type_id', BankAccount::CLUB)->first();
 
         if($user->type == User::TYPE_MEMBER)
-        {
-            $origin = $user->through->account;
+            $origin = $user->through?->account;
 
-            if(!$origin)
-                throw new \Exception(__('bankaccount.errors.member-not-have-account'));
-        }
+        if(!isset($origin) || !$origin)
+            throw new \Exception(__('bank_account.errors.bank-account-not-found-origin'));
 
-        $object = json_encode([
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'document_cpf' => $user->document_cpf,
-                'document_rg' => $user->document_rg,
-                'created_at' => $user->created_at,
-                'updated_at' => $user->updated_at
-            ],
-            'operation' => 'transfer',
-            'operation_type' => 'credit',
-            'amount' => $amount,
-            'description' => $description
-        ]);
+        if($origin->id == $this->id)
+            throw new \Exception(__('bank_account.errors.transfer-my'));
+
+        if($amount > (float) $origin->balance)
+            throw new \Exception(__('bank_account.errors.insufficient-fund'));
+
+        $origin->balance -= $amount;
+        $origin->save();
 
         $historyOrigin = BankAccountHistory::create([
             'bank_account_id' => $origin->id,
-            'data' => $object
+            'data' => BankAccountHistory::makeJson(
+                $user,
+                'transfer',
+                'debit',
+                $amount,
+                $description,
+                null, //origin
+                $this //destiny
+            )
         ]);
 
         if(!$historyOrigin)
-            throw new \Exception(__('bankaccount.error-transfer'));
+            throw new \Exception(__('bank_account.error-transfer'));
 
-        //Continuar de casa
+        $this->balance += $amount;
+        $this->save();
+
+        $historyDestiny = BankAccountHistory::create([
+            'bank_account_id' => $this->id,
+            'data' => BankAccountHistory::makeJson(
+                $user,
+                'transfer',
+                'credit',
+                $amount,
+                $description,
+                $origin
+            )
+        ]);
+
+        return true;
     }
 }

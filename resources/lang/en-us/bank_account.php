@@ -33,6 +33,13 @@ return [
     'errors' => [
         'no-have-account' => 'You don\'t have a bank account!',
         'bank-account-not-found' => 'Bank account not found!',
-        'member-not-have-account' => 'Member does not have an account or is inactive/blocked!'
-    ]
+        'bank-account-not-found-origin' => 'Origin account not found!',
+        'insufficient-fund' => 'Insufficient funds!',
+        'transfer-my' => 'You cannot perform a transfer for yourself!',
+        'member-not-have-account' => 'Member does not have an account or is inactive/blocked!',
+        'user-destiny' => 'Target User Not Found!',
+        'min-transfer' => 'Minimum value exceeded!'
+    ],
+
+    'success-transfer' => 'Transfer successful!'
 ];

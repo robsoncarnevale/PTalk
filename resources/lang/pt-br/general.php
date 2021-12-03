@@ -6,7 +6,7 @@ return [
 		'success' => [
 			'update' => ':attribute atualizado(a) com sucesso!',
 			'create' => ':attribute cadastro(a) com sucesso!',
-			'delete' => ':attribute apagdo(a) com sucesso!'
+			'delete' => ':attribute apagado(a) com sucesso!'
 		],
 		'error' => [
 			'update' => 'Falha ao atualizar, favor contactar administrador!',

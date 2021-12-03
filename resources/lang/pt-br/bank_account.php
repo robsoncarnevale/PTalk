@@ -33,6 +33,13 @@ return [
     'errors' => [
         'no-have-account' => 'Você não possuí uma conta bancária!',
         'bank-account-not-found' => 'Conta bancária não localizada!',
-        'member-not-have-account' => 'Membro não possuí conta ou está inativa/bloqueada!'
-    ]
+        'bank-account-not-found-origin' => 'Conta de origem não localizada!',
+        'insufficient-fund' => 'Saldo insuficiente!',
+        'transfer-my' => 'Não pode realizar uma transferência para si mesmo!',
+        'member-not-have-account' => 'Membro não possuí conta ou está inativa/bloqueada!',
+        'user-destiny' => 'Usuário de destino não localizado!',
+        'min-transfer' => 'Valor mínimo excedido!'
+    ],
+
+    'success-transfer' => 'Transferência realizada com sucesso!'
 ];
