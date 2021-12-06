@@ -14,14 +14,8 @@ use App\Models\CarBrand;
  */
 class BankAccountController extends Controller
 {
-    /**
-     * Extract my account
-     *
-     * @author Davi Souto
-     * @since 21/06/2021
-     */
-    function ExtractMyAccount(Request $request)
+    function my(Request $request)
     {
-        return (new \App\Http\Controllers\BankAccountController())->ExtractMyAccount($request);
+        return (new \App\Http\Controllers\BankAccountController())->my($request);
     }
 }

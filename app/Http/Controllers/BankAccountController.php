@@ -21,8 +21,8 @@ class BankAccountController extends Controller
     public function index(Request $request)
     {
         $accounts = BankAccount::filter($request)
-                                ->orderBy('id', 'desc')
                                 ->orderBy('bank_account_type_id', 'asc')
+                                ->orderBy('id', 'desc')
                                 ->jsonPaginate(20);
 
         $resume = BankAccount::sum('balance');
