@@ -180,26 +180,19 @@ class BankAccountController extends Controller
                                         ->orderBy('id', 'desc')
                                         ->jsonPaginate(10);
 
-        $credit = \DB::select('
-            SELECT SUM(CAST(JSON_EXTRACT(`data`, "$.amount") AS DECIMAL(12, 2))) AS `total`
-            FROM bank_account_histories
-            WHERE created_at >= "' . $deadline->start . '"
-            AND created_at <= "' . $deadline->end . '"
-            AND JSON_EXTRACT(`data`, "$.operation_type") = "credit"
-            AND bank_account_id = ' . $account->id
-        );
+        $modalities = BankAccountHistory::whereBetween('created_at', [$deadline->start, $deadline->end])
+                                        ->where('bank_account_id', $account->id)
+                                        ->orderBy('id', 'desc')
+                                        ->get()
+                                        ->toArray();
 
-        $debit = \DB::select('
-            SELECT SUM(CAST(JSON_EXTRACT(`data`, "$.amount") AS DECIMAL(12, 2))) AS `total`
-            FROM bank_account_histories
-            WHERE created_at >= "' . $deadline->start . '"
-            AND created_at <= "' . $deadline->end . '"
-            AND JSON_EXTRACT(`data`, "$.operation_type") = "debit"
-            AND bank_account_id = ' . $account->id
-        );
+        $modalities = array_map(function($value){ return json_decode($value['data'], true); }, $modalities);
 
-        $credit = !isset($credit[0]) ? 0 : $credit[0]->total ;
-        $debit = !isset($debit[0]) ? 0 : $debit[0]->total ;
+        $credit = array_filter($modalities, function($object){ return($object['operation_type'] == 'credit'); });
+        $debit = array_filter($modalities, function($object){ return($object['operation_type'] == 'debit'); });
+
+        $credit = number_format(array_sum(array_column($credit, 'amount')), 2);
+        $debit = number_format(array_sum(array_column($debit, 'amount')), 2);
 
         return [
             'status' => 'success',
@@ -210,8 +203,8 @@ class BankAccountController extends Controller
                 'balance' => (float) $account->balance
             ],
             'resume' => [
-                'credit' => is_null($credit) ? 0 : (float) $credit ,
-                'debit' => is_null($debit) ? 0 : (float) $debit
+                'credit' => (float) $credit,
+                'debit' => (float) $debit
             ],
             'data' => BankAccountHistoryResource::collection($history['data']),
             'paginator' => $history['paginator']
