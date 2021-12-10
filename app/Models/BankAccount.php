@@ -47,7 +47,7 @@ class BankAccount extends Model
 
     public function scopeTransfer($query, float $amount, $description)
     {
-        if($amount < 1)
+        if($amount <= 0)
             throw new \Exception(__('bank_account.errors.min-transfer'));
 
         $user = User::find(User::getAuthenticatedUserId());
@@ -59,7 +59,7 @@ class BankAccount extends Model
             $origin = BankAccount::where('bank_account_type_id', BankAccount::CLUB)->first();
 
         if($user->type == User::TYPE_MEMBER)
-            $origin = $user->through?->account;
+            $origin = $user->bank?->account;
 
         if(!isset($origin) || !$origin)
             throw new \Exception(__('bank_account.errors.bank-account-not-found-origin'));

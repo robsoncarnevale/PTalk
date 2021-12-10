@@ -523,7 +523,9 @@ class User extends Authenticatable implements JWTSubject
 
             /* Bank Account */
 
-            'bankaccount.my.extract'
+            'bank-accounts.my',
+            'bank-accounts.transfers',
+            'bank-accounts.transfers.store'
         ];
 
         $privileges = Privilege::whereIn('action', $privileges)->get();

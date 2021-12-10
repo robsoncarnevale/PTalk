@@ -8,9 +8,7 @@ use App\Http\Requests\SubscribeEventRequest;
 use App\Http\Requests\UnsubscribeEventRequest;
 
 
-use App\Models\AccountLaunch;
-use App\Models\ClubBankAccount;
-use App\Models\ClubLaunch;
+use App\Models\BankAccount;
 use App\Models\Event;
 use App\Models\EventSubscription;
 use App\Models\MemberClass;
@@ -417,173 +415,143 @@ class EventsController extends Controller
      */
     public function Subscribe(Event $event, SubscribeEventRequest $request)
     {
-        $this->validateClub($event->club_code, 'event');
-
-        $check_subscription = EventSubscription::select()
-            ->where('club_code', getClubCode())
-            ->where('user_id', User::getAuthenticatedUserId())
-            ->where('event_id', $event->id)
-            ->where('status', EventSubscription::ACTIVE_STATUS)
-            ->first();
-        
-        // Check if you are already registered for the event
-        if ($check_subscription){
-            return response()->json([ 'status' => 'error', 'message' => __('events.error-subscribe-event.already-subscribted', [ 'name' => $event->name ]) ]);
-        }
-
-        // Check if event is active
-        if ($event->status !== Event::ACTIVE_STATUS) {
-            return response()->json([ 'status' => 'error', 'message' => __('events.error-subscribe-event.status', [ 'name' => $event->name ]) ]);
-        }
-
-        // Get max spaces
-        $max_participants = $event->max_participants;
-        $max_companions = $event->max_companions;
-        $max_vehicles = $event->max_vehicles;
-
-        $subscript_vehicle = $request->get('vehicle');
-
-        if ($subscript_vehicle === true || $subscript_vehicle == 'true' || $subscript_vehicle == 1) {
-            $subscript_vehicle = true;
-        } else $subscript_vehicle = false;
-        
-        // Check if have space
-        $subscriptions = EventSubscription::select()
-            ->where('club_code', getClubCode())
-            ->where('event_id', $event->id)
-            ->where('status', EventSubscription::ACTIVE_STATUS)
-            ->count();
-
-        $vehicles = EventSubscription::select()
-            ->where('club_code', getClubCode())
-            ->where('event_id', $event->id)
-            ->where('status', EventSubscription::ACTIVE_STATUS)
-            ->where('vehicle', true)
-            ->count();
-
-        $companions = EventSubscription::select()
-            ->where('club_code', getClubCode())
-            ->where('event_id', $event->id)
-            ->where('status', EventSubscription::ACTIVE_STATUS)
-            ->sum('companions');
-
-        // Check participants
-        if($subscriptions+1 > $max_participants) {
-            return response()->json([ 'status' => 'error', 'message' => __('events.error-subscribe-event.max-participants') ]);
-        }
-
-        // Check companions
-        if($companions + (int) $request->get('companions') > $max_companions) {
-            return response()->json([ 'status' => 'error', 'message' => __('events.error-subscribe-event.max-companions') ]);
-        }
-
-        // Check vehicles
-        if ($subscript_vehicle) {
-            if($vehicles+1 > $max_vehicles) {
-                return response()->json([ 'status' => 'error', 'message' => __('events.error-subscribe-event.max-vehicles') ]);
-            }
-        }
-
-
-        $user =  User::getAuthenticatedUser();
-        $member_class = $user->member_class;
-        $bank_account = $user->bank_account;
-
-        $member_params = false;
-
-        foreach($event->class_data as $class) {
-            if ($class->member_class_id == $member_class->id) {
-                $member_params = $class;
-                
-                break;
-            }
-        }
-
-        $date_actual = strtotime(date('Y-m-d H:i:s'));
-        $date_subscript = strtotime($member_params->start_subscription_date . ' 00:00:00');
-
-        if ($date_actual < $date_subscript) {
-            return response()->json([ 'status' => 'error', 'message' => __('events.error-subscribe-event.start_subscription_date', [ 'member_class_name' => $member_class->name, 'date' => date('d/m/Y', $date_subscript) ]) ]);
-        }
-
-        $price = 0;
-        
-        // Participant price
-        $price += (float) $member_params->participant_value;
-
-        // Vehicle price
-        if ($request->vehicle === true || $request->vehicle === 1 || $request->vehicle === '1') {
-            $price += (float) $member_params->vehicle_value;
-        }
-
-        // Companions price
-        if ((int) $request->companions > 0) {
-            $price += (float) $member_params->companion_value * (int) $request->companions;
-        } 
-
-        $price = floatval($price);
-        $account_balance = floatval($bank_account->balance);
-
-        if ($account_balance < $price) {
-            return response()->json([ 'status' => 'error', 'message' => __('events.error-subscribe-event.without_balance', [ 'name' => $event->name, 'value' => 'R$' . number_format($price, 2, ',', '.') ]) ]);
-        }
-
-        $club_account = ClubBankAccount::Get();
-
         DB::beginTransaction();
 
-        try {
-            // Launch Debit
-            $launch = new AccountLaunch();
-            $launch->club_code = getClubCode();
-            $launch->account_number = $bank_account->account_number;
-            $launch->created_by = User::getAuthenticatedUserId();
-            $launch->amount = $price;
-            $launch->type = AccountLaunch::DEBIT_TYPE;
-            $launch->description = AccountLaunch::EVENT_SUBSCRIBE_DESCRIPTION;
-            $launch->mode = AccountLaunch::AUTOMATIC_MODE;
-            $launch->event_id = $event->id;
-            $launch->save();
+        try
+        {
+            $this->validateClub($event->club_code, 'event');
 
-            // Discount price on user bank account
-            $bank_account->balance -= $launch->amount;
-            $bank_account->save();
-
-            // Launch credit on club account
-            $club_launch = new ClubLaunch();
-            $club_launch->club_code = getClubCode();
-            $club_launch->created_by = User::getAuthenticatedUserId();
-            $club_launch->amount = $launch->amount;
-            $club_launch->type = ClubLaunch::CREDIT_TYPE;
-            $club_launch->description = ClubLaunch::EVENT_SUBSCRIBE_USER_DESCRIPTION;
-            $club_launch->mode = ClubLaunch::AUTOMATIC_MODE;
-            $club_launch->user_description = '-';
-            $club_launch->save();
-
-            // Add amount on club account
-            $club_account->balance += $launch->amount;
-            $club_account->save();
-
-            // Create event subscription
-            $event_subscription = new EventSubscription();
-            $event_subscription->club_code = getClubCode();
-            $event_subscription->event_id = $event->id;
-            $event_subscription->user_id = User::getAuthenticatedUserId();
-            $event_subscription->status = EventSubscription::ACTIVE_STATUS;
-            $event_subscription->vehicle = $subscript_vehicle;
-            $event_subscription->companions = (int) $request->get('companions');
-            $event_subscription->amount = $launch->amount;
+            $check_subscription = EventSubscription::select()
+                ->where('club_code', getClubCode())
+                ->where('user_id', User::getAuthenticatedUserId())
+                ->where('event_id', $event->id)
+                ->where('status', EventSubscription::ACTIVE_STATUS)
+                ->first();
             
-            $event_subscription->save();
+            // Check if you are already registered for the event
+            if ($check_subscription){
+                return response()->json([ 'status' => 'error', 'message' => __('events.error-subscribe-event.already-subscribted', [ 'name' => $event->name ]) ]);
+            }
+
+            // Check if event is active
+            if ($event->status !== Event::ACTIVE_STATUS) {
+                return response()->json([ 'status' => 'error', 'message' => __('events.error-subscribe-event.status', [ 'name' => $event->name ]) ]);
+            }
+
+            // Get max spaces
+            $max_participants = $event->max_participants;
+            $max_companions = $event->max_companions;
+            $max_vehicles = $event->max_vehicles;
+
+            $subscript_vehicle = $request->get('vehicle');
+
+            if ($subscript_vehicle === true || $subscript_vehicle == 'true' || $subscript_vehicle == 1) {
+                $subscript_vehicle = true;
+            } else $subscript_vehicle = false;
+            
+            // Check if have space
+            $subscriptions = EventSubscription::select()
+                ->where('club_code', getClubCode())
+                ->where('event_id', $event->id)
+                ->where('status', EventSubscription::ACTIVE_STATUS)
+                ->count();
+
+            $vehicles = EventSubscription::select()
+                ->where('club_code', getClubCode())
+                ->where('event_id', $event->id)
+                ->where('status', EventSubscription::ACTIVE_STATUS)
+                ->where('vehicle', true)
+                ->count();
+
+            $companions = EventSubscription::select()
+                ->where('club_code', getClubCode())
+                ->where('event_id', $event->id)
+                ->where('status', EventSubscription::ACTIVE_STATUS)
+                ->sum('companions');
+
+            // Check participants
+            if($subscriptions+1 > $max_participants) {
+                return response()->json([ 'status' => 'error', 'message' => __('events.error-subscribe-event.max-participants') ]);
+            }
+
+            // Check companions
+            if($companions + (int) $request->get('companions') > $max_companions) {
+                return response()->json([ 'status' => 'error', 'message' => __('events.error-subscribe-event.max-companions') ]);
+            }
+
+            // Check vehicles
+            if ($subscript_vehicle) {
+                if($vehicles+1 > $max_vehicles) {
+                    return response()->json([ 'status' => 'error', 'message' => __('events.error-subscribe-event.max-vehicles') ]);
+                }
+            }
+
+
+            $user =  User::getAuthenticatedUser();
+            $member_class = $user->member_class;
+
+            $member_params = false;
+
+            foreach($event->class_data as $class) {
+                if ($class->member_class_id == $member_class->id) {
+                    $member_params = $class;
+                    
+                    break;
+                }
+            }
+
+            $date_actual = strtotime(date('Y-m-d H:i:s'));
+            $date_subscript = strtotime($member_params->start_subscription_date . ' 00:00:00');
+
+            if ($date_actual < $date_subscript) {
+                return response()->json([ 'status' => 'error', 'message' => __('events.error-subscribe-event.start_subscription_date', [ 'member_class_name' => $member_class->name, 'date' => date('d/m/Y', $date_subscript) ]) ]);
+            }
+
+            $price = 0;
+            
+            // Participant price
+            $price += (float) $member_params->participant_value;
+
+            // Vehicle price
+            if ($request->vehicle === true || $request->vehicle === 1 || $request->vehicle === '1') {
+                $price += (float) $member_params->vehicle_value;
+            }
+
+            // Companions price
+            if ((int) $request->companions > 0) {
+                $price += (float) $member_params->companion_value * (int) $request->companions;
+            } 
+
+            $price = floatval($price);
+
+            /* Realiza a transferência para a conta do clube caso o evento não seja grátis */
+
+            if($price > 0)
+            {
+                $clubAccount = BankAccount::where('bank_account_type_id', 1)->first();
+
+                if(!$clubAccount)
+                    throw new \Exception(__('bank_account.error-transfer'));
+
+                $transfer = $clubAccount->transfer($price, 'Inscrição no Evento (' . $event->name . ' - ' . \Carbon\Carbon::parse($event->date)->format('d/m') . ')');
+
+                if(!$transfer)
+                    throw new \Exception(__('bank_account.error-transfer'));
+            }
 
             DB::commit();
-        } catch (\Exception $e) {
-            DB::rollback();
-        
-            return response()->json([ 'status' => 'error', 'message' => __('events.error-subscribe-event.generic', [ 'name' => $event->name, 'error' => $e->getMessage() ]) ]);
+
+            return response()->json([ 'status' => 'success', 'data' => (new EventResource($event)), 'message' => __('events.success-subscribe-event', [ 'name' => $event->name ]) ]);
         }
-        
-        return response()->json([ 'status' => 'success', 'data' => (new EventResource($event)), 'message' => __('events.success-subscribe-event', [ 'name' => $event->name ]) ]);
+        catch(\Exception $e)
+        {
+            DB::rollback();
+
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 
     /**
