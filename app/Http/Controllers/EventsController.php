@@ -524,6 +524,21 @@ class EventsController extends Controller
 
             $price = floatval($price);
 
+            /* Registra a inscrição do evento */
+
+            $subscription = EventSubscription::create([
+                'club_code' => getClubCode(),
+                'event_id' => $event->id,
+                'user_id' => $user->id,
+                'status' => EventSubscription::ACTIVE_STATUS,
+                'vehicle' => $request->vehicle,
+                'companions' => $request->companions,
+                'amount' => $price
+            ]);
+
+            if(!$subscription)
+                throw new \Exception(__('events.error-unsubscribe-event.generic'));
+
             /* Realiza a transferência para a conta do clube caso o evento não seja grátis */
 
             if($price > 0)
@@ -562,32 +577,31 @@ class EventsController extends Controller
      */
     public function Unsubscribe(Event $event, UnsubscribeEventRequest $request)
     {
-        $this->validateClub($event->club_code, 'event');
-
-        $subscription = EventSubscription::select()
-            ->where('club_code', getClubCode())
-            ->where('user_id', User::getAuthenticatedUserId())
-            ->where('event_id', $event->id)
-            ->where('status', EventSubscription::ACTIVE_STATUS)
-            ->first();
-    
-        // Check if you are already registered for the event
-        if (! $subscription){
-            return response()->json([ 'status' => 'error', 'message' => __('events.error-unsubscribe-event.not-found', [ 'name' => $event->name ]) ]);
-        }
-
-        $date_actual = strtotime(date('Y-m-d H:i:s'));
-        $date_limit = strtotime($event->unsubscribe_date_limit . ' 00:00:00');
-
-        if ($date_actual < $date_limit) {
-            return response()->json([ 'status' => 'error', 'message' => __('events.error-unsubscribe-event.unsubscribe_date_limit', [ 'date' => date('d/m/Y', $date_subscript) ]) ]);
-        }
-        
-        $club_account = ClubBankAccount::Get();
-
         DB::beginTransaction();
 
-        try {
+        try
+        {
+            $this->validateClub($event->club_code, 'event');
+
+            $subscription = EventSubscription::select()
+                ->where('club_code', getClubCode())
+                ->where('user_id', User::getAuthenticatedUserId())
+                ->where('event_id', $event->id)
+                ->where('status', EventSubscription::ACTIVE_STATUS)
+                ->first();
+
+            // Check if you are already registered for the event
+            if (! $subscription){
+                return response()->json([ 'status' => 'error', 'message' => __('events.error-unsubscribe-event.not-found', [ 'name' => $event->name ]) ]);
+            }
+
+            $date_actual = strtotime(date('Y-m-d H:i:s'));
+            $date_limit = strtotime($event->unsubscribe_date_limit . ' 00:00:00');
+            $date_unsub = \Carbon\Carbon::parse($event->unsubscribe_date_limit)->format('d/m/Y');
+
+            if ($date_actual > $date_limit)
+                return response()->json([ 'status' => 'error', 'message' => __('events.error-unsubscribe-event.unsubscribe_date_limit', [ 'date' => $date_unsub ]) ]);
+
             $value = (float) $subscription->amount;
             $value -= (float) $event->retention_value;
 
@@ -598,49 +612,36 @@ class EventsController extends Controller
             $subscription->status = EventSubscription::INACTIVE_STATUS;
             $subscription->reason = $request->get('reason');
             $subscription->save();
-    
-            $bank_account = $subscription->user->bank_account;
-    
-            // Launch Credit
-            $launch = new AccountLaunch();
-            $launch->club_code = getClubCode();
-            $launch->account_number = $bank_account->account_number;
-            $launch->created_by = User::getAuthenticatedUserId();
-            $launch->amount = $value;
-            $launch->type = AccountLaunch::CREDIT_TYPE;
-            $launch->description = AccountLaunch::EVENT_UNSUBSCRIBE_DESCRIPTION;
-            $launch->mode = AccountLaunch::AUTOMATIC_MODE;
-            $launch->event_id = $event->id;
-            $launch->save();
-    
-            // Discount price on user bank account
-            $bank_account->balance += $launch->amount;
-            $bank_account->save();
-    
-            // Launch debit on club account
-            $club_launch = new ClubLaunch();
-            $club_launch->club_code = getClubCode();
-            $club_launch->created_by = User::getAuthenticatedUserId();
-            $club_launch->amount = $launch->amount;
-            $club_launch->type = ClubLaunch::DEBIT_TYPE;
-            $club_launch->description = ClubLaunch::EVENT_UNSUBSCRIBE_USER_DESCRIPTION;
-            $club_launch->mode = ClubLaunch::AUTOMATIC_MODE;
-            $club_launch->user_description = '-';
-            $club_launch->save();
-    
-            // Add amount on club account
-            $club_account->balance -= $launch->amount;
-            $club_account->save();
+
+            /* Devolve o valor inteiro ou parcial da inscrição do evento */
+
+            if($value > 0)
+            {
+                $account = BankAccount::where('bank_account_type_id', 1)->first();
+
+                if(!$account)
+                    throw new \Exception(__('bank_account.error-transfer'));
+
+                // $transfer = $account->transfer($value, 'Cancelamento de Inscrição do Evento (' . $event->name . ' - ' . \Carbon\Carbon::parse($event->date)->format('d/m') . ')');
+            
+                //Implementar forma de informar o originador da transação a ser efeutada
+
+                if(!$transfer)
+                    throw new \Exception(__('bank_account.error-transfer'));
+            }
 
             DB::commit();
-        } catch (\Exception $e) {
+
+            return response()->json([ 'status' => 'success', 'data' => $subscription ]);
+        }
+        catch(\Exception $e)
+        {
             DB::rollback();
 
-            return response()->json([ 'status' => 'error', 'message' => __('events.error-unsubscribe-event.generic') ]);
+            //__('events.error-unsubscribe-event.generic')
+
+            return response()->json([ 'status' => 'error', 'message' => $e->getMessage() ]);
         }
-
-
-        return response()->json([ 'status' => 'success', 'data' => $subscription ]);
     }
 
     /**

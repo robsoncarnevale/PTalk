@@ -14,6 +14,17 @@ class EventSubscription extends Model
 {
     protected $table = 'events_subscriptions';
 
+    protected $fillable = [
+        'club_code',
+        'event_id',
+        'user_id',
+        'status',
+        'vehicle',
+        'companions',
+        'amount',
+        'reason'
+    ];
+
     const ACTIVE_STATUS = 'active';
     const INACTIVE_STATUS = 'inactive';
 
