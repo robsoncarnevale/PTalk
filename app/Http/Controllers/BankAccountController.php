@@ -181,22 +181,18 @@ class BankAccountController extends Controller
 
         $history = BankAccountHistory::where('bank_account_id', $account->id)
                                         ->whereBetween('created_at', [$deadline->start, $deadline->end])
-                                        ->orderBy('id', 'desc')
-                                        ->jsonPaginate(10);
+                                        ->orderBy('id', 'desc');
 
-        $modalities = BankAccountHistory::whereBetween('created_at', [$deadline->start, $deadline->end])
-                                        ->where('bank_account_id', $account->id)
-                                        ->orderBy('id', 'desc')
-                                        ->get()
-                                        ->toArray();
+        $modalities = $history->get()->toArray();
+        $history = $history->jsonPaginate(10);
 
         $modalities = array_map(function($value){ return json_decode($value['data'], true); }, $modalities);
 
         $credit = array_filter($modalities, function($object){ return($object['operation_type'] == 'credit'); });
         $debit = array_filter($modalities, function($object){ return($object['operation_type'] == 'debit'); });
 
-        $credit = number_format(array_sum(array_column($credit, 'amount')), 2);
-        $debit = number_format(array_sum(array_column($debit, 'amount')), 2);
+        $credit = array_sum(array_column($credit, 'amount'));
+        $debit = array_sum(array_column($debit, 'amount'));
 
         return [
             'status' => 'success',
