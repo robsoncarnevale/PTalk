@@ -26,11 +26,6 @@ class EventsController extends Controller
 {
     protected $only_admin = false;
 
-    /**
-     * List events
-     * @author Davi Souto
-     * @since 24/08/2020
-     */
     public function List(EventRequest $request)
     {
         $events = Event::select()
@@ -42,11 +37,6 @@ class EventsController extends Controller
         return response()->json([ 'status' => 'success', 'data' => (new EventCollection($events)) ]);
     }
 
-    /**
-     * Get event
-     * @author Davi Souto
-     * @since 24/08/2020
-     */
     public function Get(Event $event, EventRequest $request)
     {
         $this->validateClub($event->club_code, 'event');
@@ -54,11 +44,6 @@ class EventsController extends Controller
         return response()->json([ 'status' => 'success', 'data' => (new EventResource($event)) ]);
     }
 
-    /**
-     * Create event
-     * @author Davi Souto
-     * @since 24/08/2020
-     */
     public function Create(EventRequest $request)
     {
         DB::beginTransaction();
@@ -150,11 +135,6 @@ class EventsController extends Controller
         return response()->json([ 'status' => 'success', 'data' => (new EventResource($event)), 'message' => __('events.success-create') ]);
     }
 
-    /**
-     * Update event
-     * @author Davi Souto
-     * @since 24/08/2020
-     */
     public function Update(Event $event, EventRequest $request)
     {
         DB::beginTransaction();
@@ -269,11 +249,6 @@ class EventsController extends Controller
         return response()->json([ 'status' => 'success', 'data' => (new EventResource($_event)), 'message' => __('events.success-update') ]);
     }
 
-    /**
-     * Delete event
-     * @author Davi Souto
-     * @since 24/08/2020
-     */
     public function Delete(Event $event, EventRequest $request)
     {
         $this->validateClub($event->club_code, 'event');
@@ -288,13 +263,6 @@ class EventsController extends Controller
         return response()->json([ 'status' => 'success', 'data' => (new EventResource($event)) ]);
     }
 
-    /**
-     * Start event
-     * 
-     * @param \App\Models\Event $event
-     * @author Davi Souto
-     * @since 20/05/2021
-     */
     public function Start(Event $event)
     {
         $this->validateClub($event->club_code, 'event');
@@ -407,12 +375,6 @@ class EventsController extends Controller
         return response()->json([ 'status' => 'success', 'data' => (new EventResource($event)), 'message' => __('events.success-start-event', [ 'name' => $event->name ]) ]);
     }
 
-    /**
-     * Subscribe in event
-     * 
-     * @author Davi Souto
-     * @since 24/05/2021
-     */
     public function Subscribe(Event $event, SubscribeEventRequest $request)
     {
         DB::beginTransaction();
@@ -543,15 +505,14 @@ class EventsController extends Controller
 
             if($price > 0)
             {
-                $clubAccount = BankAccount::where('bank_account_type_id', 1)->first();
+                $bank = new BankAccount();
 
-                if(!$clubAccount)
-                    throw new \Exception(__('bank_account.error-transfer'));
+                $bank->setOrigin($user->bank?->account);
+                $bank->setDestiny($bank->getAccountClub());
+                $bank->setAmount($price);
+                $bank->setDescription(__('events.success-subscribe-event', ['name' => '(' . $event->name . ' - ' . \Carbon\Carbon::parse($event->date)->format('d/m/Y') . ')']));
 
-                $transfer = $clubAccount->transfer($price, 'Inscrição no Evento (' . $event->name . ' - ' . \Carbon\Carbon::parse($event->date)->format('d/m') . ')');
-
-                if(!$transfer)
-                    throw new \Exception(__('bank_account.error-transfer'));
+                $bank->transfer();
             }
 
             DB::commit();
@@ -569,12 +530,6 @@ class EventsController extends Controller
         }
     }
 
-    /**
-     * Unsubscribe on event
-     * 
-     * @author Davi Souto
-     * @since 24/08/2021
-     */
     public function Unsubscribe(Event $event, UnsubscribeEventRequest $request)
     {
         DB::beginTransaction();
@@ -617,17 +572,14 @@ class EventsController extends Controller
 
             if($value > 0)
             {
-                $account = BankAccount::where('bank_account_type_id', 1)->first();
+                $bank = new BankAccount();
 
-                if(!$account)
-                    throw new \Exception(__('bank_account.error-transfer'));
+                $bank->setOrigin($bank->getAccountClub());
+                $bank->setDestiny($bank->getAccountUserLogged());
+                $bank->setAmount($value);
+                $bank->setDescription(__('events.success-unsubscribe-event', ['name' => '(' . $event->name . ' - ' . \Carbon\Carbon::parse($event->date)->format('d/m/Y') . ')']));
 
-                // $transfer = $account->transfer($value, 'Cancelamento de Inscrição do Evento (' . $event->name . ' - ' . \Carbon\Carbon::parse($event->date)->format('d/m') . ')');
-            
-                //Implementar forma de informar o originador da transação a ser efeutada
-
-                if(!$transfer)
-                    throw new \Exception(__('bank_account.error-transfer'));
+                $bank->transfer();
             }
 
             DB::commit();
@@ -644,22 +596,16 @@ class EventsController extends Controller
         }
     }
 
-    /**
-     * Cancel event
-     * 
-     * @author Davi Souto
-     * @since 02/07/2021
-     */
     public function Cancel(Event $event, Request $request)
     {
-        $this->validateClub($event->club_code, 'event');
+        DB::beginTransaction();
+        
+        try
+        {
+            $this->validateClub($event->club_code, 'event');
 
-        if ($event->status != Event::ACTIVE_STATUS) {
-            return response()->json([ 'status' => 'error', 'message' => __('events.error-cancel-event.status', [ 'name' => $event->name ]) ]);
-        }
-
-        try {
-            DB::beginTransaction();
+            if ($event->status != Event::ACTIVE_STATUS)
+                return response()->json([ 'status' => 'error', 'message' => __('events.error-cancel-event.status', [ 'name' => $event->name ]) ]);
 
             $event->status = Event::CANCELLED_STATUS;
             $event->save();
@@ -669,51 +615,30 @@ class EventsController extends Controller
                 ->where('event_id', $event->id)
                 ->get();
 
-            $club_account = ClubBankAccount::Get();
-            $amount = 0;
+            foreach($subscriptions as $subscription)
+            {
+                $user = $subscription->user;
 
-            foreach($subscriptions as $subscription) {
-                // $subscription->status = EventSubscription::INACTIVE_STATUS;
-                // $subscription->save();
+                if(!$user)
+                    throw new \Exception(__('general.generic.error.update'));
 
-                $bank_account = $subscription->user->bank_account;
+                $bank = new BankAccount();
 
-                // Launch Credit
-                $launch = new AccountLaunch();
-                $launch->club_code = getClubCode();
-                $launch->account_number = $bank_account->account_number;
-                $launch->created_by = User::getAuthenticatedUserId();
-                $launch->amount = $subscription->amount;
-                $launch->type = AccountLaunch::CREDIT_TYPE;
-                $launch->description = AccountLaunch::EVENT_CANCEL_DESCRIPTION;
-                $launch->mode = AccountLaunch::AUTOMATIC_MODE;
-                $launch->event_id = $event->id;
-                $launch->save();
+                $bank->setOrigin($bank->getAccountClub());
+                $bank->setDestiny($user->bank?->account);
+                $bank->setAmount((float) $subscription->amount);
+                $bank->setDescription(__('events.success-cancel-event-info', ['description' => '(' . $event->name . ' - ' . \Carbon\Carbon::parse($event->date)->format('d/m/Y') . ')']));
+    
+                $bank->transfer();
 
-                // Add balance on user bank account
-                $bank_account->balance += $launch->amount;
-                $bank_account->save();
-
-                $amount += $launch->amount;
+                $subscription->status = EventSubscription::INACTIVE_STATUS;
+                $subscription->save();
             }
 
-            // Launch debit on club account
-            $club_launch = new ClubLaunch();
-            $club_launch->club_code = getClubCode();
-            $club_launch->created_by = User::getAuthenticatedUserId();
-            $club_launch->amount = $amount;
-            $club_launch->type = ClubLaunch::DEBIT_TYPE;
-            $club_launch->description = ClubLaunch::EVENT_CANCEL_USER_DESCRIPTION;
-            $club_launch->mode = ClubLaunch::AUTOMATIC_MODE;
-            $club_launch->user_description = '-';
-            $club_launch->save();
-
-            // Remove amount on club account
-            $club_account->balance -= $amount;
-            $club_account->save();
-
             DB::commit();
-        } catch (\Exception $e) {
+        }
+        catch(\Exception $e)
+        {
             DB::rollback();
 
             return response()->json([ 'status' => 'error', 'message' => __('events.error-cancel-event.generic', [ 'name' => $event->name, 'error' => $e->getMessage() ]) ]);

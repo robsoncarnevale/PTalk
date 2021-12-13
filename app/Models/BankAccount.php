@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Filterable\Filterable;
 use App\Models\BankAccountHistory;
+use App\Services\BankAccountOperation;
 
 class BankAccount extends Model
 {
-    use Filterable;
+    use Filterable, BankAccountOperation;
 
     const ACTIVE = 1;
     const BLOCKED = 2;
@@ -43,67 +44,5 @@ class BankAccount extends Model
     public function history()
     {
         return $this->hasMany(BankAccountHistory::class, 'bank_account_id', 'id');
-    }
-
-    public function scopeTransfer($query, float $amount, $description)
-    {
-        if($amount <= 0)
-            throw new \Exception(__('bank_account.errors.min-transfer'));
-
-        $user = User::find(User::getAuthenticatedUserId());
-
-        if(!$user)
-            throw new \Exception(__('users.not-found'));
-
-        if($user->type == User::TYPE_ADMIN)
-            $origin = BankAccount::where('bank_account_type_id', BankAccount::CLUB)->first();
-
-        if($user->type == User::TYPE_MEMBER)
-            $origin = $user->bank?->account;
-
-        if(!isset($origin) || !$origin)
-            throw new \Exception(__('bank_account.errors.bank-account-not-found-origin'));
-
-        if($origin->id == $this->id)
-            throw new \Exception(__('bank_account.errors.transfer-my'));
-
-        if($amount > (float) $origin->balance)
-            throw new \Exception(__('bank_account.errors.insufficient-fund'));
-
-        $origin->balance -= $amount;
-        $origin->save();
-
-        $historyOrigin = BankAccountHistory::create([
-            'bank_account_id' => $origin->id,
-            'data' => BankAccountHistory::makeJson(
-                $user,
-                'transfer',
-                'debit',
-                $amount,
-                $description,
-                null, //origin
-                $this //destiny
-            )
-        ]);
-
-        if(!$historyOrigin)
-            throw new \Exception(__('bank_account.error-transfer'));
-
-        $this->balance += $amount;
-        $this->save();
-
-        $historyDestiny = BankAccountHistory::create([
-            'bank_account_id' => $this->id,
-            'data' => BankAccountHistory::makeJson(
-                $user,
-                'transfer',
-                'credit',
-                $amount,
-                $description,
-                $origin
-            )
-        ]);
-
-        return true;
     }
 }

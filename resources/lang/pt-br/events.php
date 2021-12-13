@@ -29,12 +29,14 @@ return [
         'generic' => 'Ocorreu um erro ao se inscrever no evento :name - :error',
     ],
 
+    'success-unsubscribe-event' => 'Inscrição desfeita com sucesso no evento :name',
     'error-unsubscribe-event' => [
         'not-found' => 'Inscrição não encontrada',
         'unsubscribe_date_limit' => 'A data de limite para cancelamento é até :date',
     ],
     
     'success-cancel-event' => 'Evento :name cancelado com sucesso',
+    'success-cancel-event-info' => 'Estorno do Evento :description',
     'error-cancel-event' => [
         'status' => 'Evento :name precisa estar ativo para ser cancelado',
         'generic' => 'Ocorreu um erro ao cancelar o evento :name - :error',

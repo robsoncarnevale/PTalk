@@ -117,10 +117,14 @@ class BankAccountController extends Controller
             if(!$account)
                 throw new \Exception(__('bank_account.errors.bank-account-not-found'));
 
-            $transfer = $account->transfer((float) $request->value, $request->description);
+            $bank = new BankAccount();
 
-            if(!$transfer)
-                throw new \Exception(__('bank_account.error-transfer'));
+            $bank->setOrigin($bank->getAccountUserLogged());
+            $bank->setDestiny($account);
+            $bank->setAmount($request->value);
+            $bank->setDescription($request->description);
+
+            $bank->transfer();
 
             DB::commit();
 

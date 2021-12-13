@@ -35,6 +35,7 @@ return [
     ],
 
     'success-cancel-event' => ':event event successfully canceled',
+    'success-cancel-event-info' => 'Event Reversal :description',
     'error-cancel-event' => [
         'status' => ':name event must be active to be canceled',
         'generic' => 'An error occurred while canceling :name event - :error',
