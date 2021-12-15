@@ -3,6 +3,7 @@
 return [
 
 	'generic' => [
+		'message' => 'Erro interno! Favor contactar administrador.',
 		'success' => [
 			'update' => ':attribute updated successfully!',
 			'create' => ':attribute successfully registered!',
