@@ -38,6 +38,9 @@ Route::group(['middleware' => 'preset'], function(){
     // Services
     Route::get('/service/cep/find/{cep}', [ 'uses' => 'ServicesController@GetAddressByCep', 'as' => 'services.cep.find' ]);
 
+    /* CONTACT */
+
+    Route::get('/contact', ['uses' => 'ContactController@index', 'as' => 'contacts']);
 
     Route::group([ 'middleware' => 'authorized' ], function(){
 
