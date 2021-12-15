@@ -12,10 +12,11 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Privilege;
 use App\Models\BankAccountUser;
 use App\Models\BankAccount;
+use App\Filterable\Filterable;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use Notifiable;
+    use Notifiable, Filterable;
 
     const TYPE_ADMIN = 'admin';
     const TYPE_MEMBER = 'member';

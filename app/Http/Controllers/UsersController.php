@@ -68,62 +68,19 @@ class UsersController extends Controller
      */
     private static function List(Request $request, $type = 'member', $per_page = 25)
     {
-        $users = User::select()
-            ->with('member_class')
-            ->withCount(['vehicles' => function($q){
-                $q->where('deleted', false);
-            }])
-            ->with(['vehicles' => function($q){
-                $q->where('deleted', false);
-            }])
-            ->where('club_code', getClubCode())
-            ->where('deleted', false)
-            ->where('approval_status', 'approved')
-            ->where('type', $type)
-            ->orderBy('name');
-
-        if (! $request->has('filters')) {
-            $filters = [];
-        }
-
-        if ($request->has('filters')) {
-            $filters = $request->get('filters');
-
-            if (array_key_exists('status', $filters)) {
-                $users->where('status', $filters['status']);
-            }
-
-            if (array_key_exists('name', $filters)) {
-                $users->whereRaw('LOWER(name) like ?', strtolower("%{$filters['name']}%"))
-                    ->orWhereRaw('LOWER(nickname) like ?', strtolower("%{$filters['name']}%"));
-            }
-
-            if (array_key_exists('state', $filters)) {
-                $users->whereHas('addresses', function($q) use ($filters){
-                    $q->where('state', strtoupper($filters['state']));
-                });
-            }
-
-            if (array_key_exists('city', $filters)) {
-                $users->whereHas('addresses', function($q) use ($filters){
-                    $q->whereRaw('LOWER(city) like ?', strtolower("%{$filters['city']}%"));
-                });
-            }
-
-            if (array_key_exists('car_model_id', $filters)) {
-                $users->whereHas('vehicles', function($q) use ($filters){
-                    $q->where('car_model_id', $filters['car_model_id'])
-                    ->where('deleted', false);
-                });
-            }
-
-            if (array_key_exists('car_color_id', $filters)) {
-                $users->whereHas('vehicles', function($q) use ($filters){
-                    $q->where('car_color_id', $filters['car_color_id'])
-                        ->where('deleted', false);
-                });
-            }
-        }
+        $users = User::filter($request)
+                    ->with('member_class')
+                    ->withCount(['vehicles' => function($q){
+                        $q->where('deleted', false);
+                    }])
+                    ->with(['vehicles' => function($q){
+                        $q->where('deleted', false);
+                    }])
+                    ->where('club_code', getClubCode())
+                    ->where('deleted', false)
+                    ->where('approval_status', 'approved')
+                    ->where('type', $type)
+                    ->orderBy('name');
 
         $users = $users->jsonPaginate($per_page, 3);
 
