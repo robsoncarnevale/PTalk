@@ -613,6 +613,7 @@ class EventsController extends Controller
             $subscriptions = EventSubscription::select()
                 ->where('club_code', getClubCode())
                 ->where('event_id', $event->id)
+                ->where('status', EventSubscription::ACTIVE_STATUS)
                 ->get();
 
             foreach($subscriptions as $subscription)
