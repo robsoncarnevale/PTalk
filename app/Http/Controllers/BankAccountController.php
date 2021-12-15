@@ -146,6 +146,33 @@ class BankAccountController extends Controller
         }
     }
 
+    public function detail($number, Request $request)
+    {
+        try
+        {
+            $account = BankAccount::where('account_number', $number)->first();
+
+            if(!$account)
+                throw new \Exception(__('bank_account.errors.bank-account-not-found'));
+
+            $data = new BankAccountResource($account);
+
+            unset($data['balance']);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $data
+            ], 200);
+        }
+        catch(\Exception $e)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     /* FUNCTIONS PRIVATE */
 
     private function getDate()

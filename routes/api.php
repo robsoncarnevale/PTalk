@@ -159,6 +159,7 @@ Route::group(['middleware' => 'preset'], function(){
             Route::get('/{id}/extract', ['uses' => 'BankAccountController@show', 'as' => 'bank-accounts.extract']);
             Route::get('/club', ['uses' => 'BankAccountController@club', 'as' => 'bank-accounts.club.extract']);
             Route::post('/transfers', ['uses' => 'BankAccountController@transfer', 'as' => 'bank-accounts.transfers.store']);
+            Route::get('/detail/{number}', ['uses' => 'BankAccountController@detail', 'as' => 'bank-accounts.detail']);
 
         });
 
