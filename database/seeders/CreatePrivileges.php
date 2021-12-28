@@ -151,6 +151,8 @@ class CreatePrivileges extends Seeder
             
 
             [ 'action' => 'club.status',                        'name' => 'Read club status', 'description' => '', 'add_member' => true ],
+            [ 'action' => 'club.data',                          'name' => 'Club Details', 'description' => '', 'add_member' => true ],
+            [ 'action' => 'club.data.store',                    'name' => 'Save Club Details', 'description' => '', 'add_member' => true ],
         ],
     ];
     /**

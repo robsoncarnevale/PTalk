@@ -14,6 +14,7 @@ use App\Models\CarModel;
 use App\Models\CarColor;
 
 use App\Http\Resources\AvailableData as AvailableDataResource;
+use App\Http\Requests\ClubRequest;
 
 /**
  * Club Controller
@@ -234,5 +235,35 @@ class ClubController extends Controller
         ];
 
         return response()->json([ 'status' => 'success', 'data' => new AvailableDataResource($data) ]);
+    }
+
+    public function store(ClubRequest $request)
+    {
+        try
+        {
+            $club = Club::first();
+
+            if(!$club)
+                throw new \Exception(__('club.not-found'));
+
+            $update = $club->update($request->only(
+                'name',
+                'contact_mail',
+                'primary_color',
+                'url'
+            ));
+
+            return response()->json([
+                'status' => 'success',
+                'message' => __('club.updated')
+            ]);
+        }
+        catch(\Exception $e)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 }

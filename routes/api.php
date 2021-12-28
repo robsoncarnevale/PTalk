@@ -178,8 +178,9 @@ Route::group(['middleware' => 'preset'], function(){
 
         // Club
         Route::get('/club/status', [ 'uses' => 'ClubController@GetStatus', 'as' => 'club.status' ]);
-        Route::get('/club/data', [ 'uses' => 'ClubController@GetData', 'as' => 'club.data' ]);
         Route::get('/club/available-data', [ 'uses' => 'ClubController@GetAvailableData', 'as' => 'club.available-data' ]);
+        Route::get('/club/data', [ 'uses' => 'ClubController@GetData', 'as' => 'club.data' ]);
+        Route::post('/club/data', [ 'uses' => 'ClubController@store', 'as' => 'club.data.store' ]);
 
         /* GENERIC ROUTES */
 
