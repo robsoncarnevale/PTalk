@@ -12,6 +12,9 @@ use DB;
 use App\Models\BankAccountHistory;
 use App\Http\Resources\BankAccountHistory as BankAccountHistoryResource;
 use Carbon\Carbon;
+use App\Services\Paynet;
+use GuzzleHttp\Exception\RequestException;
+use App\Http\Requests\BankAccountLoadRequest;
 
 class BankAccountController extends Controller
 {
@@ -163,6 +166,36 @@ class BankAccountController extends Controller
                 'status' => 'success',
                 'data' => $data
             ], 200);
+        }
+        catch(\Exception $e)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function load(BankAccountLoadRequest $request)
+    {
+        try
+        {
+            $api = new Paynet();
+
+            $api->login();
+
+            $dtv = explode('/', $request->expiry_date);
+
+            $api->tokenization([
+                'cardNumber' => $request->credit_card,
+                'cardHolder' => $request->name,
+                'expirationMonth' => $dtv[0],
+                'expirationYear' => $dtv[1],
+                'customerName' => $request->name,
+                'securityCode' => $request->cvv
+            ]);
+
+            dd('Chegou ao final');
         }
         catch(\Exception $e)
         {

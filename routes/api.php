@@ -166,7 +166,7 @@ Route::group(['middleware' => 'preset'], function(){
 
             /* LOAD ACCOUNT */
 
-            Route::get('load', ['uses' => 'BankAccountController@load', 'as' => 'bank-accounts.load']);
+            Route::post('load', ['uses' => 'BankAccountController@load', 'as' => 'bank-accounts.load']);
 
         });
 
