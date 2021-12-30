@@ -186,7 +186,7 @@ class BankAccountController extends Controller
 
             $dtv = explode('/', $request->expiry_date);
 
-            $api->tokenization([
+            $tokenization = $api->tokenization([
                 'cardNumber' => $request->credit_card,
                 'cardHolder' => $request->name,
                 'expirationMonth' => $dtv[0],

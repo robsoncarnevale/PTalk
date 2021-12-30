@@ -69,7 +69,7 @@ class Paynet
 		}
 	}
 
-	public function tokenization($body)
+	public function tokenization($body) : string
 	{
 		try
 		{
@@ -83,20 +83,26 @@ class Paynet
 
 			$response = json_decode($response->getBody());
 
-			dd($response);
+			if(!$response)
+				throw new \Exception(__('general.generic.message') . ' (tokenization - 2)');
+
+			if(!isset($response->numberToken))
+				throw new \Exception(__('general.generic.message') . ' (tokenization - 3)');
+
+			return $response->numberToken;
 		}
 		catch(RequestException $e)
 		{
 			if(!$e->getResponse())
-				throw new \Exception(__('general.generic.message') . ' (tokenization - 2)');
+				throw new \Exception(__('general.generic.message') . ' (tokenization - 4)');
 
 			if(!$e->getResponse()->getBody())
-				throw new \Exception(__('general.generic.message') . ' (tokenization - 3)');
+				throw new \Exception(__('general.generic.message') . ' (tokenization - 5)');
 
 			$response = json_decode($e->getResponse()->getBody());
 
 			if(!$response)
-				throw new \Exception(__('general.generic.message') . ' (tokenization - 4)');
+				throw new \Exception(__('general.generic.message') . ' (tokenization - 6)');
 
 			if(isset($response->errors))
 			{
@@ -109,16 +115,14 @@ class Paynet
 
 				$map = implode(' | ', $map);
 
-				throw new \Exception($map . ' (tokenization - 5)');
+				throw new \Exception($map . ' (tokenization - 7)');
 			}
 
-			throw new \Exception(__('general.generic.message') . ' (tokenization - 6)');
+			throw new \Exception(__('general.generic.message') . ' (tokenization - 8)');
 		}
 		catch(ConnectException $e)
 		{
-			\Log::info($e);
-
-			throw new \Exception(__('general.generic.message') . ' (tokenization - 7)');
+			throw new \Exception(__('general.generic.message') . ' (tokenization - 9)');
 		}
 	}
 }
