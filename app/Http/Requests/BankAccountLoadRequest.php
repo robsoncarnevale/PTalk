@@ -31,4 +31,19 @@ class BankAccountLoadRequest extends FormRequest
             'amount' => 'required'
         ];
     }
+
+    public function number()
+    {
+        $prefix = str_pad('', strlen($this->credit_card) - 10, 'X');
+
+        $bin = substr($this->credit_card, 0, 6);
+        $holder = substr($this->credit_card, -4);
+
+        return $bin . $prefix . $holder;
+    }
+
+    public function amount()
+    {
+        return $this->amount;
+    }
 }

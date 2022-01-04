@@ -15,6 +15,8 @@ use Carbon\Carbon;
 use App\Services\Paynet;
 use GuzzleHttp\Exception\RequestException;
 use App\Http\Requests\BankAccountLoadRequest;
+use App\Models\Transaction;
+use App\Models\PaymentMethod;
 
 class BankAccountController extends Controller
 {
@@ -178,6 +180,8 @@ class BankAccountController extends Controller
 
     public function load(BankAccountLoadRequest $request)
     {
+        DB::beginTransaction();
+
         try
         {
             $api = new Paynet();
@@ -195,10 +199,28 @@ class BankAccountController extends Controller
                 'securityCode' => $request->cvv
             ]);
 
+            $brand = $api->brand($request->credit_card);
+
+            $transaction = Transaction::create([
+                'bank_account_id' => null,
+                'payment_method_id' => PaymentMethod::CREDIT_CASH,
+                'brand_id' => $brand,
+                'installments' => 1,
+                'card_name' => $request->name,
+                'card_number' => $request->number(),
+                'amount' => $request->amount()
+            ]);
+
+            $api->payment($tokenization, $brand);
+
+            //Continuar aqui
+
             dd('Chegou ao final');
         }
         catch(\Exception $e)
         {
+            DB::rollback();
+
             return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage()
