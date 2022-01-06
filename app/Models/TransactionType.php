@@ -9,5 +9,9 @@ class TransactionType extends Model
 {
     use HasFactory;
 
+    const FINANCIAL = 1;
+    const CANCEL = 2;
+    const REVERSAL = 3;
+
     protected $fillable = ['id', 'description'];
 }

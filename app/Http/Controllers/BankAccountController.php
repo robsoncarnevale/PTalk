@@ -17,6 +17,9 @@ use GuzzleHttp\Exception\RequestException;
 use App\Http\Requests\BankAccountLoadRequest;
 use App\Models\Transaction;
 use App\Models\PaymentMethod;
+use App\Models\TransactionType;
+use App\Models\TransactionStatus;
+use App\Models\Brand;
 
 class BankAccountController extends Controller
 {
@@ -180,10 +183,10 @@ class BankAccountController extends Controller
 
     public function load(BankAccountLoadRequest $request)
     {
-        DB::beginTransaction();
-
         try
         {
+            $bank = new BankAccount();
+
             $api = new Paynet();
 
             $api->login();
@@ -201,26 +204,33 @@ class BankAccountController extends Controller
 
             $brand = $api->brand($request->credit_card);
 
+            if(!Brand::find($brand))
+                throw new \Exception(__('brand.not-found'));
+
             $transaction = Transaction::create([
-                'bank_account_id' => null,
+                'bank_account_id' => $bank->getAccountUserLogged()->id,
                 'payment_method_id' => PaymentMethod::CREDIT_CASH,
                 'brand_id' => $brand,
                 'installments' => 1,
                 'card_name' => $request->name,
                 'card_number' => $request->number(),
-                'amount' => $request->amount()
+                'amount' => $request->amount,
+                'order_number' => Transaction::order(),
+                'transaction_type_id' => TransactionType::FINANCIAL,
+                'transaction_status_id' => TransactionStatus::NO_REPLY
             ]);
 
-            $api->payment($tokenization, $brand);
+            $api->payment($tokenization, $brand, $transaction);
 
-            //Continuar aqui
+            if($transaction->transaction_status_id == TransactionStatus::DENIED)
+                throw new \Exception(__('transaction.not-end'));
+
+            //Gerar o dado para o extrato bancário
 
             dd('Chegou ao final');
         }
         catch(\Exception $e)
         {
-            DB::rollback();
-
             return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage()

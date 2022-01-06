@@ -22,9 +22,11 @@ class CreateTransactionsTable extends Migration
             $table->string('card_name');
             $table->string('card_number');
             $table->string('order_number');
-            $table->string('amount');
+            $table->decimal('amount', 12, 2)->default(0.00);
             $table->string('authorization')->nullable();
             $table->string('nsu')->nullable();
+            $table->string('response_code')->nullable();
+            $table->string('payment_token')->nullable();
             $table->unsignedBigInteger('transaction_type_id');
             $table->unsignedBigInteger('transaction_status_id');
             $table->timestamps();

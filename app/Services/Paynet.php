@@ -5,6 +5,9 @@ namespace App\Services;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ConnectException;
+use App\Models\User;
+use App\Models\TransactionStatus;
+use App\Jobs\JobReversalTransaction;
 
 class Paynet
 {
@@ -187,30 +190,100 @@ class Paynet
 		}
 	}
 
-	public function payment()
+	public function payment($token, $brand, $transaction)
 	{
 		try
 		{
-			$response = $this->client->GET('/brands', [
-				'headers' => $this->headers
+			$user = User::find(User::getAuthenticatedUserId());
+
+			if(!$user)
+				throw new \Exception(__('users.not-found'));
+
+			$amount = (integer) str_replace('.', '', number_format($transaction->amount, 2));
+			$date = \Carbon\Carbon::now()->format('dmYHis');
+			$name = explode(' ', $user->name);
+
+			$response = $this->client->POST('/financial', [
+				'headers' => $this->headers,
+				'json' => [
+					'payment' => [
+						'documentNumber' => '37833643000126',
+						'transactionType' => 1,
+						'amount' => $amount,
+						'currencyCode' => 'brl',
+						'productType' => 1,
+						'installments' => $transaction->installments,
+						'captureType' => 1,
+						'recurrent' => false
+					],
+					'cardInfo' => [
+						'numberToken' => $token,
+						'brand' => $brand
+					],
+					'sellerInfo' => [
+						'orderNumber' => $transaction->order_number,
+						'softDescriptor' => $date . rand(000, 999)
+					],
+					'customer' => [
+						'documentType' => 2,
+						'documentNumberCDH' => $user->document_cpf,
+						'firstName' => $name[0],
+						'lastName' => end($name),
+						'country' => 'BRA'
+					],
+					'transactionSimple' => 0
+				]
 			]);
+
+			if(!$response->getBody())
+				throw new \Exception(__('general.generic.message') . ' (payment - 1)');
 
 			$response = json_decode($response->getBody());
 
-			dd($response);
+			if(!$response)
+				throw new \Exception(__('general.generic.message') . ' (payment - 2)');
+
+			$transaction->order_number = isset($response->orderNumber) ? $response->orderNumber : null ;
+			$transaction->authorization = isset($response->authorizationCode) ? $response->authorizationCode : null ;
+			$transaction->nsu = isset($response->nsu) ? $response->nsu : null ;
+			$transaction->payment_token = isset($response->paymentId) ? $response->paymentId : null ;
+			$transaction->response_code = isset($response->returnCode) ? $response->returnCode : null ;
+
+			if(!isset($response->paymentId))
+				throw new \Exception(__('general.generic.message') . ' (payment - 3)');
+
+			if(isset($response->returnCode))
+			{
+				if($response->returnCode == '00')
+					$transaction->transaction_status_id = TransactionStatus::APPROVED;
+
+				if($response->returnCode != '00')
+					$transaction->transaction_status_id = TransactionStatus::DENIED;
+			}
+
+			$transaction->save();
 		}
 		catch(RequestException $e)
 		{
 			if(!$e->getResponse())
+			{
+				JobReversalTransaction::dispatch($transaction);
 				throw new \Exception(__('general.generic.message') . ' (payment - 4)');
+			}
 
 			if(!$e->getResponse()->getBody())
+			{
+				JobReversalTransaction::dispatch($transaction);
 				throw new \Exception(__('general.generic.message') . ' (payment - 5)');
+			}
 
 			$response = json_decode($e->getResponse()->getBody());
 
 			if(!$response)
+			{
+				JobReversalTransaction::dispatch($transaction);
 				throw new \Exception(__('general.generic.message') . ' (payment - 6)');
+			}
 
 			if(isset($response->errors))
 			{
@@ -223,8 +296,13 @@ class Paynet
 
 				$map = implode(' | ', $map);
 
+				$transaction->transaction_status_id = TransactionStatus::DENIED;
+				$transaction->save();
+
 				throw new \Exception($map . ' (payment - 7)');
 			}
+
+			JobReversalTransaction::dispatch($transaction);
 
 			throw new \Exception(__('general.generic.message') . ' (payment - 8)');
 		}

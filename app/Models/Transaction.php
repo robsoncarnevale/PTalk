@@ -48,4 +48,18 @@ class Transaction extends Model
     {
         return $this->hasOne(TransactionStatus::class, 'id', 'transaction_status_id');
     }
+
+    public static function order()
+    {
+        $club = Club::first();
+
+        if(!$club)
+            throw new \Exception(__('club.not-found'));
+
+        $prefix = strtoupper(substr($club->name, 0, 3));
+
+        $date = \Carbon\Carbon::now()->format('dmYHis');
+
+        return $prefix . $date . rand(000000000, 999999999) ;
+    }
 }

@@ -41,9 +41,4 @@ class BankAccountLoadRequest extends FormRequest
 
         return $bin . $prefix . $holder;
     }
-
-    public function amount()
-    {
-        return $this->amount;
-    }
 }

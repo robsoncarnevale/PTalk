@@ -9,5 +9,9 @@ class TransactionStatus extends Model
 {
     use HasFactory;
 
+    const APPROVED = 1;
+    const DENIED = 2;
+    const NO_REPLY = 3;
+
     protected $fillable = ['id', 'description'];
 }
