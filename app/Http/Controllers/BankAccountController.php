@@ -20,11 +20,13 @@ use App\Models\PaymentMethod;
 use App\Models\TransactionType;
 use App\Models\TransactionStatus;
 use App\Models\Brand;
+use App\Jobs\JobReversalTransaction;
 
 class BankAccountController extends Controller
 {
     protected $only_admin = false;
     protected Request $request;
+    protected $transaction;
 
     public function index(Request $request)
     {
@@ -187,11 +189,22 @@ class BankAccountController extends Controller
         {
             $bank = new BankAccount();
 
+            $account = $bank->getAccountUserLogged();
+
+            $bank->setUser();
+            $bank->setDestiny($account);
+            $bank->setAmount($request->amount);
+            $bank->setOperationType('credit');
+            $bank->setDescription(__('bank_account.history.description-charge'));
+
             $api = new Paynet();
 
             $api->login();
 
             $dtv = explode('/', $request->expiry_date);
+
+            if(count($dtv) < 2)
+                throw new \Exception(__('general.generic.message'));
 
             $tokenization = $api->tokenization([
                 'cardNumber' => $request->credit_card,
@@ -207,30 +220,46 @@ class BankAccountController extends Controller
             if(!Brand::find($brand))
                 throw new \Exception(__('brand.not-found'));
 
-            $transaction = Transaction::create([
-                'bank_account_id' => $bank->getAccountUserLogged()->id,
+            $this->transaction = Transaction::create([
+                'bank_account_id' => $account->id,
                 'payment_method_id' => PaymentMethod::CREDIT_CASH,
                 'brand_id' => $brand,
                 'installments' => 1,
                 'card_name' => $request->name,
                 'card_number' => $request->number(),
-                'amount' => $request->amount,
+                'amount' => (float) $request->amount,
                 'order_number' => Transaction::order(),
                 'transaction_type_id' => TransactionType::FINANCIAL,
                 'transaction_status_id' => TransactionStatus::NO_REPLY
             ]);
 
-            $api->payment($tokenization, $brand, $transaction);
+            $api->payment($tokenization, $brand, $this->transaction);
 
-            if($transaction->transaction_status_id == TransactionStatus::DENIED)
+            if(in_array($this->transaction->transaction_status_id, [TransactionStatus::DENIED, TransactionStatus::NO_REPLY]))
                 throw new \Exception(__('transaction.not-end'));
 
-            //Gerar o dado para o extrato bancário
+            if($this->transaction->transaction_status_id == TransactionStatus::APPROVED)
+            {
+                DB::beginTransaction();
 
-            dd('Chegou ao final');
+                $bank->charge();
+
+                DB::commit();
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => __('bank_account.success-charge')
+            ], 200);
         }
         catch(\Exception $e)
         {
+            JobReversalTransaction::dispatch($this->transaction ? $this->transaction : null);
+
+            DB::rollback();
+
+            \Log::info($e);
+
             return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage()

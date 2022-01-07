@@ -14,7 +14,7 @@ trait BankAccountOperation
 	private $description;
 	private $json;
 
-	private function setUser() : void
+	public function setUser() : void
 	{
 		$user = User::find(User::getAuthenticatedUserId());
 
@@ -119,6 +119,14 @@ trait BankAccountOperation
 		$this->description = $description;
 	}
 
+	public function setOperationType($type) : void
+	{
+		if(!in_array($type, ['credit', 'debit']))
+			throw new \Exception(__('bank_account.errors.opertaion-type-not-found'));
+
+		$this->json['operation_type'] = $type;
+	}
+
 	public function transfer() : void
 	{
 		$this->setUser();
@@ -134,11 +142,7 @@ trait BankAccountOperation
 			'operation'
 		];
 
-		foreach($required as $field)
-		{
-			if(!in_array($field, array_keys($this->json)))
-				throw new \Exception(__('bank_account.error-transfer'));
-		}
+		$this->validate($required);
 
 		if($this->origin->id == $this->destiny->id)
             throw new \Exception(__('bank_account.errors.transfer-my'));
@@ -171,5 +175,47 @@ trait BankAccountOperation
 
         if(!$historyDestiny)
             throw new \Exception(__('bank_account.error-transfer'));
+	}
+
+	public function charge() : void
+	{
+		$this->json['operation'] = 'charge';
+
+		$required = [
+			'amount',
+			'destiny',
+			'description',
+			'operation',
+			'operation_type'
+		];
+
+		$this->validate($required);
+
+		if($this->json['operation_type'] == 'credit')
+			$this->destiny->balance += $this->amount;
+
+		if($this->json['operation_type'] == 'debit')
+			$this->destiny->balance -= $this->amount;
+
+		$this->destiny->save();
+
+		$history = BankAccountHistory::create([
+            'bank_account_id' => $this->destiny->id,
+            'data' => json_encode($this->json)
+        ]);
+
+        if(!$history)
+            throw new \Exception(__('bank_account.error-transfer'));
+	}
+
+	/* PRIVATE FUNCTIONS */
+
+	private function validate(Array $fields) : void
+	{
+		foreach($fields as $field)
+		{
+			if(!in_array($field, array_keys($this->json)))
+				throw new \Exception(__('bank_account.error-generic-bank-account'));
+		}
 	}
 }

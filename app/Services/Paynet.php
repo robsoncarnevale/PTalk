@@ -266,24 +266,15 @@ class Paynet
 		catch(RequestException $e)
 		{
 			if(!$e->getResponse())
-			{
-				JobReversalTransaction::dispatch($transaction);
 				throw new \Exception(__('general.generic.message') . ' (payment - 4)');
-			}
 
 			if(!$e->getResponse()->getBody())
-			{
-				JobReversalTransaction::dispatch($transaction);
 				throw new \Exception(__('general.generic.message') . ' (payment - 5)');
-			}
 
 			$response = json_decode($e->getResponse()->getBody());
 
 			if(!$response)
-			{
-				JobReversalTransaction::dispatch($transaction);
 				throw new \Exception(__('general.generic.message') . ' (payment - 6)');
-			}
 
 			if(isset($response->errors))
 			{
@@ -302,13 +293,90 @@ class Paynet
 				throw new \Exception($map . ' (payment - 7)');
 			}
 
-			JobReversalTransaction::dispatch($transaction);
-
 			throw new \Exception(__('general.generic.message') . ' (payment - 8)');
 		}
 		catch(ConnectException $e)
 		{
 			throw new \Exception(__('general.generic.message') . ' (payment - 9)');
+		}
+	}
+
+	public function cancel($cancel, $token, $amount)
+	{
+		try
+		{
+			$amount = (integer) str_replace('.', '', number_format($amount, 2));
+
+			$response = $this->client->POST('/cancel', [
+				'headers' => $this->headers,
+				'json' => [
+					'documentNumber' => '37833643000126',
+					'paymentId' => $token,
+					'amount' => $amount
+				]
+			]);
+
+			if(!$response->getBody())
+				throw new \Exception(__('general.generic.message') . ' (cancel - 1)');
+
+			$response = json_decode($response->getBody());
+
+			if(!$response)
+				throw new \Exception(__('general.generic.message') . ' (cancel - 2)');
+
+			$cancel->authorization = isset($response->authorizationCode) ? $response->authorizationCode : null ;
+			$cancel->payment_token = isset($response->paymentId) ? $response->paymentId : null ;
+			$cancel->response_code = isset($response->returnCode) ? $response->returnCode : null ;
+
+			if(!isset($response->paymentId))
+				throw new \Exception(__('general.generic.message') . ' (cancel - 3)');
+
+			if(isset($response->returnCode))
+			{
+				if($response->returnCode == '00')
+					$cancel->transaction_status_id = TransactionStatus::APPROVED;
+
+				if($response->returnCode != '00')
+					$cancel->transaction_status_id = TransactionStatus::DENIED;
+			}
+
+			$cancel->save();
+		}
+		catch(RequestException $e)
+		{
+			if(!$e->getResponse())
+				throw new \Exception(__('general.generic.message') . ' (cancel - 4)');
+
+			if(!$e->getResponse()->getBody())
+				throw new \Exception(__('general.generic.message') . ' (cancel - 5)');
+
+			$response = json_decode($e->getResponse()->getBody());
+
+			if(!$response)
+				throw new \Exception(__('general.generic.message') . ' (cancel - 6)');
+
+			if(isset($response->errors))
+			{
+				$map = array_map(function($register){
+
+					if(isset($register->description))
+						return $register->description;
+
+				}, $response->errors);
+
+				$map = implode(' | ', $map);
+
+				$transaction->transaction_status_id = TransactionStatus::DENIED;
+				$transaction->save();
+
+				throw new \Exception($map . ' (cancel - 7)');
+			}
+
+			throw new \Exception(__('general.generic.message') . ' (cancel - 8)');
+		}
+		catch(ConnectException $e)
+		{
+			throw new \Exception(__('general.generic.message') . ' (cancel - 9)');
 		}
 	}
 }

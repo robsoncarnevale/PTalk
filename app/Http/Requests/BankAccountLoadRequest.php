@@ -24,11 +24,11 @@ class BankAccountLoadRequest extends FormRequest
     public function rules()
     {
         return [
-            'credit_card' => 'required|integer',
+            'credit_card' => 'required|numeric',
             'cvv' => 'required|max:4|min:3',
             'name' => 'required',
             'expiry_date' => 'required|max:5|min:5',
-            'amount' => 'required'
+            'amount' => 'required|numeric'
         ];
     }
 
