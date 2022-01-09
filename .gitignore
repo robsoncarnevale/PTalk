@@ -18,3 +18,4 @@ yarn-error.log
 /docker/dbdata
 
 !/storage/app/images/car_model/*
+laravel-queue-listen.yml

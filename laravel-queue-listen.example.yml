@@ -1,0 +1,10 @@
+apps:
+  - name: laravel-queue-listen
+    script: artisan
+    exec_mode: fork
+    interpreter: php
+    instances: 1
+    args:
+      - queue:listen
+      - --tries=3
+      - --timeout=1200
