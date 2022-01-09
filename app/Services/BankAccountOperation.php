@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\BankAccount;
 use App\Models\User;
 use App\Models\BankAccountHistory;
+use App\Models\BankAccountType;
+use App\Models\Config;
 
 trait BankAccountOperation
 {
@@ -148,7 +150,17 @@ trait BankAccountOperation
             throw new \Exception(__('bank_account.errors.transfer-my'));
 
         if($this->amount > (float) $this->origin->balance)
-            throw new \Exception(__('bank_account.errors.insufficient-fund'));
+        {
+        	if($this->origin->bank_account_type_id == BankAccountType::CLUB)
+        	{
+        		if(!Config::Get()->allow_negative_balance)
+					throw new \Exception(__('bank_account.errors.insufficient-fund'));
+        	}
+        	else
+        	{
+        		throw new \Exception(__('bank_account.errors.insufficient-fund'));
+        	}
+        }
 
         $this->origin->balance -= $this->amount;
         $this->origin->save();
