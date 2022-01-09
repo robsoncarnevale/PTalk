@@ -18,11 +18,13 @@ return [
                 'credit' => 'Credit',
                 'debit' => 'Debit'
             ]
-        ]
+        ],
+        'description-charge' => 'Account loading'
     ],
 
     'not-found' =>  'Account not found',
 
+    'error-generic-bank-account' => 'Error performing the operation',
     'error-transfer' => 'An error occurred while finalizing the transfer',
     'error-launch-debit' => 'An error occurred while finalizing the release',
     'error-negative-balance' => 'Club account negative balance is not allowed',
@@ -38,8 +40,11 @@ return [
         'transfer-my' => 'You cannot perform a transfer for yourself!',
         'member-not-have-account' => 'Member does not have an account or is inactive/blocked!',
         'user-destiny' => 'Target User Not Found!',
-        'min-transfer' => 'Minimum value exceeded!'
+        'min-transfer' => 'Minimum value exceeded!',
+        'opertaion-type-not-found' => 'Operation type invalid',
+        'reversal-charge' => 'Account Charge Reversal'
     ],
 
-    'success-transfer' => 'Transfer successful!'
+    'success-transfer' => 'Transfer successful!',
+    'success-charge' => 'Account charge performed'
 ];

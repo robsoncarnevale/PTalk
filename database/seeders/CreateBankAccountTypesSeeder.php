@@ -25,9 +25,10 @@ class CreateBankAccountTypesSeeder extends Seeder
             ]
         ];
 
-        $create = BankAccountType::insert($array);
-
-        if(!$create)
-            throw new \Exception('Falha ao criar tipos de contas!');
+        foreach($array as $register)
+        {
+            if(!BankAccountType::find($register['id']))
+                BankAccountType::create($register);
+        }
     }
 }

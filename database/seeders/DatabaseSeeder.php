@@ -49,6 +49,13 @@ class DatabaseSeeder extends Seeder
 
         //Create Club Bank Account
         $this->createClubBankAccount();
+
+        /* Create Transactions */
+
+        $this->call(CreateTransactionTypesTableSeeder::class);
+        $this->call(CreateTransactionStatusesTableSeeder::class);
+        $this->call(CreatePaymentMethodsTableSeeder::class);
+        $this->call(CreateBrandsTableSeeder::class);
     }
 
     ////////////////////////////////////////

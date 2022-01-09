@@ -135,6 +135,8 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'bank-accounts.transfers',            'name' => 'Transfer Bank Account', 'description' => '', 'add_member' => false ],
             [ 'action' => 'bank-accounts.transfers.store',      'name' => 'Effective Transfer Bank Account', 'description' => '', 'add_member' => false ],
             [ 'action' => 'bank-accounts.detail',               'name' => 'Detail Bank Account', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'bank-accounts.load',                 'name' => 'Load Bank Account', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'bank-accounts.load.store',           'name' => 'Load Bank Account (Store)', 'description' => '', 'add_member' => false ],
 
             // [ 'action' => 'bankaccount.list',                  'name' => 'List All Bank Accounts', 'description' => '', 'add_member' => false ],
             // [ 'action' => 'bankaccount.extract',               'name' => 'Extract of User Bank Account', 'description' => '', 'add_member' => false ],

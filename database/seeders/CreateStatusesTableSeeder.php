@@ -29,9 +29,10 @@ class CreateStatusesTableSeeder extends Seeder
             ]
         ];
 
-        $create = Status::insert($array);
-
-        if(!$create)
-            throw new \Exception('Falha ao criar status!');
+        foreach($array as $register)
+        {
+            if(!Status::find($register['id']))
+                Status::create($register);
+        }
     }
 }

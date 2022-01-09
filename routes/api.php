@@ -164,6 +164,10 @@ Route::group(['middleware' => 'preset'], function(){
             Route::post('/transfers', ['uses' => 'BankAccountController@transfer', 'as' => 'bank-accounts.transfers.store']);
             Route::get('/detail/{number}', ['uses' => 'BankAccountController@detail', 'as' => 'bank-accounts.detail']);
 
+            /* LOAD ACCOUNT */
+
+            Route::post('load', ['uses' => 'BankAccountController@load', 'as' => 'bank-accounts.load']);
+
         });
 
         // Blacklist
