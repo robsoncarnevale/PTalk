@@ -194,6 +194,11 @@ Route::group(['middleware' => 'preset'], function(){
 
     // Mobile routes
     Route::prefix('mobile')->group(function(){
+
+        //Contact
+
+        Route::get('/contact', ['uses' => 'Mobile\ContactController@index', 'as' => 'contacts']);
+
         // Access
         Route::post('/access/get-code', [ 'uses' => 'Mobile\AuthController@RequestAccessCode', 'as' => 'mobile.access.code.get' ]);
         Route::post('/access/authorize/{code}', [ 'uses' => 'Mobile\AuthController@AccessWithCode', 'as' => 'mobile.access.code.authorize' ]);
