@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Mobile;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\Mobile\UpdateProfileRequest;
+use App\Http\Requests\RequestParticipationRequest;
 use Illuminate\Support\Facades\Storage;
 
 use App\Models\User;
@@ -75,12 +76,6 @@ class MembersController extends Controller
      */
     public function CreateFromReference(Request $request, $type = 'member', $club_code = false)
     {
-        if ($validator = self::validate($request, [
-            'name'  =>  'required',
-            'phone'  =>  'required|min:8|max:11',
-            // 'indicated_by' => 'required',
-        ])) return $validator;
-
         if (! $club_code) {
             $club_code = getClubCode();
         }
@@ -342,8 +337,8 @@ class MembersController extends Controller
         }
     }
 
-    public function RequestParticipation(Request $request)
+    public function RequestParticipation(RequestParticipationRequest $request)
     {
-        return $this->CreateFromReference($request, 'member', $request->get('club_code'));
+        return $this->CreateFromReference($request, 'member', \App\Models\Club::first()->code);
     }
 }
