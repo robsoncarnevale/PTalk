@@ -38,13 +38,12 @@ class CreateCarColor extends Seeder
 
         foreach($this->colors as $name => $value)
         {
-            $car_color = new CarColor();
-
-            $car_color->name = $name;
-            $car_color->value = $value;
-            $car_color->club_code = $this->club_code;
-
-            $car_color->save();
+            if(!CarColor::where('name', $name)->first())
+                CarColor::create([
+                    'name' => $name,
+                    'value' => $value,
+                    'club_code' => $this->club_code
+                ]);
         }
     }
 
@@ -53,6 +52,7 @@ class CreateCarColor extends Seeder
     public function PorscheTalk()
     {
         $this->colors = [
+            /*
             'White' =>  '#FFFFFF',
             'Black' =>  '#000000',
 
@@ -73,6 +73,20 @@ class CreateCarColor extends Seeder
             // 'Miami Blue'  =>  '#267e9b',
             'Miami Blue'    =>  '#1BBFE8',
             'Speed Yellow'  =>  '#FFDE01',
+            */
+
+            'Branco' => '#FFFFFF',
+            'Preto' => '#000000',
+            'Azul' => '#0000FF',
+            'Vermelho' => '#FF0000',
+            'Amarelo' => '#FFFF00',
+            'Verde' => '#008000',
+            'Marrom' => '#A52A2A',
+            'Roxo' => '#800080',
+            'Prata' => '#C0C0C0',
+            'Cinza' => '#808080',
+            'Laranja' => '#FFA500',
+            'Bege' => '#F5F5DC'
         ];
     }
 }
