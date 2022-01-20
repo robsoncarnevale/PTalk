@@ -242,6 +242,8 @@ class MemberUsersController extends Controller
             }
         }
 
+        $club = \App\Models\Club::first();
+
         // Send register mail
         if ($user->approval_status == User::APPROVED_STATUS_APPROVAL && ! empty($user->email))
         {
@@ -251,7 +253,7 @@ class MemberUsersController extends Controller
                     ->send(new \App\Mail\RegisterMail($user));
 
                 $sms = new \App\Http\Services\SmsService('aws_sns');
-                $sms->send(55, $phone, __('users.member-approved'));
+                $sms->send(55, $user->phone, __('users.member-approved', ['club'=> $club->name]));
             }
             catch(\Exception $e)
             {
@@ -264,7 +266,7 @@ class MemberUsersController extends Controller
                     ->send(new \App\Mail\RepprovalMail($user));
 
                 $sms = new \App\Http\Services\SmsService('aws_sns');
-                $sms->send(55, $phone, __('users.member-reproved'));
+                $sms->send(55, $user->phone, __('users.member-reproved', ['club'=> $club->name]));
             }
             catch(\Exception $e)
             {

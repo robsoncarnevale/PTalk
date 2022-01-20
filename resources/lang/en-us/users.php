@@ -12,7 +12,7 @@ return [
 
 	'not-found' => 'Usuário não localizado',
 
-	'member-approved' => 'Your request to participate has been approved! Open the app and enter your phone number to access :D',
-	'member-reproved' => 'Unfortunately, your request was not approved, but don\'t give up, try again in the future. :('
+	'member-approved' => ':club: Your request to participate has been approved! Open the app and enter your phone number to access :D',
+	'member-reproved' => ':club: Unfortunately, your request was not approved, but don\'t give up, try again in the future. :('
 
 ];
