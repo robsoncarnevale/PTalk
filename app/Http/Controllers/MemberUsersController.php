@@ -249,14 +249,26 @@ class MemberUsersController extends Controller
             {
                 Mail::to($user->email)
                     ->send(new \App\Mail\RegisterMail($user));
-            } catch(\Exception $e) {
+
+                $sms = new \App\Http\Services\SmsService('aws_sns');
+                $sms->send(55, $phone, __('users.member-approved'));
+            }
+            catch(\Exception $e)
+            {
+                \Log::info($e);
             }
         } else {
             try
             {
                 Mail::to($user->email)
                     ->send(new \App\Mail\RepprovalMail($user));
-            } catch(\Exception $e) {
+
+                $sms = new \App\Http\Services\SmsService('aws_sns');
+                $sms->send(55, $phone, __('users.member-reproved'));
+            }
+            catch(\Exception $e)
+            {
+                \Log::info($e);
             }
         }
 
