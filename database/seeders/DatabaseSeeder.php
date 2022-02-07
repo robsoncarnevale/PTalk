@@ -56,6 +56,7 @@ class DatabaseSeeder extends Seeder
         $this->call(CreateTransactionStatusesTableSeeder::class);
         $this->call(CreatePaymentMethodsTableSeeder::class);
         $this->call(CreateBrandsTableSeeder::class);
+        $this->call(CreateUserDemonstrativeSeeder::class);
     }
 
     ////////////////////////////////////////
