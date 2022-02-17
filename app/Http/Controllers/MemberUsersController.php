@@ -99,6 +99,7 @@ class MemberUsersController extends Controller
     public function WaitingApproval(Request $request)
     {
         $users = User::select()
+            ->filter($request)
             ->with('member_class')
             ->with('participation_request_information')
             ->with('indicator:id,name,photo,email,phone,nickname')
@@ -109,37 +110,6 @@ class MemberUsersController extends Controller
             ->where('approval_status', User::WAITING_STATUS_APPROVAL)
             ->where('type', 'member')
             ->orderBy('created_at');
-
-        $search = trim($request->get('search'));
-
-        if (! empty($search)){
-            $users->where(function($q) use ($search) {
-                $search_numbers = $search;
-                $search_numbers = preg_replace('#[^0-9]#is', '', $search_numbers);
-
-                $q->whereRaw('LOWER(name) like ?', strtolower("%{$search}%"))
-                  ->orWhereRaw('LOWER(email) like ?', strtolower("%{$search}%"));
-
-                  if (! empty($search_numbers)) {
-                    $q->orWhereRaw('LOWER(phone) like ?', strtolower("%{$search_numbers}%"))
-                      ->orWhereRaw('LOWER(document_cpf) like ?', strtolower("%{$search_numbers}%"));
-                  }
-
-                  $q->orWhere(function($q) use ($search){
-                      $q->whereHas('participation_request_information', function($q) use ($search){
-                        $search_carplate = $search;
-
-                        if (strlen($search) >= 4 && strpos($search, '-') === false) {
-                            $search_carplate = substr($search, 0, 3) . '-' . substr($search, 3);
-                        }
-                        
-                        $q->whereRaw('LOWER(vehicle_carplate) like ?', strtolower("%{$search_carplate}%"));
-
-                        
-                      });
-                  });
-            });
-        }
 
         $count_indicators = clone $users;
         $count_voluntary = clone $users;
