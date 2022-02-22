@@ -191,7 +191,7 @@ class MemberUsersController extends Controller
         if ($request->has('member_class')) {
             $member_class = MemberClass::select()
                 ->where('club_code', getClubCode())
-                ->where('label', $request->get('member_class'))
+                ->where('id', $request->get('member_class'))
                 ->first();
 
             $user->member_class_id = $member_class->id;
