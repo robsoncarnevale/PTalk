@@ -34,7 +34,8 @@ class UserHistoryApproval extends JsonResource
 
         $user['phone_formatted'] = $this->formatPhone($user['phone']);
         $user['display_name'] = $this->displayName($user);
-        $user['photo'] = UserPhoto::get($user['photo']);
+        $user['photo'] = $user['photo'];
+        $user['photo_url'] = UserPhoto::get('');
 
         return $user;
     }
@@ -43,7 +44,8 @@ class UserHistoryApproval extends JsonResource
         if ($user) {
             $user = $user->toArray();
             
-            $user['photo'] = UserPhoto::get($user['photo']);
+            $user['photo'] = $user['photo'];
+            $user['photo_url'] = UserPhoto::get('');
         }
 
         return $user;

@@ -7,8 +7,6 @@ use Illuminate\Support\Facades\Storage;
 
 class UserPhoto extends JsonResource
 {
-    private static $default_photo = '/defaults/default-user-photo.png';
-
     /**
      * Transform the resource into an array.
      *
@@ -23,10 +21,8 @@ class UserPhoto extends JsonResource
         ];
     }
 
-    public static function get($photo)
+    public static function get()
     {
-        $default = getClubCode() . self::$default_photo;
-
-        return Storage::disk('images')->url((! empty($photo)) ? $photo : $default);
+        return Storage::disk('images')->url('');
     }
 }

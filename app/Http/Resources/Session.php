@@ -32,7 +32,7 @@ class Session extends JsonResource
             'email' => $resource['email'],
             'type' => $resource['type'],
             'photo' => $resource['photo'],
-            'photo_url' => UserPhoto::get($this->photo),
+            'photo_url' => UserPhoto::get(),
             'first_name' => $resource['first_name'],
             'last_name' => $resource['last_name'],
             'member_class' => $resource['member_class'],
