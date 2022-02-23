@@ -41,7 +41,8 @@ class EventHistory extends JsonResource
             'name' => $this->getEffectedBy->name,
             'nickname' => $this->getEffectedBy->nickname,
             'display_name' => $this->getEffectedBy->display_name,
-            'photo' => UserPhoto::get($this->getEffectedBy->photo),
+            'photo_url' => UserPhoto::get(''),
+            'photo' => $this->getEffectedBy->photo
         ];
     }
 

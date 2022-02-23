@@ -58,7 +58,8 @@ class Event extends JsonResource
         return [
             'id' => $this->user->id,
             'name' => $this->user->name,
-            'photo' => UserPhoto::get($this->user->photo),
+            'photo' => $this->photo,
+            'photo_url' => UserPhoto::get(''),
             'email' => $this->user->email,
             'company' => $this->user->company,
             'status' => $this->user->status,
