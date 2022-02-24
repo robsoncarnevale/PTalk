@@ -83,6 +83,42 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
     ];
 
+    public $privileges_member = [
+
+        /* Users */
+
+        'users.me',
+        'users.me.update',
+        'users.me.address',
+        'users.me.address.create',
+        'users.me.address.update',
+
+        /* Vehicles */
+
+        'vehicles.my-vehicles.list',
+        'vehicles.my-vehicles.get',
+        'vehicles.my-vehicles.create',
+        'vehicles.my-vehicles.update',
+        'vehicles.my-vehicles.delete',
+        'vehicles.my-vehicles.photo.upload',
+        'vehicles.my-vehicles.photo.delete',
+
+        /* Events */
+
+        'events.list',
+        'events.get',
+        'events.subscribe',
+        'events.unsubscribe',
+        'events.print',
+
+        /* Bank Account */
+
+        'bank-accounts.my',
+        'bank-accounts.transfers',
+        'bank-accounts.transfers.store',
+        'bank-accounts.detail'
+    ];
+
     /**
      * Clean access code to retrive outside class after generation
      * 
@@ -497,43 +533,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function applyPrivilegesMember()
     {
-        $privileges = [
-
-            /* Users */
-
-            'users.me',
-            'users.me.update',
-            'users.me.address',
-            'users.me.address.create',
-            'users.me.address.update',
-
-            /* Vehicles */
-
-            'vehicles.my-vehicles.list',
-            'vehicles.my-vehicles.get',
-            'vehicles.my-vehicles.create',
-            'vehicles.my-vehicles.update',
-            'vehicles.my-vehicles.delete',
-            'vehicles.my-vehicles.photo.upload',
-            'vehicles.my-vehicles.photo.delete',
-
-            /* Events */
-
-            'events.list',
-            'events.get',
-            'events.subscribe',
-            'events.unsubscribe',
-            'events.print',
-
-            /* Bank Account */
-
-            'bank-accounts.my',
-            'bank-accounts.transfers',
-            'bank-accounts.transfers.store',
-            'bank-accounts.detail'
-        ];
-
-        $privileges = Privilege::whereIn('action', $privileges)->get();
+        $privileges = Privilege::whereIn('action', $this->privileges_member)->get();
 
         $body = [];
 
