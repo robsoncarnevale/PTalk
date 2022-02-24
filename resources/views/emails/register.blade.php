@@ -5,6 +5,16 @@
 @endsection
 
 @section('content')
+
+    @php
+
+        $url = $club->url;
+
+        if(susbtr($url, -1) != '/')
+            $url .= '/';
+
+    @endphp
+
   <!-- pre-header -->
   <table style="display:none!important;">
     <tr>
@@ -76,7 +86,7 @@
                                             <td align="center" style="color: #ffffff; font-size: 14px; font-family: 'Work Sans', Calibri, sans-serif; line-height: 22px; letter-spacing: 2px;">
                                                 <!-- main section button -->
                                                 <div style="line-height: 22px;">
-                                                    <a href="{{ $club->url }}/first-access/{{ $user->new_password_token }}" style="color: #ffffff; text-decoration: none;">{{ $club->name }}</a>
+                                                    <a href="{{ $url }}first-access/{{ $user->new_password_token }}" style="color: #ffffff; text-decoration: none;">{{ $club->name }}</a>
                                                 </div>
                                             </td>
                                         </tr>
