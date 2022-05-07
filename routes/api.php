@@ -265,7 +265,12 @@ Route::group(['middleware' => 'preset'], function(){
             Route::post('events/{event}/unsubscribe', [ 'uses' => 'Mobile\EventsController@Unsubscribe', 'as' => 'mobile.events.subscribe' ]);
 
             // Digital Bank Account
-            Route::get('/bank-accounts/my', [ 'uses' => 'Mobile\BankAccountController@my', 'as' => 'bank-accounts.my' ]);
+            Route::group(['prefix' => 'bank-accounts'], function(){
+
+                Route::get('/my', [ 'uses' => 'Mobile\BankAccountController@my', 'as' => 'bank-accounts.my']);
+                Route::post('/load', ['uses' => 'Mobile\BankAccountController@load', 'as' => 'bank-accounts.load']);
+
+            });
 
             // Refer member
             Route::post('/members/refer', [ 'uses' => 'Mobile\MembersController@CreateFromReference', 'as' => 'mobile.members.refer' ]);

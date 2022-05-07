@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Mobile;
 
 use Illuminate\Http\Request;
-
+use App\Http\Requests\BankAccountLoadRequest;
 use App\Models\CarBrand;
 
 /**
@@ -14,8 +14,13 @@ use App\Models\CarBrand;
  */
 class BankAccountController extends Controller
 {
-    function my(Request $request)
+    public function my(Request $request)
     {
         return (new \App\Http\Controllers\BankAccountController())->my($request);
+    }
+
+    public function load(BankAccountLoadRequest $request)
+    {
+        return (new \App\Http\Controllers\BankAccountController())->load($request);
     }
 }
