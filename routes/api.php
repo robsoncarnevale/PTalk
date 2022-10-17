@@ -170,6 +170,14 @@ Route::group(['middleware' => 'preset'], function(){
 
         });
 
+        //Loja do Clubes
+        Route::get('/clubstore', ['uses' => 'ClubStoreController@index', 'as' => 'clubstore.index']);
+        Route::get('/clubstore/adregistration', ['uses' => 'ClubStoreController@adRegistration', 'as' => 'clubstore.ad_registration']);
+        Route::get('/clubstore/inactiveads', ['uses' => 'ClubStoreController@inactiveAds', 'as' => 'clubstore.inactive_ads']);
+        Route::get('/clubstore/saleshistory', ['uses' => 'ClubStoreController@salesHistory', 'as' => 'clubstore.sales_history']);
+        Route::get('/clubstore/adverts', ['uses' => 'ClubStoreController@adverts', 'as' => 'clubstore.adverts']);
+        Route::get('/clubstore/discountcoupon', ['uses' => 'ClubStoreController@discountCoupon', 'as' => 'clubstore.discount_coupon']);
+
         // Blacklist
         Route::get('/blacklist', [ 'uses' => 'BlacklistController@List', 'as' => 'blacklist.list' ]);
         Route::get('/blacklist/{blacklist_id}', [ 'uses' => 'BlacklistController@Get', 'as' => 'blacklist.get' ])->where(['blacklist_id' => '[0-9]+']);
