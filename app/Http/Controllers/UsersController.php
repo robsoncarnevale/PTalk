@@ -596,4 +596,12 @@ class UsersController extends Controller
 
         return response()->json([ 'status' => 'success', 'message' => __('administrators.success-change-type') ]);
     }
+
+    public function findByEmail(Request $request) {
+
+        $email = $request->get('email_user');
+        $user = new User();
+        return $user->findByEmail($email);
+
+    }
 }

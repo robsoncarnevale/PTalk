@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ClubStore;
 use Illuminate\Http\Request;
+use App\Models\Product;
 
-class ClubStoreController extends Controller
+class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +14,7 @@ class ClubStoreController extends Controller
      */
     public function index()
     {
-        dd("Index ClubStoreController");
+        dd("Index ProductController");
     }
 
     /**
@@ -24,7 +24,7 @@ class ClubStoreController extends Controller
      */
     public function create()
     {
-        dd("create ClubStoreController");
+        
     }
 
     /**
@@ -35,52 +35,67 @@ class ClubStoreController extends Controller
      */
     public function store(Request $request)
     {
-        dd("store ClubStoreController");
+        try
+        {
+            Product::create($request->all());
+
+            return response()->json([
+                'status' => 'success',
+                'message' => __('product.created')
+            ]);
+        }
+        catch(\Exception $e)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\ClubStore  $clubStore
+     * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function show(ClubStore $clubStore)
+    public function show(Product $product)
     {
-        dd("show ClubStoreController");
+        dd("show ProductController");
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\ClubStore  $clubStore
+     * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function edit(ClubStore $clubStore)
+    public function edit(Product $product)
     {
-        dd("edit ClubStoreController");
+        dd("edit ProductController");
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\ClubStore  $clubStore
+     * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ClubStore $clubStore)
+    public function update(Request $request, Product $product)
     {
-        dd("update ClubStoreController");
+        dd("update ProductController");
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\ClubStore  $clubStore
+     * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ClubStore $clubStore)
+    public function destroy(Product $product)
     {
-        dd("destroy ClubStoreController");
+        dd("destroy ProductController");
     }
 
     public function adRegistration() {
@@ -95,8 +110,8 @@ class ClubStoreController extends Controller
         dd("salesHistory");
     }
 
-    public function adverts() {
-        dd("adverts");
+    public function list() {
+        dd("list");
     }
 
     public function discountCoupon() {

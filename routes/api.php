@@ -98,6 +98,8 @@ Route::group(['middleware' => 'preset'], function(){
         Route::post('users/address/{address}', [ 'uses' => 'UserAddressController@UpdateMyAddress', 'as' => 'users.address.update.my' ]);
         Route::delete('/users/classes/{address}', [ 'uses' => 'UserAddressController@DeleteMyddress', 'as' => 'users.address.delete.my' ]);
 
+        Route::get('/users/findbyemail', [ 'uses' => 'UsersController@findByEmail', 'as' => 'users.findbyemail' ]);
+
         /* PRIVILEGES */
 
         Route::get('privileges', ['uses' => 'PrivilegesController@List', 'as' => 'privileges.list']);
@@ -171,12 +173,13 @@ Route::group(['middleware' => 'preset'], function(){
         });
 
         //Loja do Clubes
-        Route::get('/clubstore', ['uses' => 'ClubStoreController@index', 'as' => 'clubstore.index']);
-        Route::get('/clubstore/adregistration', ['uses' => 'ClubStoreController@adRegistration', 'as' => 'clubstore.ad_registration']);
-        Route::get('/clubstore/inactiveads', ['uses' => 'ClubStoreController@inactiveAds', 'as' => 'clubstore.inactive_ads']);
-        Route::get('/clubstore/saleshistory', ['uses' => 'ClubStoreController@salesHistory', 'as' => 'clubstore.sales_history']);
-        Route::get('/clubstore/adverts', ['uses' => 'ClubStoreController@adverts', 'as' => 'clubstore.adverts']);
-        Route::get('/clubstore/discountcoupon', ['uses' => 'ClubStoreController@discountCoupon', 'as' => 'clubstore.discount_coupon']);
+        Route::get('/product', ['uses' => 'ProductController@index', 'as' => 'product.index']);
+        Route::post('/product/data', [ 'uses' => 'ProductController@store', 'as' => 'product.store' ]);
+        Route::get('/product/adregistration', ['uses' => 'ProductController@adRegistration', 'as' => 'product.ad_registration']);
+        Route::get('/product/inactiveads', ['uses' => 'ProductController@inactiveAds', 'as' => 'product.inactive_ads']);
+        Route::get('/product/saleshistory', ['uses' => 'ProductController@salesHistory', 'as' => 'product.sales_history']);
+        Route::get('/product/list', ['uses' => 'ProductController@list', 'as' => 'product.list']);
+        Route::get('/product/discountcoupon', ['uses' => 'ProductController@discountCoupon', 'as' => 'product.discount_coupon']);
 
         // Blacklist
         Route::get('/blacklist', [ 'uses' => 'BlacklistController@List', 'as' => 'blacklist.list' ]);

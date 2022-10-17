@@ -150,12 +150,12 @@ class CreatePrivileges extends Seeder
             // [ 'action' => 'club.bankaccount.launch.credit',     'name' => 'Launch Credit on Club Bank Account', 'description' => '', 'add_member' => false ],         
             // [ 'action' => 'club.bankaccount.data',              'name' => 'Get Club Bank Account Data', 'description' => '', 'add_member' => false ],
 
-            [ 'action' => 'clubestore.index',                   'name' => 'List Club Store', 'description' => '', 'add_member' => false ],
-            [ 'action' => 'clubestore.ad_registration',         'name' => 'Ad Registration', 'description' => '', 'add_member' => false ],
-            [ 'action' => 'clubestore.instactive_ads',          'name' => 'Inactive Ads', 'description' => '', 'add_member' => false ],
-            [ 'action' => 'clubestore.sales_history',           'name' => 'Sales History', 'description' => '', 'add_member' => false ],
-            [ 'action' => 'clubestore.adverts',                 'name' => 'Advertising', 'description' => '', 'add_member' => false ],
-            [ 'action' => 'clubestore.discount_coupon',         'name' => 'Discount Coupon', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'products.index',                   'name' => 'List Club Store', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'products.ad_registration',         'name' => 'Product Registration', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'products.instactive_ads',          'name' => 'Inactive Products', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'products.sales_history',           'name' => 'Sales History', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'products.list',                    'name' => 'Products List', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'products.discount_coupon',         'name' => 'Discount Coupon', 'description' => '', 'add_member' => false ],
 
             [ 'action' => 'club.status',                        'name' => 'Read club status', 'description' => '', 'add_member' => true ],
             [ 'action' => 'club.data',                          'name' => 'Club Details', 'description' => '', 'add_member' => true ],

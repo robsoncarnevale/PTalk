@@ -548,4 +548,10 @@ class User extends Authenticatable implements JWTSubject
         if(!$create)
             throw new \Exception(__('privileges.failed-create'));
     }
+
+    public function findByEmail($email) {
+        return User::select()
+                    ->where('email', $email)
+                    ->get();
+    }
 }
