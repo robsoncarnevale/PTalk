@@ -111,7 +111,11 @@ class ProductController extends Controller
     }
 
     public function list() {
-        dd("list");
+        
+        $list = Product::all();
+
+        return $list;
+
     }
 
     public function discountCoupon() {
