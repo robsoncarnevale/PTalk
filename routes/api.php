@@ -176,6 +176,10 @@ Route::group(['middleware' => 'preset'], function(){
         Route::get('/product', ['uses' => 'ProductController@index', 'as' => 'product.index']);
         Route::post('/product/data', [ 'uses' => 'ProductController@store', 'as' => 'product.store' ]);
         Route::get('/product/adregistration', ['uses' => 'ProductController@adRegistration', 'as' => 'product.ad_registration']);
+        Route::get('/product/adregistration/{id}', ['uses' => 'ProductController@get', 'as' => 'product.ad_registration'] );
+        Route::get('/product/delete/{id}', ['uses' => 'ProductController@destroy', 'as' => 'product.delete'] );
+        Route::get('/product/deactivate/{id}', ['uses' => 'ProductController@deactivate', 'as' => 'product.deactivate']);
+        Route::get('/product/activate/{id}', ['uses' => 'ProductController@activate', 'as' => 'product.activate']);
         Route::get('/product/inactiveads', ['uses' => 'ProductController@inactiveAds', 'as' => 'product.inactive_ads']);
         Route::get('/product/saleshistory', ['uses' => 'ProductController@salesHistory', 'as' => 'product.sales_history']);
         Route::get('/product/list', ['uses' => 'ProductController@list', 'as' => 'product.list']);

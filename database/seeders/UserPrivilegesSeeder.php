@@ -14,12 +14,17 @@ class UserPrivilegesSeeder extends Seeder
      */
     public function run()
     {
-        $id = (DB::table('privileges')->latest('id')->first()->id)-7;
-        for($i = 1; $i < 8; $i++) {
-            DB::table('user_privileges')
-                        ->insert([
-                            'user_id' => 1,
-                            'privilege_id' => $id+$i
+        //Caso precise gerar os privilegios para o admin, basta colocar o id do usuario
+        //e rodar o comando php artisan db:seed --class=UserPrivilegesSeeder
+        $user_id = 1;
+        DB::table('user_privileges')->where('user_id', $user_id)->delete();
+        $privileges = DB::table('privileges')->get();
+        foreach($privileges as $item) {
+            DB::table('user_privileges')->insert([
+                            'user_id' => $user_id,
+                            'privilege_id' => $item->id,
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'updated_at' => date('Y-m-d H:i:s')
                         ]);
         }
     }

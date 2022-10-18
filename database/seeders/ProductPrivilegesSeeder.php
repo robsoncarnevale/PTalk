@@ -14,60 +14,32 @@ class ProductPrivilegesSeeder extends Seeder
      */
     public function run()
     {
-        $privilege = new Privilege();
-        $privilege->action = 'product.index';
-        $privilege->name = 'List Club Store';
-        $privilege->created_at = date('Y-m-d');
-        $privilege->updated_at = date('Y-m-d');
-        $privilege->save();
+        //Se precisar criar um registro novo, basta adiciona-lo e executar o seed
+        //php artisan db:seed --class=ProductPrivilegesSeeder
+        $this->cratePrivilege('product.index','List Club Store');
+        $this->cratePrivilege('product.ad_registration','Product Registration');
+        $this->cratePrivilege('product.inactive_ads','Inactive Ads');
+        $this->cratePrivilege('product.sales_history','Sales History');
+        $this->cratePrivilege('product.list','List');
+        $this->cratePrivilege('product.discount_coupon','Discount Coupon');
+        $this->cratePrivilege('product.store','Save Product');
+        $this->cratePrivilege('users.findbyemail','Find By Email');
+        $this->cratePrivilege('product.edit','Edit Product');
+        $this->cratePrivilege('product.get_product','Get Product');
+        $this->cratePrivilege('product.listall','List All');
+        $this->cratePrivilege('product.delete','Product Delete');
+        $this->cratePrivilege('product.deactivate','Product Deactivate');
+        $this->cratePrivilege('product.activate','Product Activate');
+    }
 
+    private function cratePrivilege($action,$name) {
         $privilege = new Privilege();
-        $privilege->action = 'product.ad_registration';
-        $privilege->name = 'Product Registration';
-        $privilege->created_at = date('Y-m-d');
-        $privilege->updated_at = date('Y-m-d');
-        $privilege->save();
-
-        $privilege = new Privilege();
-        $privilege->action = 'product.inactive_ads';
-        $privilege->name = 'Inactive Ads';
-        $privilege->created_at = date('Y-m-d');
-        $privilege->updated_at = date('Y-m-d');
-        $privilege->save();
-
-        $privilege = new Privilege();
-        $privilege->action = 'product.sales_history';
-        $privilege->name = 'Sales History';
-        $privilege->created_at = date('Y-m-d');
-        $privilege->updated_at = date('Y-m-d');
-        $privilege->save();
-
-        $privilege = new Privilege();
-        $privilege->action = 'product.list';
-        $privilege->name = 'List';
-        $privilege->created_at = date('Y-m-d');
-        $privilege->updated_at = date('Y-m-d');
-        $privilege->save();
-
-        $privilege = new Privilege();
-        $privilege->action = 'product.discount_coupon';
-        $privilege->name = 'Discount Coupon';
-        $privilege->created_at = date('Y-m-d');
-        $privilege->updated_at = date('Y-m-d');
-        $privilege->save();
-
-        $privilege = new Privilege();
-        $privilege->action = 'product.store';
-        $privilege->name = 'Save Product';
-        $privilege->created_at = date('Y-m-d');
-        $privilege->updated_at = date('Y-m-d');
-        $privilege->save();
-
-        $privilege = new Privilege();
-        $privilege->action = 'users.findbyemail';
-        $privilege->name = 'Find By Email';
-        $privilege->created_at = date('Y-m-d');
-        $privilege->updated_at = date('Y-m-d');
-        $privilege->save();
+        if ($privilege->getByAction($action)->count() < 1) {
+            $privilege->action = $action;
+            $privilege->name = $name;
+            $privilege->created_at = date('Y-m-d');
+            $privilege->updated_at = date('Y-m-d');
+            $privilege->save();
+        }
     }
 }
