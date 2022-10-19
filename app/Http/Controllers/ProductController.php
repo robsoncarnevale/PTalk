@@ -230,6 +230,9 @@ class ProductController extends Controller
     }
 
     public function discountCoupon() {
-        dd("discountCoupon");
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Tela em construção'
+        ], 500);
     }
 }
