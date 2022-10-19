@@ -30,6 +30,9 @@ class ProductPrivilegesSeeder extends Seeder
         $this->cratePrivilege('product.delete','Product Delete');
         $this->cratePrivilege('product.deactivate','Product Deactivate');
         $this->cratePrivilege('product.activate','Product Activate');
+        $this->cratePrivilege('monthlypayment.index','Monthlypayment index');
+        $this->cratePrivilege('monthlypayment.parameters','Monthlypayment parameters');
+        $this->cratePrivilege('monthlypayment.pendencies','Monthlypayment pendencies');
     }
 
     private function cratePrivilege($action,$name) {
