@@ -26,9 +26,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // Log::info("Passei na schedule");
+        Log::info("Passei na schedule");
         // $schedule->command('inspire')->hourly();
-        $schedule->command('refresh:events')->hourly();
+        $schedule->command('dailyFare:cron')->everyMinute();
     }
 
     /**
@@ -39,7 +39,6 @@ class Kernel extends ConsoleKernel
     protected function commands()
     {
         $this->load(__DIR__.'/Commands');
-
         require base_path('routes/console.php');
     }
 }

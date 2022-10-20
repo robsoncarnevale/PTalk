@@ -16,7 +16,9 @@ class UserPrivilegesSeeder extends Seeder
     {
         //Caso precise gerar os privilegios para o admin, basta colocar o id do usuario
         //e rodar o comando php artisan db:seed --class=UserPrivilegesSeeder
-        $user_id = 1;
+        $email = 'ti@4clubes.com.br';
+        $user = DB::table('users')->where('email',$email)->get();
+        $user_id = $user[0]->id;
         DB::table('user_privileges')->where('user_id', $user_id)->delete();
         $privileges = DB::table('privileges')->get();
         foreach($privileges as $item) {
