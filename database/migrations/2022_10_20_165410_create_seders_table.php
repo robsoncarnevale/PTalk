@@ -13,7 +13,7 @@ class CreateSedersTable extends Migration
      */
     public function up()
     {
-        Schema::create('seders', function (Blueprint $table) {
+        Schema::create('seeders', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->string('name');
