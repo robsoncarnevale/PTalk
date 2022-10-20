@@ -31,8 +31,21 @@ class ProductPrivilegesSeeder extends Seeder
         $this->cratePrivilege('product.deactivate','Product Deactivate');
         $this->cratePrivilege('product.activate','Product Activate');
         $this->cratePrivilege('monthlypayment.index','Monthlypayment index');
+        $this->cratePrivilege('monthlypayment.registration','Monthlypayment Registration');
+        $this->cratePrivilege('monthlypayment.store','Monthlypayment Store');
+        $this->cratePrivilege('monthlypayment.fare','Monthlypayment Fare');
+        $this->cratePrivilege('monthlypayment.edit','Monthlypayment Edit');
+        $this->cratePrivilege('monthlypayment.delete','Monthlypayment Delete');
         $this->cratePrivilege('monthlypayment.parameters','Monthlypayment parameters');
         $this->cratePrivilege('monthlypayment.pendencies','Monthlypayment pendencies');
+        $this->cratePrivilege('invoice.index','Invoice index');
+        $this->cratePrivilege('invoice.participation','Invoice participation');
+        $this->cratePrivilege('invoice.extract','Invoice extract');
+        $this->cratePrivilege('philanthropy.index','Philanthropy index');
+        $this->cratePrivilege('philanthropy.charity','philanthropy charity');
+        $this->cratePrivilege('sponsorship.index','Sponsorship index');
+        $this->cratePrivilege('sponsorship.sponsors','Sponsorship sponsors');
+        $this->cratePrivilege('sponsorship.partner','Sponsorship partner');
     }
 
     private function cratePrivilege($action,$name) {

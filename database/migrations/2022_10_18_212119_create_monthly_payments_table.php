@@ -16,6 +16,10 @@ class CreateMonthlyPaymentsTable extends Migration
         Schema::create('monthly_payments', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->string('name',20);
+            $table->decimal('value',8,2);
+            $table->string('class_member',100);
+            $table->string('recurrence',10);
         });
     }
 

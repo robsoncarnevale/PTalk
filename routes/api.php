@@ -185,6 +185,13 @@ Route::group(['middleware' => 'preset'], function(){
         Route::get('/product/list', ['uses' => 'ProductController@list', 'as' => 'product.list']);
         Route::get('/product/discountcoupon', ['uses' => 'ProductController@discountCoupon', 'as' => 'product.discount_coupon']);
 
+        // MonthlyPayments
+
+        Route::post('/monthlypayment/data', ['uses' => 'MonthlyPaymentController@store', 'as' => 'monthlypayment.store']);
+        Route::get('/monthlypayment/fare', ['uses' => 'MonthlyPaymentController@fare', 'as' => 'monthlypayment.fare']);
+        Route::get('/monthlypayment/registration/{id}', ['uses' => 'MonthlyPaymentController@get', 'as' => 'monthlypayment.store']);
+        Route::get('/monthlypayment/delete/{id}', ['uses' => 'MonthlyPaymentController@destroy', 'as' => 'monthlypayment.delete']);
+
         // Blacklist
         Route::get('/blacklist', [ 'uses' => 'BlacklistController@List', 'as' => 'blacklist.list' ]);
         Route::get('/blacklist/{blacklist_id}', [ 'uses' => 'BlacklistController@Get', 'as' => 'blacklist.get' ])->where(['blacklist_id' => '[0-9]+']);
