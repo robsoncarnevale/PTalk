@@ -10,7 +10,7 @@
 
         $url = $club->url;
 
-        if(susbtr($url, -1) != '/')
+        if(substr($url, -1) != '/')
             $url .= '/';
 
     @endphp

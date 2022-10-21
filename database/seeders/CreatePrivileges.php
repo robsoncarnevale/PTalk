@@ -70,6 +70,7 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'users.address.create.my',            'name' => 'Create My Address', 'description' => '', 'add_member' => true ],
             [ 'action' => 'users.address.update.my',            'name' => 'Update My Address', 'description' => '', 'add_member' => true ],
             [ 'action' => 'users.address.delete.my',            'name' => 'Delete My Address', 'description' => '', 'add_member' => true ],
+            [ 'action' => 'users.findbyemail',                  'name' => 'Fid By Email', 'description' => '', 'add_member' => false ],
 
             [ 'action' => 'privileges.list', 'name' => 'List Permissions', 'description' => '', 'add_member' => false ],
             
@@ -160,6 +161,40 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'club.status',                        'name' => 'Read club status', 'description' => '', 'add_member' => true ],
             [ 'action' => 'club.data',                          'name' => 'Club Details', 'description' => '', 'add_member' => true ],
             [ 'action' => 'club.data.store',                    'name' => 'Save Club Details', 'description' => '', 'add_member' => true ],
+
+            [ 'action' => 'product.index', 'name' => 'List Club Store', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'product.ad_registration', 'name' => 'Product Registration', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'product.inactive_ads', 'name' => 'Inactive Ads', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'product.sales_history', 'name' => 'Sales History', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'product.list', 'name' => 'List', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'product.discount_coupon', 'name' => 'Discount Coupon', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'product.store', 'name' => 'Save Product', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'product.edit', 'name' => 'Edit Product', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'product.get_product', 'name' => 'Get Product', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'product.listall', 'name' => 'List All', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'product.delete', 'name' => 'Product Delete', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'product.deactivate', 'name' => 'Product Deactivate', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'product.activate', 'name' => 'Product Activate', 'description' => '', 'add_member' => false ],
+
+            [ 'action' => 'monthlypayment.index', 'name' => 'Monthlypayment index', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'monthlypayment.registration', 'name' => 'Monthlypayment Registration', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'monthlypayment.store', 'name' => 'Monthlypayment Store', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'monthlypayment.fare', 'name' => 'Monthlypayment Fare', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'monthlypayment.edit', 'name' => 'Monthlypayment Edit', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'monthlypayment.delete', 'name' => 'Monthlypayment Delete', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'monthlypayment.parameters', 'name' => 'Monthlypayment parameters', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'monthlypayment.pendencies', 'name' => 'Monthlypayment pendencies', 'description' => '', 'add_member' => false ],
+
+            [ 'action' => 'invoice.index', 'name' => 'Invoice index', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'invoice.participation', 'name' => 'Invoice participation', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'invoice.extract', 'name' => 'Invoice extract', 'description' => '', 'add_member' => false ],
+
+            [ 'action' => 'philanthropy.index', 'name' => 'philanthropy index', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'philanthropy.charity', 'name' => 'philanthropy charity', 'description' => '', 'add_member' => false ],
+
+            [ 'action' => 'sponsorship.index', 'name' => 'Sponsorship index', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'sponsorship.sponsors', 'name' => 'Sponsorship sponsors', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'sponsorship.partner', 'name' => 'Sponsorship partner', 'description' => '', 'add_member' => false ],
         ],
     ];
     /**

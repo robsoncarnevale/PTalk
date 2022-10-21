@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
         self::$tableSeeds = DB::table('seeders')->select('name','executed')->get()->toArray();
 
         $this->generateFnVar();
+
         if (!$this->executed('clubs')) {
             // Create club
             $this->createClub();

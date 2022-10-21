@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Config;
 
+use DB;
+
 class CreateConfigTableSeeder extends Seeder
 {
     /**
@@ -16,7 +18,7 @@ class CreateConfigTableSeeder extends Seeder
     {
         if(!Config::first())
             Config::create([
-                'club_code' => getClubCode()
+                'club_code' => DB::table('clubs')->where('id', 1)->get()->toArray()[0]->code//getClubCode()
             ]);
     }
 }

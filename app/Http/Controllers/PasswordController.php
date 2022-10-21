@@ -167,7 +167,7 @@ class PasswordController extends Controller
             Mail::to($user->email)
                 ->send(new \App\Mail\ForgetPasswordMail($user));
         } catch(\Exception $e) {
-
+            return response()->json([ 'status' => 'error', 'message' => __($e->getMessage(), [ 'error' => $e->getMessage() ]) ]);
         }
 
         return response()->json([ 'status' => 'success', 'message' => __('password.success-get-forget-token'), 'data' => (new UserResource($user)) ], 200);
