@@ -33,8 +33,8 @@ return [
     'error-extract-administrator' => 'Administrador não possui extrato bancário!',
 
     'errors' => [
-        'no-have-account' => 'Você não possuí uma conta bancária!',
-        'bank-account-not-found' => 'Conta bancária não localizada!',
+        'no-have-account' => 'Você não possuí uma conta!',
+        'bank-account-not-found' => 'Conta não localizada!',
         'bank-account-not-found-origin' => 'Conta de origem não localizada!',
         'insufficient-fund' => 'Saldo insuficiente!',
         'transfer-my' => 'Não pode realizar uma transferência para si mesmo!',
