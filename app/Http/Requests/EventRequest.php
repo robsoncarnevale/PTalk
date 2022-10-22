@@ -20,13 +20,13 @@ class EventRequest extends FormRequest
 
     protected function prepareForValidation()
     {
-        // if ($this->has('start_time')) {
-        //     $this->merge([ 'start_time' => preg_replace("#[^0-9]*#is", "", $this->start_time) ]);
-        // }
+        if ($this->has('start_time')) {
+            $this->merge([ 'start_time' => preg_replace("#[^0-9]*#is", "", $this->start_time) ]);
+        }
 
-        // if ($this->has('end_time')) {
-        //     $this->merge([ 'end_time' => preg_replace("#[^0-9]*#is", "", $this->end_time) ]);
-        // }
+        if ($this->has('end_time')) {
+            $this->merge([ 'end_time' => preg_replace("#[^0-9]*#is", "", $this->end_time) ]);
+        }
     }
 
     /**
@@ -60,8 +60,8 @@ class EventRequest extends FormRequest
             'end_time' => 'numeric' . $this->status == Event::DRAFT_STATUS ? "|nullable" : "",
 
             'date' => 'date_format:d/m/Y' . $this->status == Event::DRAFT_STATUS ? "|nullable" : "",
-            'date_limit' => 'date_format:d/m/Y|before:date' . ($this->status == Event::DRAFT_STATUS ? "|nullable" : ""),
-            'unsubscribe_date_limit' => 'date_format:d/m/Y|before_or_equal:date' . ($this->status == Event::DRAFT_STATUS ? "|nullable" : ""),
+            // 'date_limit' => 'date_format:d/m/Y|before:date' . ($this->status == Event::DRAFT_STATUS ? "|nullable" : ""),
+            // 'unsubscribe_date_limit' => 'date_format:d/m/Y|before_or_equal:date' . ($this->status == Event::DRAFT_STATUS ? "|nullable" : ""),
         ], $this->getClassValidation());
     }
 
@@ -80,8 +80,8 @@ class EventRequest extends FormRequest
             'end_time' => 'numeric' . $this->status == Event::DRAFT_STATUS ? "|nullable" : "",
 
             'date' => 'date_format:d/m/Y' . $this->status == Event::DRAFT_STATUS ? "|nullable" : "",
-            'date_limit' => 'date_format:d/m/Y|before:date' . ($this->status == Event::DRAFT_STATUS ? "|nullable" : ""),
-            'unsubscribe_date_limit' => 'date_format:d/m/Y|before_or_equal:date' . ($this->status == Event::DRAFT_STATUS ? "|nullable" : ""),
+            // 'date_limit' => 'date_format:d/m/Y|before:date' . ($this->status == Event::DRAFT_STATUS ? "|nullable" : ""),
+            // 'unsubscribe_date_limit' => 'date_format:d/m/Y|before_or_equal:date' . ($this->status == Event::DRAFT_STATUS ? "|nullable" : ""),
         ], $this->getClassValidation());
     }
 
@@ -96,7 +96,7 @@ class EventRequest extends FormRequest
         foreach($classes as $member_class) {
             $validation_init = 'class.' . $member_class['label'] . '.';
 
-            $class_validation[$validation_init . 'start_subscription_date'] = 'date_format:d/m/Y|before_or_equal:date|before_or_equal:date_limit|nullable';
+            //$class_validation[$validation_init . 'start_subscription_date'] = 'date_format:d/m/Y|before_or_equal:date|before_or_equal:date_limit|nullable';
         } 
 
         return $class_validation;
@@ -107,7 +107,7 @@ class EventRequest extends FormRequest
     public function messages()
     {
         return [
-            // 'date_limit.before' => __('validation.event.date_limit_before'),
+            //'date_limit.before' => __('validation.event.date_limit_before'),
         ];
     }
 }
