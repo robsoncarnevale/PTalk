@@ -20,13 +20,13 @@ class EventRequest extends FormRequest
 
     protected function prepareForValidation()
     {
-        if ($this->has('start_time')) {
-            $this->merge([ 'start_time' => preg_replace("#[^0-9]*#is", "", $this->start_time) ]);
-        }
+        // if ($this->has('start_time')) {
+        //     $this->merge([ 'start_time' => preg_replace("#[^0-9]*#is", "", $this->start_time) ]);
+        // }
 
-        if ($this->has('end_time')) {
-            $this->merge([ 'end_time' => preg_replace("#[^0-9]*#is", "", $this->end_time) ]);
-        }
+        // if ($this->has('end_time')) {
+        //     $this->merge([ 'end_time' => preg_replace("#[^0-9]*#is", "", $this->end_time) ]);
+        // }
     }
 
     /**
@@ -107,7 +107,7 @@ class EventRequest extends FormRequest
     public function messages()
     {
         return [
-            'date_limit.before' => __('validation.event.date_limit_before'),
+            // 'date_limit.before' => __('validation.event.date_limit_before'),
         ];
     }
 }
