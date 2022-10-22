@@ -33,6 +33,6 @@ class CreateClubBankAccountTableSeeder extends Seeder
         ]);
 
         if(!$account)
-            throw new \Exception('Falha ao criar conta bancária do clube!');
+            throw new \Exception('Falha ao criar conta do clube!');
     }
 }
