@@ -33,11 +33,11 @@ class AuthController extends Controller
     public function Login(Request $request)
     {
         $credentials = $request->only('email', 'password');
-
+        
         if ($token = $this->guard()->attempt($credentials))
         {
             $user = $this->guard()->user();
-
+            
             // User inactive
             if ($user->status == User::INACTIVE_STATUS)
                 return response()->json(['message' => __('auth.incorrect'), 'status' => 'error' ]);

@@ -40,6 +40,15 @@ class MonthlyPaymentController extends Controller
                     ], 500);
                 }
             } else {
+                if (!$request->input('name')) {
+                    abort(404,__('monthlypayment_registration.no_name'));
+                } else if (!$request->input('value')) {
+                    abort(404,__('monthlypayment_registration.no_value'));
+                } else if (!$request->input('class_member')) {
+                    abort(404,__('monthlypayment_registration.no_class'));
+                } else if (!$request->input('recurrence')) {
+                    abort(404,__('monthlypayment_registration.no_recurrence'));
+                }
                 MonthlyPayment::create($request->all());
                 $msg = "created";
             }
