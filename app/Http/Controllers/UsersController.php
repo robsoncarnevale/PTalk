@@ -587,23 +587,4 @@ class UsersController extends Controller
         $user = new User();
         return $user->findByEmail($email);
     }
-
-    public function alterStatusUser(Request $request, $id)
-    {
-        if (User::where('id', $id)->exists()) {
-            $student = User::find($id);
-            $student->status = is_null($request->status) ? $student->status : $request->status;
-            $student->save();
-
-            // dd($student);
-
-            return response()->json([
-                "message" => "Status updated successfully"
-            ], 200);
-        } else {
-            return response()->json([
-                "message" => "Status not found"
-            ], 404);
-        }
-    }
 }

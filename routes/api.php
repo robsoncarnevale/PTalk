@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\UsersController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -66,8 +64,7 @@ Route::group(['middleware' => 'preset'], function () {
         Route::get('/users/history/{user_id}', ['uses' => 'UsersController@GetHistory', 'as' => 'users.history'])->where(['user_id' => '[0-9]+']);
         Route::get('/users/members/history-approval', ['uses' => 'MemberUsersController@HistoryApproval', 'as' => 'users.members.history-approval']);
         Route::post('/users/change-type/{user}/{type}', ['uses' => 'UsersController@ChangeType', 'as' => 'users.change-type']);
-
-
+        
         // Admin User
         Route::get('/users/administrators', ['uses' => 'AdminUsersController@List', 'as' => 'users.administrators.list']);
         Route::get('/users/administrators/{user_id}', ['uses' => 'AdminUsersController@Get', 'as' => 'users.administrators.update'])->where(['user_id' => '[0-9]+']);
@@ -96,7 +93,6 @@ Route::group(['middleware' => 'preset'], function () {
         Route::post('users/{user}/address/{address}', ['uses' => 'UserAddressController@Update', 'as' => 'users.address.update']);
         Route::delete('/users/{user}/classes/{address}', ['uses' => 'UserAddressController@Delete', 'as' => 'users.address.delete']);
         // My Users Address
-        Route::put('/users/alterStatusUser/{id}', [UsersController::class, 'alterStatusUser'])->name('alterStatus');
         Route::get('/users/address/my', ['uses' => 'UserAddressController@ListMyAddress', 'as' => 'users.address.list.my']);
         Route::get('/users/address/my/{address}', ['uses' => 'UserAddressController@GetMyAddress', 'as' => 'users.address.get.my']);
         Route::put('/users/address/my', ['uses' => 'UserAddressController@CreateMyAddress', 'as' => 'users.address.create.my']);
@@ -257,6 +253,8 @@ Route::group(['middleware' => 'preset'], function () {
             // Route::post('users/me/address/{address}', [ 'uses' => 'Mobile\UserAddressController@UpdateMyAddress', 'as' => 'users.me.address.update' ]);
             Route::post('users/me/address', ['uses' => 'Mobile\UserAddressController@UpdateMyAddress', 'as' => 'mobile.users.me.address.update']);
             Route::post('/profile/update', ['uses' => 'Mobile\MembersController@UpdateProfile', 'as' => 'mobile.profile.update']);
+            Route::post('/profile/alterStatusUser', ['uses' => 'Mobile\MembersController@AlterStatusUser', 'as' => 'mobile.profile.update']);
+            //Route::put('/users/alterStatusUser/{id}', [UsersController::class, 'alterStatusUser'])->name('alterStatus');
 
             // Users Address
             Route::get('/users/{user}/address', ['uses' => 'Mobile\UserAddressController@List', 'as' => 'mobile.users.address.list']);
