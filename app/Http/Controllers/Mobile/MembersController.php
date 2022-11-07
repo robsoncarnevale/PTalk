@@ -463,9 +463,9 @@ class MembersController extends Controller
             );
 
         $user->fill($request->all());
-        //$user->status = $request->status;
+        $user->status = 'inactive';
         $user->update();
 
-        return response()->json(['status' => 'success', "message" => "Status updated successfully"]);
+        return response()->json(['status' => 'success']);
     }
 }
