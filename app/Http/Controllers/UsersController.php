@@ -46,16 +46,15 @@ class UsersController extends Controller
      */
     public static function __callStatic($name, $params)
     {
-        if (count($params) > 0)
-        {
-            if (is_string($params[count($params)-1]))
-                self::$type_name = $params[count($params)-1];
+        if (count($params) > 0) {
+            if (is_string($params[count($params) - 1]))
+                self::$type_name = $params[count($params) - 1];
         }
 
         self::$type_name = (self::$type_name == 'admin') ? 'administrator' : self::$type_name;
         self::$type_name .= "s";
 
-        if(method_exists(__CLASS__, $name)) 
+        if (method_exists(__CLASS__, $name))
             return call_user_func_array(array(__CLASS__, $name), $params);
 
         throw new Exception("{$name} não é uma função válida da classe Api");
@@ -69,22 +68,22 @@ class UsersController extends Controller
     private static function List(Request $request, $type = 'member', $per_page = 25)
     {
         $users = User::filter($request)
-                    ->with('member_class')
-                    ->withCount(['vehicles' => function($q){
-                        $q->where('deleted', false);
-                    }])
-                    ->with(['vehicles' => function($q){
-                        $q->where('deleted', false);
-                    }])
-                    ->where('club_code', getClubCode())
-                    ->where('deleted', false)
-                    ->where('approval_status', 'approved')
-                    ->where('type', $type)
-                    ->orderBy('name');
+            ->with('member_class')
+            ->withCount(['vehicles' => function ($q) {
+                $q->where('deleted', false);
+            }])
+            ->with(['vehicles' => function ($q) {
+                $q->where('deleted', false);
+            }])
+            ->where('club_code', getClubCode())
+            ->where('deleted', false)
+            ->where('approval_status', 'approved')
+            ->where('type', $type)
+            ->orderBy('name');
 
         $users = $users->jsonPaginate($per_page, 3);
 
-        return response()->json([ 'status' => 'success', 'data' => (new UserCollection($users)) ]);
+        return response()->json(['status' => 'success', 'data' => (new UserCollection($users))]);
     }
 
     public function ListAll(Request $request)
@@ -97,7 +96,7 @@ class UsersController extends Controller
             // ->where('id', '<>', Auth::guard()->user()->id)
             ->orderBy('name');
 
-        if (! $request->has('filters')) {
+        if (!$request->has('filters')) {
             $filters = [];
         }
         if ($request->has('filters')) {
@@ -116,35 +115,35 @@ class UsersController extends Controller
             }
 
             if (array_key_exists('state', $filters)) {
-                $users->whereHas('addresses', function($q) use ($filters){
+                $users->whereHas('addresses', function ($q) use ($filters) {
                     $q->where('state', strtoupper($filters['state']));
                 });
             }
 
             if (array_key_exists('city', $filters)) {
-                $users->whereHas('addresses', function($q) use ($filters){
+                $users->whereHas('addresses', function ($q) use ($filters) {
                     $q->whereRaw('LOWER(city) like ?', strtolower("%{$filters['city']}%"));
                 });
             }
 
             if (array_key_exists('car_model_id', $filters)) {
-                $users->whereHas('vehicles', function($q) use ($filters){
+                $users->whereHas('vehicles', function ($q) use ($filters) {
                     $q->where('car_model_id', $filters['car_model_id'])
-                      ->where('deleted', false);
+                        ->where('deleted', false);
                 });
             }
 
             if (array_key_exists('car_color_id', $filters)) {
-                $users->whereHas('vehicles', function($q) use ($filters){
+                $users->whereHas('vehicles', function ($q) use ($filters) {
                     $q->where('car_color_id', $filters['car_color_id'])
-                      ->where('deleted', false);
+                        ->where('deleted', false);
                 });
             }
         }
 
         $users = $users->jsonPaginate(25, 3);
 
-        return response()->json([ 'status' => 'success', 'data' => (new UserCollection($users)) ]);
+        return response()->json(['status' => 'success', 'data' => (new UserCollection($users))]);
     }
 
     /**
@@ -165,22 +164,22 @@ class UsersController extends Controller
             ->first();
 
         if ($blacklist) {
-            return response()->json([ 'status' => 'error', 'message' => __('members.error-number-in-blacklist') ]);
+            return response()->json(['status' => 'error', 'message' => __('members.error-number-in-blacklist')]);
         }
 
         // Check if phone is already registered
         $check_phone = User::select('id')
             ->where('phone', $phone)
             ->where('deleted', false)
-        //     ->where(function($q){
-        //         $q->where('approval_status', User::WAITING_STATUS_APPROVAL)
-        //           ->orWhere('approval_status', User::APPROVED_STATUS_APPROVAL);
-        //   })
+            //     ->where(function($q){
+            //         $q->where('approval_status', User::WAITING_STATUS_APPROVAL)
+            //           ->orWhere('approval_status', User::APPROVED_STATUS_APPROVAL);
+            //   })
             ->where('club_code', getClubCode())
             ->first();
 
         if ($check_phone) {
-            return response()->json([ 'status' => 'error', 'message' => __('members.error-phone-already-registered-or-waiting-approval') ]);
+            return response()->json(['status' => 'error', 'message' => __('members.error-phone-already-registered-or-waiting-approval')]);
         }
 
         // Check if email is already registered
@@ -189,15 +188,14 @@ class UsersController extends Controller
             ->where('deleted', false)
             ->where('club_code', getClubCode())
             ->first();
-    
+
         if ($check_email) {
-            return response()->json([ 'status' => 'error', 'message' => __('members.error-email-already-registered') ]);
+            return response()->json(['status' => 'error', 'message' => __('members.error-email-already-registered')]);
         }
 
         $user = new User();
 
-        try
-        {
+        try {
             DB::beginTransaction();
 
             $user->club_code = getClubCode();
@@ -216,7 +214,7 @@ class UsersController extends Controller
 
             $user->new_password_token = md5(uniqid(rand(), true));
             $user->new_password_token_duration = date('Y-m-d H:i:s', strtotime("+1 day"));
-            
+
             if ($request->has('document_rg')) $user->document_rg = $request->get('document_rg');
             if ($request->has('phone')) $user->phone = preg_replace("#[^0-9]*#is", "", $request->get('phone'));
             if ($request->has('home_address')) $user->home_address = $request->get('home_address');
@@ -230,15 +228,13 @@ class UsersController extends Controller
             if ($request->has('photo'))
                 $user->upload($request->file('photo'));
 
-            if ($request->has('status'))
-            {
+            if ($request->has('status')) {
                 $user->status = $request->get('status');
 
                 if ($request->has('status_reason'))
                     $user->status_reason = $request->get('status_reason');
 
-                if ($user->status == User::SUSPENDED_STATUS && $request->has('suspended_time'))
-                {
+                if ($user->status == User::SUSPENDED_STATUS && $request->has('suspended_time')) {
                     $user->suspended_time = dateBrToDatabase(substr($request->get('suspended_time'), 0, 10));
                 } else {
                     $user->suspended_time = null;
@@ -265,12 +261,9 @@ class UsersController extends Controller
             //     $user['vehicle'] = $vehicle;
             // }
 
-            try
-            {
+            try {
                 Mail::to($user->email)->send(new \App\Mail\RegisterMail($user));
-            }
-            catch(\Exception $e)
-            {
+            } catch (\Exception $e) {
                 DB::rollback();
                 return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
             }
@@ -282,13 +275,10 @@ class UsersController extends Controller
                 'data' => (new UserResource($user)),
                 'message' => __(self::$type_name . '.success-create')
             ], 200);
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
             DB::rollback();
             return response()->json(['status' => 'error', 'message' => $e->getMessage(), 500]);
         }
-
     }
 
     /**
@@ -313,9 +303,9 @@ class UsersController extends Controller
                 ->where('club_code', getClubCode())
                 ->where('id', '<>', $user_id)
                 ->first();
-    
+
             if ($check_phone) {
-                return response()->json([ 'status' => 'error', 'message' => __('members.error-phone-already-registered') ]);
+                return response()->json(['status' => 'error', 'message' => __('members.error-phone-already-registered')]);
             }
         }
 
@@ -327,18 +317,17 @@ class UsersController extends Controller
                 ->where('club_code', getClubCode())
                 ->where('id', '<>', $user_id)
                 ->first();
-        
+
             if ($check_email) {
-                return response()->json([ 'status' => 'error', 'message' => __('members.error-email-already-registered') ]);
+                return response()->json(['status' => 'error', 'message' => __('members.error-email-already-registered')]);
             }
         }
 
-        try
-        {
+        try {
             DB::beginTransaction();
 
-            if (! $user)
-                return response()->json([ 'status' => 'error', 'message' => 'User not found' ]);
+            if (!$user)
+                return response()->json(['status' => 'error', 'message' => 'User not found']);
 
             if ($request->has('privilege_id')) $user->privilege_id = $request->get('privilege_id');
             if ($request->has('document_cpf')) $user->document_cpf = preg_replace("#[^0-9]*#is", "", $request->get('document_cpf'));
@@ -353,15 +342,13 @@ class UsersController extends Controller
             if ($request->has('nickname')) $user->nickname = $request->get('nickname');
             if ($request->has('member_class_id')) $user->member_class_id = $request->get('member_class_id');
 
-            if ($request->has('status'))
-            {
+            if ($request->has('status')) {
                 $user->status = $request->get('status');
 
                 if ($request->has('status_reason'))
                     $user->status_reason = $request->get('status_reason');
 
-                if ($user->status == User::SUSPENDED_STATUS && $request->has('suspended_time'))
-                {
+                if ($user->status == User::SUSPENDED_STATUS && $request->has('suspended_time')) {
                     $user->suspended_time = dateBrToDatabase(substr($request->get('suspended_time'), 0, 10));
                 } else {
                     $user->suspended_time = null;
@@ -372,14 +359,12 @@ class UsersController extends Controller
             }
 
             // Photo remove and upload
-            if ($request->has('remove_photo') && $request->get('remove_photo') == 'true')
-            {
-                if (! empty($user->photo) && Storage::disk('images')->exists($user->photo))
+            if ($request->has('remove_photo') && $request->get('remove_photo') == 'true') {
+                if (!empty($user->photo) && Storage::disk('images')->exists($user->photo))
                     Storage::disk('images')->delete($user->photo);
 
                 $user->photo = null;
-            } else if ($request->has('photo'))
-            {
+            } else if ($request->has('photo')) {
                 if ($request->has('photo'))
                     $user->upload($request->file('photo'));
             }
@@ -388,10 +373,10 @@ class UsersController extends Controller
             $user->saveStatusHistory();
 
             DB::commit();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollback();
 
-            return response()->json([ 'status' => 'error', 'message' => __(self::$type_name . '.error-update', [ 'error' => $e->getMessage() ]) ]);
+            return response()->json(['status' => 'error', 'message' => __(self::$type_name . '.error-update', ['error' => $e->getMessage()])]);
         }
 
         $vehicles = Vehicle::select()
@@ -402,7 +387,7 @@ class UsersController extends Controller
 
         $user->vehicles = $vehicles;
 
-        return response()->json([ 'status' => 'success', 'data' => (new UserResource($user)), 'message' => __(self::$type_name . '.success-update') ]);
+        return response()->json(['status' => 'success', 'data' => (new UserResource($user)), 'message' => __(self::$type_name . '.success-update')]);
     }
 
     /**
@@ -419,20 +404,20 @@ class UsersController extends Controller
             ->where('type', $type)
             ->first();
 
-        if (! $user)
-            return response()->json([ 'status' => 'error', 'message' => __(self::$type_name . '.not-found') ]);
+        if (!$user)
+            return response()->json(['status' => 'error', 'message' => __(self::$type_name . '.not-found')]);
 
         $user->deleted = true;
         $user->email = null;
         $user->phone = null;
         $user->save();
 
-        return response()->json([ 'status' => 'success', 'data' => (new UserResource($user)) ]);
+        return response()->json(['status' => 'success', 'data' => (new UserResource($user))]);
     }
 
     /**
      * Get
-     * 
+     *
      * @author Davi Souto
      * @since 07/06/2020
      */
@@ -440,7 +425,7 @@ class UsersController extends Controller
     {
         $user = User::select()
             ->with('member_class')
-            ->with(['vehicles' => function($q){
+            ->with(['vehicles' => function ($q) {
                 $q->where('deleted', false);
             }, 'vehicles.car_model:id,name,car_brand_id,picture', 'vehicles.car_model.car_brand:id,name', 'vehicles.car_color:id,name,value'])
             ->where('id', $user_id)
@@ -449,10 +434,10 @@ class UsersController extends Controller
             ->where('type', $type)
             ->first();
 
-        if (! $user)
-            return response()->json([ 'status' => 'error', 'message' => __(self::$type_name . '.not-found') ]);
+        if (!$user)
+            return response()->json(['status' => 'error', 'message' => __(self::$type_name . '.not-found')]);
 
-        return response()->json([ 'status' => 'success', 'data' => (new UserResource($user)) ]);
+        return response()->json(['status' => 'success', 'data' => (new UserResource($user))]);
     }
 
     /**
@@ -465,7 +450,7 @@ class UsersController extends Controller
     {
         $user = User::select()
             ->with('member_class')
-            ->with(['vehicles' => function($q){
+            ->with(['vehicles' => function ($q) {
                 $q->where('deleted', false);
             }])
             ->where('id', Auth::guard()->user()->id)
@@ -476,7 +461,7 @@ class UsersController extends Controller
             ->where('approval_status', User::APPROVED_STATUS_APPROVAL)
             ->first();
 
-        return response()->json([ 'status' => 'success', 'data' => (new ProfileResource($user))  ]);
+        return response()->json(['status' => 'success', 'data' => (new ProfileResource($user))]);
     }
 
     /**
@@ -489,7 +474,7 @@ class UsersController extends Controller
     {
         $user = User::select()
             ->with('member_class')
-            ->with(['vehicles' => function($q){
+            ->with(['vehicles' => function ($q) {
                 $q->where('deleted', false);
             }])
             ->where('id', Auth::guard()->user()->id)
@@ -500,8 +485,8 @@ class UsersController extends Controller
             ->where('approval_status', User::APPROVED_STATUS_APPROVAL)
             ->first();
 
-        if (! $user) {
-            return response()->json([ 'status' => 'error', 'message' => __('member.not-found') ]);
+        if (!$user) {
+            return response()->json(['status' => 'error', 'message' => __('member.not-found')]);
         }
 
         if ($request->has('document_cpf')) $user->document_cpf = preg_replace("#[^0-9]*#is", "", $request->get('document_cpf'));
@@ -512,23 +497,21 @@ class UsersController extends Controller
         if ($request->has('company_activities')) $user->company_activities = $request->get('company_activities');
 
         // Photo remove and upload
-        if ($request->has('remove_photo') && $request->get('remove_photo') == 'true')
-        {
-            if (! empty($user->photo) && Storage::disk('images')->exists($user->photo))
+        if ($request->has('remove_photo') && $request->get('remove_photo') == 'true') {
+            if (!empty($user->photo) && Storage::disk('images')->exists($user->photo))
                 Storage::disk('images')->delete($user->photo);
 
             $user->photo = null;
-        } else if ($request->has('photo'))
-        {
+        } else if ($request->has('photo')) {
             if ($request->has('photo'))
                 $user->upload($request->file('photo'));
         }
 
         $user->save();
 
-        return response()->json([ 'status' => 'success', 'data' => (new ProfileResource($user)), 'message' => __('members.success-update-profile') ]);   
+        return response()->json(['status' => 'success', 'data' => (new ProfileResource($user)), 'message' => __('members.success-update-profile')]);
     }
-    
+
     /**
      * Returns users profile data
      *
@@ -539,7 +522,7 @@ class UsersController extends Controller
     {
         $user = User::select()
             ->with('member_class')
-            ->with(['vehicles' => function($q){
+            ->with(['vehicles' => function ($q) {
                 $q->where('deleted', false);
             }])
             ->where('id', $user_id)
@@ -550,10 +533,10 @@ class UsersController extends Controller
             ->where('approval_status', User::APPROVED_STATUS_APPROVAL)
             ->first();
 
-        if (! $user)
-            return response()->json([ 'status' => 'error', 'message' => __('members.not-found') ]);
+        if (!$user)
+            return response()->json(['status' => 'error', 'message' => __('members.not-found')]);
 
-        return response()->json([ 'status' => 'success', 'data' => (new ProfileResource($user)) ]);
+        return response()->json(['status' => 'success', 'data' => (new ProfileResource($user))]);
     }
 
     /**
@@ -571,19 +554,19 @@ class UsersController extends Controller
             ->where('deleted', false)
             ->first();
 
-        if (! $user) {
-            return response()->json([ 'status' => 'error', 'message' => __('members.not-found') ]);
+        if (!$user) {
+            return response()->json(['status' => 'error', 'message' => __('members.not-found')]);
         }
 
-        return response()->json([ 'status' => 'success', 'data' => (new UserHistoryResource($user)) ]);
+        return response()->json(['status' => 'success', 'data' => (new UserHistoryResource($user))]);
     }
 
     public function ChangeType(Request $request, User $user, $type)
     {
         $this->validateClub($user->club_code, 'user');
 
-        if (! in_array($type, [ 'admin', 'member'])) {
-            return response()->json([ 'status' => 'error', 'message' => __('administrators.type-undefined') ]);
+        if (!in_array($type, ['admin', 'member'])) {
+            return response()->json(['status' => 'error', 'message' => __('administrators.type-undefined')]);
         }
 
         $user->type = $type;
@@ -594,14 +577,14 @@ class UsersController extends Controller
 
         $user->save();
 
-        return response()->json([ 'status' => 'success', 'message' => __('administrators.success-change-type') ]);
+        return response()->json(['status' => 'success', 'message' => __('administrators.success-change-type')]);
     }
 
-    public function findByEmail(Request $request) {
+    public function findByEmail(Request $request)
+    {
 
         $email = $request->get('email_user');
         $user = new User();
         return $user->findByEmail($email);
-
     }
 }
