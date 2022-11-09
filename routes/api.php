@@ -57,6 +57,10 @@ Route::group(['middleware' => 'preset'], function () {
         Route::put('/users/me/address', ['uses' => 'UserAddressController@CreateMyAddress', 'as' => 'users.me.address.create']);
         Route::post('users/me/address/{address}', ['uses' => 'UserAddressController@UpdateMyAddress', 'as' => 'users.me.address.update']);
 
+        /* MY CRONS */
+
+        Route::get('/cron/charge', ['uses' => 'CronController@Charge', 'as' => 'cron.charge']);
+
         /* USER */
 
         Route::get('/users/all', ['uses' => 'UsersController@ListAll', 'as' => 'users.members.view-all']);
