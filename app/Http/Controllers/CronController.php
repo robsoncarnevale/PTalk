@@ -13,12 +13,14 @@ use App\Models\BankAccountUser;
 
 class CronController extends Controller
 {
-    //Parei aqui - Trabalhar a logica do cron por aqui
+    //Cron Charge
     //Pegar todos os usuarios ativos, aprovados e que sejam membros
     //Verificar se ele possui uma tarifa a ser lançada hoje
     //Lança-la mesmo que não tenha lançado antes
     public function Charge() {
 
+        //Logica do cron esta aqui. Utilizado para testes
+        /*
         $usersDebit = [];
 
         $users = User::select('id','name','status','type','approval_status','approval_status_date')
@@ -74,6 +76,8 @@ class CronController extends Controller
         $retorno = response()->json([ 'usersDebit' => $usersDebit, 'quant' => count($usersDebit)]);
 
         return $retorno;
+        */
+        return 0;
 
     }
 }
