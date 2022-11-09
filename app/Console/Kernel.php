@@ -28,7 +28,8 @@ class Kernel extends ConsoleKernel
     {
         Log::info("Passei na schedule");
         // $schedule->command('inspire')->hourly();
-        $schedule->command('dailyFare:cron')->everyMinute();
+        // Run the task every day at midnight
+        $schedule->command('dailyFare:cron')->daily();
     }
 
     /**
