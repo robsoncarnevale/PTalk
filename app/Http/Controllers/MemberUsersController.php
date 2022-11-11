@@ -220,7 +220,7 @@ class MemberUsersController extends Controller
             try
             {
                 Mail::to($user->email)
-                    ->send(new \App\Mail\RegisterMail($user));
+                    ->send(new \App\Mail\ApprovalMail($user));
 
                 $sms = new \App\Http\Services\SmsService('aws_sns');
                 $sms->send(55, $user->phone, __('users.member-approved', ['club'=> $club->name]));
