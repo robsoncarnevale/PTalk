@@ -10,7 +10,7 @@
     <tr>
         <td>
             <div style="overflow:hidden;display:none;font-size:1px;color:#ffffff;line-height:1px;font-family:Arial;maxheight:0px;max-width:0px;opacity:0;">
-              Retorno de solicitação ao {{ $club->name }}!
+              Bem vindo ao {{ $club->name }}!
             </div>
         </td>
     </tr>
@@ -41,7 +41,7 @@
                                     </p> 
                                     
                                     <p style="line-height: 24px; margin-bottom:20px;">
-                                        Seja bem-vindo a nossa comunidade, baixe nosso App e fique por dentro das novidades!
+                                        Seja bem-vindo a nossa comunidade, acesse nosso App e fique por dentro das novidades!
                                     </p>
 
                                     @include('emails.sections.att')
