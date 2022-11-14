@@ -193,6 +193,7 @@ Route::group(['middleware' => 'preset'], function () {
 
         Route::post('/monthlypayment/data', ['uses' => 'MonthlyPaymentController@store', 'as' => 'monthlypayment.store']);
         Route::get('/monthlypayment/fare', ['uses' => 'MonthlyPaymentController@fare', 'as' => 'monthlypayment.fare']);
+        Route::get('/monthlypayment/pendencies', ['uses' => 'MonthlyPaymentController@pendencies', 'as' => 'monthlypayment.pendencies']);
         Route::get('/monthlypayment/registration/{id}', ['uses' => 'MonthlyPaymentController@get', 'as' => 'monthlypayment.store']);
         Route::get('/monthlypayment/delete/{id}', ['uses' => 'MonthlyPaymentController@destroy', 'as' => 'monthlypayment.delete']);
 

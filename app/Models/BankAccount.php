@@ -45,4 +45,14 @@ class BankAccount extends Model
     {
         return $this->hasMany(BankAccountHistory::class, 'bank_account_id', 'id');
     }
+
+    //Pega os usuarios devedores
+    public static function owes() {
+        return BankAccount::
+                  join('bank_account_users as bau','bank_accounts.id','bau.bank_account_id')
+                ->join('users as u','bau.user_id','u.id')
+                ->select('u.name', 'bank_accounts.balance', 'u.phone', 'u.id as user_id')
+                ->where('bank_accounts.balance', '<', 0)
+                ->get()->toArray();
+    }
 }

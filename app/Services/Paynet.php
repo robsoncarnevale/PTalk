@@ -14,8 +14,8 @@ class Paynet
 	private Client $client;
 
 	private $host = 'https://infraecommerce.paynet.net.br:8080';
-	private $email = 'daniel@paynet.net.br';
-	private $password = '1234';
+	private $email = 'leonardo@4world.com.br';//'daniel@paynet.net.br';
+	private $password = 'Mudar@2021';//'1234';
 	private $headers;
 
 	public function __construct()
@@ -25,8 +25,8 @@ class Paynet
 			'timeout' => 60
 		]);
 
-		$this->headers['route'] = '110';
-		$this->headers['version'] = 'v2';
+		$this->headers['route'] = '174';//'110';
+		$this->headers['version'] = 'v1';//'v2';
 	}
 
 	public function login() : void

@@ -245,6 +245,8 @@ class BankAccountController extends Controller
                 $bank->charge();
 
                 DB::commit();
+
+                //parei aqui Envia o token
             }
 
             return response()->json([

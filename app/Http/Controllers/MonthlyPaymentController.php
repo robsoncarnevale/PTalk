@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\MonthlyPayment;
+use App\Models\BankAccount;
 
 class MonthlyPaymentController extends Controller
 {
@@ -125,6 +126,7 @@ class MonthlyPaymentController extends Controller
 
     public function pendencies()
     {
-        dd("pendencies MonthlyPaymentController");
+        $list = BankAccount::owes();
+        return $list;
     }
 }

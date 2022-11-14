@@ -45,7 +45,7 @@ class DailyFareCron extends Command
     public function handle()
     {
         $usersDebit = [];
-
+        
         $users = User::select('id','name','status','type','approval_status','approval_status_date')
                     ->where('status', 'active')
                     ->where('type', 'member')
@@ -91,6 +91,8 @@ class DailyFareCron extends Command
                         $bankAccount->balance -= $monthly_payment[0]['value'];
                         $bankAccount->update();
                         array_push($usersDebit, $user['id']);
+
+                        
                     }
                 }
             }
@@ -101,5 +103,6 @@ class DailyFareCron extends Command
         
         //Retorna quantas cobranças foram feitas
         return count($usersDebit);
+        
     }
 }
