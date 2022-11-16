@@ -61,6 +61,10 @@ Route::group(['middleware' => 'preset'], function () {
 
         Route::get('/cron/charge', ['uses' => 'CronController@Charge', 'as' => 'cron.charge']);
 
+        /* CHARGES */
+
+        Route::get('/charge/getall/{id}', ['uses' => 'ChargeController@getAll', 'as' => 'charge.getall']);
+
         /* USER */
 
         Route::get('/users/all', ['uses' => 'UsersController@ListAll', 'as' => 'users.members.view-all']);

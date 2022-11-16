@@ -195,6 +195,8 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'sponsorship.index', 'name' => 'Sponsorship index', 'description' => '', 'add_member' => false ],
             [ 'action' => 'sponsorship.sponsors', 'name' => 'Sponsorship sponsors', 'description' => '', 'add_member' => false ],
             [ 'action' => 'sponsorship.partner', 'name' => 'Sponsorship partner', 'description' => '', 'add_member' => false ],
+
+            [ 'action' => 'charge.getall', 'name' => 'Get all charges', 'description' => '', 'add_member' => true ],
         ],
     ];
     /**

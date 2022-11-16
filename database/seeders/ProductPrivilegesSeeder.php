@@ -46,6 +46,7 @@ class ProductPrivilegesSeeder extends Seeder
         $this->cratePrivilege('sponsorship.index','Sponsorship index');
         $this->cratePrivilege('sponsorship.sponsors','Sponsorship sponsors');
         $this->cratePrivilege('sponsorship.partner','Sponsorship partner');
+        $this->cratePrivilege('charge.getall','Get all Charges');
     }
 
     private function cratePrivilege($action,$name) {

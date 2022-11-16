@@ -11,6 +11,8 @@ use App\Models\Charge;
 use App\Models\BankAccount;
 use App\Models\BankAccountUser;
 
+use DB;
+
 class DailyFareCron extends Command
 {
     /**
@@ -91,8 +93,6 @@ class DailyFareCron extends Command
                         $bankAccount->balance -= $monthly_payment[0]['value'];
                         $bankAccount->update();
                         array_push($usersDebit, $user['id']);
-
-                        
                     }
                 }
             }
