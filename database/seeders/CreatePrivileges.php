@@ -175,6 +175,8 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'product.delete', 'name' => 'Product Delete', 'description' => '', 'add_member' => false ],
             [ 'action' => 'product.deactivate', 'name' => 'Product Deactivate', 'description' => '', 'add_member' => false ],
             [ 'action' => 'product.activate', 'name' => 'Product Activate', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'product.logs', 'name' => 'Get logs all products', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'product.create_log', 'name' => 'Get logs all products', 'description' => '', 'add_member' => false ],
 
             [ 'action' => 'monthlypayment.index', 'name' => 'Monthlypayment index', 'description' => '', 'add_member' => false ],
             [ 'action' => 'monthlypayment.registration', 'name' => 'Monthlypayment Registration', 'description' => '', 'add_member' => false ],

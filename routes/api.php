@@ -181,6 +181,7 @@ Route::group(['middleware' => 'preset'], function () {
         });
 
         //Loja do Clubes
+        
         Route::get('/product', ['uses' => 'ProductController@index', 'as' => 'product.index']);
         Route::post('/product/data', ['uses' => 'ProductController@store', 'as' => 'product.store']);
         Route::get('/product/adregistration', ['uses' => 'ProductController@adRegistration', 'as' => 'product.ad_registration']);
@@ -192,6 +193,8 @@ Route::group(['middleware' => 'preset'], function () {
         Route::get('/product/saleshistory', ['uses' => 'ProductController@salesHistory', 'as' => 'product.sales_history']);
         Route::get('/product/list', ['uses' => 'ProductController@list', 'as' => 'product.list']);
         Route::get('/product/discountcoupon', ['uses' => 'ProductController@discountCoupon', 'as' => 'product.discount_coupon']);
+        Route::get('/product/logs', ['uses' => 'ProductController@logs', 'as' => 'product.logs']);
+        Route::post('/product/createlog', ['uses' => 'ProductController@createLog', 'as' => 'product.create_log']);
 
         // MonthlyPayments
 

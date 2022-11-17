@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\ProductLogs;
 
 class ProductController extends Controller
 {
@@ -235,4 +236,24 @@ class ProductController extends Controller
             'message' => 'Tela em construção'
         ], 500);
     }
+
+    public function logs() {
+        $productLogs = ProductLogs::all();
+        return response()->json([ 'status' => 'success', 'data' => $productLogs]);
+    }
+
+    public function createLog(Request $request) {
+        $log = $request->all();
+        $productLogs = new ProductLogs();
+        $productLogs->user_id = $log["user_id"];
+        $productLogs->data = $log['data'];
+        $productLogs->request = $log["request"];
+        $productLogs->error = $log["error"];
+        $productLogs->save();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Log criado com sucesso'
+        ]);
+    }
+
 }
