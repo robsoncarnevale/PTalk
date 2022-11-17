@@ -23,6 +23,9 @@ Route::group(['middleware' => 'preset'], function () {
     // Login
     Route::post('/login', ['uses' => 'AuthController@Login', 'as' => 'auth.login']);
 
+    //shop_cart
+    Route::get('/shop_cart/{id}', ['uses' => 'ShopCartsController@getall', 'as' => 'shopcart.getall']);
+
     // Test API
     Route::get('/test', ['uses' => 'TestController@MakeTest', 'as' => 'test.maketest.get']);
     Route::post('/test', ['uses' => 'TestController@MakeTest', 'as' => 'test.maketest.post']);

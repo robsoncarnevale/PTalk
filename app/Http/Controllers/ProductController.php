@@ -223,11 +223,8 @@ class ProductController extends Controller
     }
 
     public function list() {
-        
         $list = Product::where('active',1)->get();
-
         return $list;
-
     }
 
     public function discountCoupon() {
@@ -238,7 +235,10 @@ class ProductController extends Controller
     }
 
     public function logs() {
-        $productLogs = ProductLogs::all();
+        $productLogs = ProductLogs::
+                                leftjoin('users as u', 'u.id', '=', 'product_logs.user_id')
+                                ->select('product_logs.created_at','u.name','product_logs.request','product_logs.data','product_logs.error')
+                                ->get()->toArray();
         return response()->json([ 'status' => 'success', 'data' => $productLogs]);
     }
 

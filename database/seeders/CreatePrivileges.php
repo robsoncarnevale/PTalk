@@ -166,7 +166,7 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'product.ad_registration', 'name' => 'Product Registration', 'description' => '', 'add_member' => false ],
             [ 'action' => 'product.inactive_ads', 'name' => 'Inactive Ads', 'description' => '', 'add_member' => false ],
             [ 'action' => 'product.sales_history', 'name' => 'Sales History', 'description' => '', 'add_member' => false ],
-            [ 'action' => 'product.list', 'name' => 'List', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'product.list', 'name' => 'List', 'description' => '', 'add_member' => true ],
             [ 'action' => 'product.discount_coupon', 'name' => 'Discount Coupon', 'description' => '', 'add_member' => false ],
             [ 'action' => 'product.store', 'name' => 'Save Product', 'description' => '', 'add_member' => false ],
             [ 'action' => 'product.edit', 'name' => 'Edit Product', 'description' => '', 'add_member' => false ],
@@ -199,6 +199,8 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'sponsorship.partner', 'name' => 'Sponsorship partner', 'description' => '', 'add_member' => false ],
 
             [ 'action' => 'charge.getall', 'name' => 'Get all charges', 'description' => '', 'add_member' => true ],
+
+            [ 'action' => 'shopcart.getall', 'name' => 'Get all products on cart', 'description' => '', 'add_member' => true ],
         ],
     ];
     /**
