@@ -177,6 +177,7 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'product.activate', 'name' => 'Product Activate', 'description' => '', 'add_member' => false ],
             [ 'action' => 'product.logs', 'name' => 'Get logs all products', 'description' => '', 'add_member' => false ],
             [ 'action' => 'product.create_log', 'name' => 'Get logs all products', 'description' => '', 'add_member' => false ],
+            [ 'action' => 'product.addtocart', 'name' => 'Add to cart', 'description' => '', 'add_member' => true ],
 
             [ 'action' => 'monthlypayment.index', 'name' => 'Monthlypayment index', 'description' => '', 'add_member' => false ],
             [ 'action' => 'monthlypayment.registration', 'name' => 'Monthlypayment Registration', 'description' => '', 'add_member' => false ],
@@ -201,6 +202,8 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'charge.getall', 'name' => 'Get all charges', 'description' => '', 'add_member' => true ],
 
             [ 'action' => 'shopcart.getall', 'name' => 'Get all products on cart', 'description' => '', 'add_member' => true ],
+            [ 'action' => 'shopcart.getopenedcart', 'name' => 'Get opened cart by user id', 'description' => '', 'add_member' => true ],
+            
         ],
     ];
     /**

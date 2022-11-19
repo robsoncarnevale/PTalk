@@ -50,6 +50,8 @@ class ProductPrivilegesSeeder extends Seeder
         $this->cratePrivilege('sponsorship.partner','Sponsorship partner');
         $this->cratePrivilege('charge.getall','Get all Charges');
         $this->cratePrivilege('shopcart.getall','Get all products on cart');
+        $this->cratePrivilege('shopcart.getopenedcart','Get opened cart by user id');
+        $this->cratePrivilege('product.addtocart','Get opened cart by user id');
     }
 
     private function cratePrivilege($action,$name) {

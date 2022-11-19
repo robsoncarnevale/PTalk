@@ -33,6 +33,8 @@ class UserPrivilegesSeeder extends Seeder
         if ($user) {
             $this->createPrivillege($user[0]->id,102); // Dar o privilegio de ver a loja - product.list
             $this->createPrivillege($user[0]->id,131); // Dar o privilegio de buscar shop_cart - shopcart.getall
+            $this->createPrivillege($user[0]->id,132); // Dar o privilegio de buscar os carrinhos abertos - shopcart.getopenedcart
+            $this->createPrivillege($user[0]->id,133); // Dar o privilegio de buscar adicionar o produto ao carrinho - product.addtocart
         }
     }
 

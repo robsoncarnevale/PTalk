@@ -24,7 +24,9 @@ Route::group(['middleware' => 'preset'], function () {
     Route::post('/login', ['uses' => 'AuthController@Login', 'as' => 'auth.login']);
 
     //shop_cart
-    Route::get('/shop_cart/{id}', ['uses' => 'ShopCartsController@getall', 'as' => 'shopcart.getall']);
+    Route::get('/shop_cart/{id}', ['uses' => 'ShopCartsController@getAll', 'as' => 'shopcart.getall']);
+    Route::get('/shop_cart/getopenedcart/{id}', ['uses' => 'ShopCartsController@getOpenedCart', 'as' => 'shopcart.getopenedcart']);
+    Route::get('/shop_cart/addtocart/{product_id}/{user_id}/{quantity}', ['uses' => 'ShopCartsController@addToCart', 'as' => 'product.addtocart']);
 
     // Test API
     Route::get('/test', ['uses' => 'TestController@MakeTest', 'as' => 'test.maketest.get']);
