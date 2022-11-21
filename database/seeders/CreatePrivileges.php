@@ -178,6 +178,8 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'product.logs', 'name' => 'Get logs all products', 'description' => '', 'add_member' => false ],
             [ 'action' => 'product.create_log', 'name' => 'Get logs all products', 'description' => '', 'add_member' => false ],
             [ 'action' => 'product.addtocart', 'name' => 'Add to cart', 'description' => '', 'add_member' => true ],
+            [ 'action' => 'product.removetocart', 'name' => 'Remove to cart', 'description' => '', 'add_member' => true ],
+            [ 'action' => 'product.gotocart', 'name' => 'Go to cart', 'description' => '', 'add_member' => true ],
 
             [ 'action' => 'monthlypayment.index', 'name' => 'Monthlypayment index', 'description' => '', 'add_member' => false ],
             [ 'action' => 'monthlypayment.registration', 'name' => 'Monthlypayment Registration', 'description' => '', 'add_member' => false ],

@@ -35,6 +35,8 @@ class UserPrivilegesSeeder extends Seeder
             $this->createPrivillege($user[0]->id,131); // Dar o privilegio de buscar shop_cart - shopcart.getall
             $this->createPrivillege($user[0]->id,132); // Dar o privilegio de buscar os carrinhos abertos - shopcart.getopenedcart
             $this->createPrivillege($user[0]->id,133); // Dar o privilegio de buscar adicionar o produto ao carrinho - product.addtocart
+            $this->createPrivillege($user[0]->id,134); // Dar o privilegio de buscar adicionar o produto ao carrinho - product.gotocart
+            $this->createPrivillege($user[0]->id,135); // Dar o privilegio de buscar adicionar o produto ao carrinho - product.removetocart
         }
     }
 
