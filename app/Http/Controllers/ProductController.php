@@ -224,7 +224,10 @@ class ProductController extends Controller
 
     public function list() {
         $list = Product::where('active',1)->get();
-        return $list;
+        return response()->json([
+            'status' => 'success',
+            'list' => $list
+        ], 500);
     }
 
     public function discountCoupon() {
