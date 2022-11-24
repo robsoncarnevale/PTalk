@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ShopCart;
 use App\Models\Product;
+use App\Models\BankAccount;
 
 class ShopCartsController extends Controller
 {
@@ -85,8 +86,29 @@ class ShopCartsController extends Controller
 
     public function getProductsOnCartOpened() {
         return response()->json([
-            'status' => 'Aqui',
+            'status' => 'success',
             'data' => []
         ]);
+    }
+
+    public function getWallet($user_id) {
+
+        try {
+            
+            $wallet = BankAccount::getBankAccountUser($user_id);
+            
+            if (count($wallet) < 1) {
+                return response()->json([ 'status' => 'error', 'message' => "Carteira não encontrada"]);
+            }
+            
+        } catch (\Exception $e) {
+            return response()->json([ 'status' => 'error', 'message' => "Erro inesperado wallet"]);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $wallet
+        ]);    
+        
     }
 }

@@ -54,6 +54,7 @@ class ProductPrivilegesSeeder extends Seeder
         $this->cratePrivilege('product.addtocart','Put product on cart by user id');
         $this->cratePrivilege('product.removetocart','Remove product on cart by user id');
         $this->cratePrivilege('product.gotocart','Get products on cart');
+        $this->cratePrivilege('shopcart.gotopayment','Go to payment cart by user id');
     }
 
     private function cratePrivilege($action,$name) {

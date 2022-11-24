@@ -55,4 +55,14 @@ class BankAccount extends Model
                 ->where('bank_accounts.balance', '<', 0)
                 ->get()->toArray();
     }
+
+    //Pega os usuarios devedores
+    public static function getBankAccountUser($user_id) {
+        return BankAccount::
+                  join('bank_account_users as bau','bank_accounts.id','bau.bank_account_id')
+                ->join('users as u','bau.user_id','u.id')
+                ->select('u.name', 'bank_accounts.balance', 'u.phone', 'bank_accounts.account_number', 'u.id as user_id')
+                ->where('u.id', $user_id)
+                ->get()->toArray();
+    }
 }

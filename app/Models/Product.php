@@ -18,4 +18,5 @@ class Product extends Model
         'img_url',
         'user_id'
     ];
+    
 }

@@ -180,6 +180,7 @@ class CreatePrivileges extends Seeder
             [ 'action' => 'product.addtocart', 'name' => 'Add to cart', 'description' => '', 'add_member' => true ],
             [ 'action' => 'product.removetocart', 'name' => 'Remove to cart', 'description' => '', 'add_member' => true ],
             [ 'action' => 'product.gotocart', 'name' => 'Go to cart', 'description' => '', 'add_member' => true ],
+            [ 'action' => 'product.gotopayment', 'name' => 'Go to payment cart by user id', 'description' => '', 'add_member' => true ],
 
             [ 'action' => 'monthlypayment.index', 'name' => 'Monthlypayment index', 'description' => '', 'add_member' => false ],
             [ 'action' => 'monthlypayment.registration', 'name' => 'Monthlypayment Registration', 'description' => '', 'add_member' => false ],
